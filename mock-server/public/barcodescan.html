@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>条码扫描</title>
+  </head>
+
+  <body>
+    <object
+      id="create"
+      name="create"
+      classid="CLSID:DCD4A8BD-2BC5-472C-9AC6-1733EBF72421"
+      codebase="/oa/static/plugin/barcode.cab"
+      width="0"
+      height="0"
+    >
+    </object>
+    <object
+      id="read"
+      name="read"
+      classid="clsid:DD450EAE-FC2D-4942-8E31-F2C43F2EE508"
+      codebase="/oa/static/plugin/barcode.cab"
+      width="0"
+      height="0"
+    >
+    </object>
+    <script language="javascript" event="OnComm(pdf)" for="read">
+      console.log(pdf);
+    </script>
+
+    <script>
+      setTimeout(function() {
+        var barCodePlugin = document.getElementById('read');
+        barCodePlugin.CommPort = 1;
+
+        if (!barCodePlugin.OpenPort()) {
+          alert('监听失败');
+        }
+      }, 2000);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,7 @@
+{
+  "name": "@commons/http",
+  "version": "1.0.0",
+  "main": "src",
+  "types": "src",
+  "license": "MIT"
+}

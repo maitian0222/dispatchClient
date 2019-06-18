@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>View Pdf File</title>
+    <style>
+      .iframe {
+        position: absolute;
+        visibility: inherit;
+        top: 0px;
+        left: 0px;
+        height: 100%;
+        width: 100%;
+        margin: 0px;
+        padding: 0px;
+        z-index: -1;
+        border-width: 0px;
+        filter: 'progid:DXImageTransform.Microsoft.Alpha(style=0,opacity=70)';
+      }
+    </style>
+  </head>
+  <body>
+    <embed
+      src="/oa/static/test.pdf#scrollbar=1&statusbar=0&toolbar=0&navpanes=0"
+      type="application/pdf"
+      style="overflow: auto; width: 100%; height: 100%;"
+    />
+    <object
+      classid="clsid:CA8A9780-280D-11CF-A24D-444553540000"
+      width="100%"
+      height="100%"
+    >
+      <param name="_Version" value="327680" />
+      <param name="_ExtentX" value="19315" />
+      <param name="_ExtentY" value="16034" />
+      <param name="_StockProps" value="0" />
+      <param
+        name="SRC"
+        value="/oa/static/test.pdf#scrollbar=1&statusbar=0&toolbar=0&navpanes=0"
+      />
+    </object>
+    <div id="ct">
+      <div
+        style="position: absolute; top: 0; left: 0; background: red;background: red; height: 500px; width: 10000px; z-index: 1"
+      >
+        <iframe
+          class="iframe"
+          frameborder="0"
+          scrolling="false"
+          absolute="true"
+        ></iframe>
+      </div>
+    </div>
+    <script>
+      const html = document.getElementById('ct').innerHTML;
+      document.getElementById('ct').innerHTML = '';
+      setTimeout(function() {
+        document.getElementById('ct').innerHTML = html;
+      }, 2500);
+    </script>
+  </body>
+</html>

@@ -1,0 +1,24 @@
+.appContent {
+  flex: 1;
+  padding: 20px;
+  height: calc(100% - 105px);
+}
+
+:global(.ant-layout-content) {
+  overflow: hidden !important;
+}
+
+:global(.nav-header) {
+  display: flex;
+  height: 64px;
+  justify-content: center;
+  align-items: center;
+}
+
+:global(.ant-layout-sider-collapsed .nav-header) {
+  width: 80px;
+}
+
+:global(.ant-layout-sider-collapsed .nav-header .ant-typography) {
+  display: none;
+}

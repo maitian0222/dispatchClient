@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>打印条码</title>
+</head>
+
+<body>
+  <object id="print" classid="clsid:40D12BA8-FA85-4B51-9202-EE735259AB8B" codebase="/oa/static/plugin/barcode.cab"
+    width="0" height="0" style="display:none;"></object>
+
+  <script>
+    var printBarCodePlugin = document.getElementById('print');
+    // 设置条码的宽和高度
+    printBarCodePlugin.BarHeight = 50;
+    printBarCodePlugin.BarWith = 210;
+
+    // 设置条码的坐标Top和Left单位像素
+    printBarCodePlugin.BarTop = 5;
+    printBarCodePlugin.BarLeft = 10;
+
+    var printname = 'Bar Code Printer TT034-50';
+
+    var re = /-/g;
+    var cjsj = '20180808';
+    var barcodedate = '';
+    var tdate = new Date();
+    barcodedate =
+      tdate.getFullYear() + '' + (tdate.getMonth() + 1) + '' + tdate.getDate();
+    printBarCodePlugin.PDF417Model.TiaoMaZhiZuoRiQi = barcodedate; // 条码制作日期
+    printBarCodePlugin.PDF417Model.TiaoMaZhiZuoDanWei = '主办单位'; // 条码制作单位
+    printBarCodePlugin.PDF417Model.ChengWenRiQiHuoBianYinRiQi = cjsj; // 公文成文日期或刊物编印日期
+    printBarCodePlugin.PDF417Model.TiaoMaBianHao = 'CDB000010101'; // 条码编号
+    printBarCodePlugin.PDF417Model.GongWenZhongLeiHuoKanWuMingCheng = '行发文'; // 公文种类
+    printBarCodePlugin.PDF417Model.FaWenZiHaoHuoQiHao = '发文[2018]0001号'; // 文号
+    printBarCodePlugin.PDF417Model.JinJiChengDu = '急'; // 缓急程度
+    printBarCodePlugin.PDF417Model.ZuSongDanWei = '主送单位';
+    printBarCodePlugin.PDF417Model.MiMiDengJi = '密级A'; // 秘密等级
+    printBarCodePlugin.PDF417Model.FaBuCengCi = '';
+    printBarCodePlugin.PDF417Model.FaWenDanWei = '办公厅'; // 主办单位
+    printBarCodePlugin.PDF417Model.BiaoTi = '测试标题'; // 标题
+    printBarCodePlugin.PDF417Model.ZiDingYiZiDuan = ''; // 自定义字段
+
+    printBarCodePlugin.printModel(printname);
+  </script>
+</body>
+
+</html>

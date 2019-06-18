@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh-cmn-Hans">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>word正文统计</title>
+</head>
+
+<body>
+  <object id="wordPlugin" classid="clsid:C9BC4DFF-4248-4a3c-8A49-63A7D317F404" codebase="plugin/OfficeControl.cab#version=5,0,2,4"
+    width="100%" height="500px" style="font-family:仿宋 GB_2312">
+    .....
+    <param name="MakerCaption" value="中科软科技股份有限公司" />
+    <param name="MakerKey" value="DD41FF5FE728D847033482AE99B85A1677988475" />
+    <param name="ProductCaption" value="国家开发银行" />
+    <param name="ProductKey" value="D49B6EE24F98F1B9788C62388C8B15B647BB19CC" />
+    .....
+    <span>
+      该网页需要控件浏览.浏览器无法装载所需要的文档控件.请检查浏览器选项中的安全设置.
+    </span>
+  </object>
+
+  <script>
+    const wordPlugin = document.getElementById('wordPlugin');
+
+    wordPlugin.IsResetToolbarsOnOpen = true;
+    wordPlugin.CreateNew('Word.document');
+
+    const font = wordPlugin.ActiveDocument.Paragraphs.First.Range.Font;
+
+    font.Name = '仿宋 GB2312';
+  </script>
+</body>
+
+</html>
