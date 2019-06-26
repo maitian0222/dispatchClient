@@ -60,12 +60,12 @@ class UserForm extends React.Component<Props, State> {
           </Form.Item>
           <Form.Item label="资源配置">
             {getFieldDecorator('menuId', {
-              rules: [
-                {
-                  required: true,
-                  message: '请选择资源',
-                },
-              ],
+              // rules: [
+              //   {
+              //     required: true,
+              //     message: '请选择资源',
+              //   },
+              // ],
             })(<ResourcesTreeFrom initialValues={initialValues} />)}
           </Form.Item>
           <Form.Item label="描述">

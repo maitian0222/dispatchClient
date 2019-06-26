@@ -1,56 +1,59 @@
 import React, { useState, useEffect } from 'react';
-import { Modal, Icon, Row, Col, Button, Divider, Badge, message } from 'antd';
+import {
+  Form,
+  Modal,
+  Icon,
+  Row,
+  Col,
+  Button,
+  Divider,
+  Badge,
+  message,
+} from 'antd';
 import SearchForm from '@commons/SearchForm';
 import UserModel from './UserModel';
 import useRestPageAPi from '@sinoui/use-rest-page-api';
 import http from '@sinoui/http';
 import DataTable from '@commons/DataTable';
+import withErrorCatch from '@commons/with-error-catch';
+import transformListRequest from '../../utils/transformListRequest';
 import User from './types/User';
-
+import EllipsisText from '../../component/EllipsisText';
 /**
  * 用户管理列表
  */
 function UserList() {
-  let formRef = null;
+  let formRef: Form;
   const [visible, setVisible] = useState(false);
   const [modelTitleType, setModelTitleType] = useState('add');
-  const [editItem, setEditItem] = useState({});
+  const [editItem, setEditItem] = useState<User>({});
   const [loading, setLoading] = useState(false);
+  const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
 
   useEffect(() => {
     // http.get('/oa/info/notice?page=0&size=15');
   }, []);
-  const userFormRef = (ref: any) => {
+  const userFormRef = (ref: Form) => {
     formRef = ref;
   };
-  /**
-   * 打开用户Model
-   * @param item 数据对象
-   * @param type 判断是新建还是修改
-   */
-  const openModel = (item: any, type?: string) => {
-    dataSource.fetch();
-    setVisible(true);
-    setModelTitleType(type);
-    setEditItem({});
-    if (type === 'edit' && item) {
-      http.get(`/upms/user/${item.username}`).then((result) => {
-        setEditItem(result);
-      });
-    }
-  };
 
   /**
-   * 关闭用户Model
+   * 查询
+   * @param condition 获取表单数据项
    */
-  const onClose = () => {
-    setVisible(false);
+  // tslint:disable-next-line:no-any
+  const handleSearch = (condition: any) => {
+    dataSource.query({
+      // ...dataSource.searchParams,
+      ...condition,
+    });
   };
 
+  // 新增和修改
   const onOk = () => {
     const form = formRef.props.form;
 
-    return form.validateFields((err, values) => {
+    return form!.validateFields((err, values) => {
       // 检验失败return
 
       if (err) {
@@ -72,7 +75,7 @@ function UserList() {
 
       fn.then((result) => {
         // 清空表单数据
-        form.resetFields();
+        form!.resetFields();
         setLoading(false);
         setVisible(false);
         dataSource.reload();
@@ -84,34 +87,90 @@ function UserList() {
     });
   };
 
+  // 重置密码
+  const resetPassword = (item: User) => {
+    Modal.confirm({
+      title: '提示',
+      content: '确认要重置密码？',
+      onOk: () => {
+        http
+          .put(`/admin/user/password/reset`)
+          .then((result) => {
+            message.success('重置密码成功！');
+          })
+          .catch((e) => {
+            message.error('重置密码失败！');
+          });
+      },
+    });
+  };
+
+  // 批量删除
+  const batchDeletion = () => {
+    Modal.confirm({
+      title: '提示',
+      content: '确认删除？',
+      onOk: () => {
+        dataSource.remove(selectedRowIds).then(() => {
+          dataSource.reload();
+          setSelectedRowIds([]);
+        });
+      },
+    });
+  };
+
+  // 单条删除
   const onDelete = (item: User) => {
     Modal.confirm({
       title: '提示',
       content: '确认删除？',
       onOk: () => {
-        dataSource.remove(`${item.userId}`, false);
-        dataSource.reload();
+        dataSource.remove(`${item.userId}`, false).then(() => {
+          dataSource.reload();
+        });
       },
     });
   };
 
   /**
-   * 数据管理api
+   * 打开用户Model
+   * @param item 数据对象
+   * @param type 判断是新建还是修改
    */
-  const dataSource = useRestPageAPi<User>('/upms/user', [], {
-    keyName: 'userId',
-  });
+  const openModel = (item: any, type?: string) => {
+    dataSource.fetch();
+    setVisible(true);
+    setModelTitleType(type || 'add');
+    setEditItem({});
+    if (type === 'edit' && item) {
+      http.get(`/admin/user/${item.username}`).then((result) => {
+        setEditItem(result);
+      });
+    }
+  };
 
   /**
-   * 查询
-   * @param condition 获取表单数据项
+   * 关闭用户Model
    */
-  // tslint:disable-next-line:no-any
-  const handleSearch = (condition: any) => {
-    dataSource.query({
-      ...dataSource.searchParams,
-      ...condition,
-    });
+  const onClose = () => {
+    setLoading(false);
+    setVisible(false);
+  };
+
+  /**
+   * 数据管理api
+   */
+  const dataSource = useRestPageAPi<User>('/admin/user', [], {
+    keyName: 'userId',
+    transformListRequest,
+  });
+
+  // 多选配置
+  const rowSelection = {
+    selectedRowKeys: selectedRowIds,
+    onChange: (selectedRowKeys: string[]) => {
+      setSelectedRowIds(selectedRowKeys);
+    },
   };
 
   return (
@@ -123,20 +182,26 @@ function UserList() {
         handleSearch={handleSearch}
       />
 
-      <Row
-        type="flex"
-        justify="end"
-        style={{ padding: '20px 0', borderTop: '20px solid #f5f5f5' }}
-      >
-        <Col span={24} style={{ textAlign: 'right', padding: '0 10px' }}>
+      <Row style={{ padding: '20px 0', borderTop: '20px solid #f5f5f5' }}>
+        <Col span={24} style={{ padding: '0 10px' }}>
           <Button type="primary" onClick={openModel}>
             <Icon type="plus" />
             新建
+          </Button>
+          <Button
+            type="primary"
+            disabled={selectedRowIds.length <= 0}
+            style={{ marginLeft: 20 }}
+            onClick={() => batchDeletion()}
+          >
+            批量删除
           </Button>
         </Col>
       </Row>
 
       <DataTable
+        rowSelection={rowSelection}
+        rowKey={(record: User) => record.userId}
         columns={[
           {
             title: '编号',
@@ -163,7 +228,7 @@ function UserList() {
             dataIndex: 'status',
             key: 'status',
             align: 'center',
-            render: (value) => {
+            render: (value: string) => {
               return (
                 <Badge
                   color={value === '1' ? 'green' : 'red'}
@@ -192,6 +257,16 @@ function UserList() {
             sorter: true,
           },
           {
+            title: '描述',
+            dataIndex: 'description',
+            key: 'description',
+            align: 'center',
+            sorter: true,
+            render: (value: string) => {
+              return <EllipsisText text={value} />;
+            },
+          },
+          {
             title: '操作',
             dataIndex: 'opt',
             key: 'opt',
@@ -209,6 +284,14 @@ function UserList() {
                     onClick={() => openModel(item, 'edit')}
                   >
                     编辑
+                  </a>
+                  <Divider type="vertical" />
+                  <a
+                    id="edit"
+                    href="javascript:;"
+                    onClick={() => resetPassword(item)}
+                  >
+                    重置密码
                   </a>
                 </div>
               );
@@ -231,4 +314,6 @@ function UserList() {
   );
 }
 
-export default UserList;
+export default withErrorCatch({ errorTitle: '很抱歉，数据加载失败...' })(
+  UserList,
+);

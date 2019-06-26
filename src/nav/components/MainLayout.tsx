@@ -25,11 +25,15 @@ export default class MainLayout extends React.PureComponent {
     return (
       <Router>
         <Layout>
-          <NavMenu collapsed={this.state.collapsed} />
+          <NavMenu
+            collapsed={this.state.collapsed}
+            currentUser={this.props.currentUser}
+          />
           <Content>
             <HeaderContainer
               collapsed={this.state.collapsed}
               changeMenuCollapsed={this.changeMenuCollapsed}
+              currentUser={this.props.currentUser}
             />
             <div className={styles.appContent}>
               <div

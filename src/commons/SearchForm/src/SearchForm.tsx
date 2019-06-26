@@ -1,39 +1,100 @@
 import React from 'react';
-import { Form, Row, Col, Input, Button, Icon } from 'antd';
+import { Form, Row, Col, Input, Button, Icon, Select, DatePicker } from 'antd';
 import styles from './form.css';
+import moment from 'moment';
+const { Option } = Select;
+const { MonthPicker, RangePicker, WeekPicker } = DatePicker;
 class AdvancedSearchForm extends React.Component {
   state = {
     expand: false,
     expandShow: true,
     inRow: true,
   };
-
   public getFields() {
     const count = this.state.expand ? 10 : 6;
     const { getFieldDecorator } = this.props.form;
     const children = [];
     this.props.condition.map((item, i) => {
-      children.push(
-        <Col span={8} key={i} style={{ display: i < count ? 'block' : 'none' }}>
-          <Form.Item label={item.fieldName}>
-            {getFieldDecorator(item.name, {
-              rules: [
-                {
-                  required: false,
-                  message: 'Input something!',
-                },
-              ],
-            })(<Input placeholder={item.placeholder} />)}
-          </Form.Item>
-        </Col>,
-      );
+      if (item.type === 'select') {
+        children.push(
+          <Col
+            span={8}
+            key={i}
+            style={{ display: i < count ? 'block' : 'none' }}
+          >
+            <Form.Item label={item.fieldName}>
+              {getFieldDecorator(item.name, {})(
+                <Select mode={item.mode} placeholder={item.placeholder}>
+                  {item.options.map((optionItem, index) => {
+                    return (
+                      <Option key={index} value={optionItem.name}>
+                        {optionItem.name}
+                      </Option>
+                    );
+                  })}
+                </Select>,
+              )}
+            </Form.Item>
+          </Col>,
+        );
+      } else if (item.type === 'rangePicker') {
+        children.push(
+          <Col
+            span={8}
+            key={i}
+            style={{ display: i < count ? 'block' : 'none' }}
+          >
+            <Form.Item label={item.fieldName}>
+              {getFieldDecorator('dateRange', {})(
+                <RangePicker
+                  placeholder={item.placeholder}
+                  format={item.format}
+                />,
+              )}
+            </Form.Item>
+          </Col>,
+        );
+      } else {
+        children.push(
+          <Col
+            span={8}
+            key={i}
+            style={{ display: i < count ? 'block' : 'none' }}
+          >
+            <Form.Item label={item.fieldName}>
+              {getFieldDecorator(item.name, {})(
+                <Input placeholder={item.placeholder} />,
+              )}
+            </Form.Item>
+          </Col>,
+        );
+      }
     });
     return children;
   }
   public handleSearch = (e) => {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
+      let customFormat = 'YYYY-MM-DD';
+      this.props.condition.map((item, index) => {
+        if (item.type === 'select') {
+          values[item.name] = String(values[item.name]);
+        }
+        if (item.type === 'rangePicker') {
+          customFormat = item.format;
+        }
+      });
+      if (values.dateRange && values.dateRange.length > 0) {
+        values.startTime = moment(values.dateRange[0]).format(customFormat);
+        values.endTime = moment(values.dateRange[1]).format(customFormat);
+        delete values.dateRange;
+      }
       //console.log('Received values of form: ', values);
+      for (var i in values) {
+        if (!values[i] || values[i] === 'undefined') {
+          delete values[i];
+        }
+      }
       this.props.handleSearch(values);
     });
   };

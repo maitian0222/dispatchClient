@@ -3,6 +3,7 @@ import Login from '@auth/user';
 import MainLayout from './MainLayout';
 import http from '@sinoui/http';
 import { message } from 'antd';
+import { withRouter } from 'react-router-dom';
 export interface LayoutPageProps {
   isLoggined: boolean;
   onRequestFresh: (item1: object, item2?: string) => void;
@@ -23,10 +24,11 @@ class LayoutPage extends React.Component<LayoutPageProps, LayoutPageState> {
   public componentDidMount() {
     http.interceptors.response.use(undefined, (error) => {
       if (error.response && error.response.status === 401) {
-        message.error('会话超时,请重新登录！');
+        // message.error('会话超时,请重新登录！');
         // 跳转到登录页
         this.props.onLogout();
       } else if (error.response && error.response.status === 403) {
+        this.props.history.push('/');
         message.error('无权限访问此页面！');
       }
 
@@ -36,29 +38,25 @@ class LayoutPage extends React.Component<LayoutPageProps, LayoutPageState> {
 
       throw error;
     });
-
-    http.get('/upms/check').then((result) => {
+    // this.props.onRequestFresh({
+    //   userId: 21,
+    //   username: 'wang5',
+    // });
+    // return;
+    http.get('/admin/check').then((result) => {
       this.setState({
         refreshing: false,
       });
-      this.props.onRequestFresh(result.data.user);
+      if (result && result.data && result.data.user) {
+        this.props.onRequestFresh(result.data.user);
+      }
     });
-
-    // http
-    //   .get('/oa/info/notice/getDraftAndTodoNum')
-    //   .then((user) => {
-    //     if (user) {
-    //       this.setState({ refreshing: false });
-    //       this.props.onRequestFresh(user);
-    //     }
-    //   })
-    //   .catch(() => this.setState({ refreshing: false }));
   }
 
   public renderChildren() {
     const { currentUser } = this.props;
     if (this.props.isLoggined) {
-      return <MainLayout />;
+      return <MainLayout currentUser={currentUser} />;
     } else if (this.state.refreshing) {
       return <div />;
     }
@@ -74,4 +72,4 @@ class LayoutPage extends React.Component<LayoutPageProps, LayoutPageState> {
   }
 }
 
-export default LayoutPage;
+export default withRouter(LayoutPage);

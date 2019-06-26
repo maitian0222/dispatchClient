@@ -19,7 +19,7 @@ export default class TestModal extends React.Component<{}, State> {
   }
 
   public showModal = () => {
-    http.get('/upms/user/?page=0&size=15');
+    http.get('/admin/user/?page=0&size=15');
     http.get('/oa/info/notice?page=0&size=15');
     this.setState({
       visible: true,

@@ -73,7 +73,7 @@ function RoleList() {
   /**
    * 数据管理api
    */
-  const dataSource = useRestPageAPi<Role>('/upms/role', [], {
+  const dataSource = useRestPageAPi<Role>('/admin/role', [], {
     keyName: 'roleId',
   });
 
@@ -89,7 +89,10 @@ function RoleList() {
         return;
       }
 
-      values.menuId = values.menuId.join(',');
+      if (values.menuId) {
+        values.menuId = values.menuId.join(',');
+      }
+
       setLoading(true);
       const oprText = modelTitleType === 'edit' ? '修改' : '添加';
       const fn =
@@ -132,8 +135,20 @@ function RoleList() {
   // tslint:disable-next-line:no-any
   const handleSearch = (condition: any) => {
     dataSource.query({
-      ...dataSource.searchParams,
+      // ...dataSource.searchParams,
       ...condition,
+    });
+  };
+
+  const onDelete = (item: Resource) => {
+    Modal.confirm({
+      title: '提示',
+      content: '确认删除？',
+      onOk: () => {
+        dataSource.remove(`${item.roleId}`, false).then(() => {
+          dataSource.reload();
+        });
+      },
     });
   };
 
@@ -183,13 +198,7 @@ function RoleList() {
             render: (value, item, index) => {
               return (
                 <div>
-                  <a
-                    href="javascript:;"
-                    onClick={() => {
-                      dataSource.remove(`${item.roleId}`);
-                      dataSource.reload();
-                    }}
-                  >
+                  <a href="javascript:;" onClick={(event) => onDelete(item)}>
                     删除
                   </a>
                   <Divider type="vertical" />

@@ -11,12 +11,12 @@ function getResourcesTree(params?: any) {
   });
 }
 function getMenuTree(params?: any) {
-  return http.get(`/upms/menu`, {
+  return http.get(`/admin/menu`, {
     params,
   });
 }
 function getRoleIdToResources(roleId?: string) {
-  return http.get(`/upms/role/menu/${roleId}`);
+  return http.get(`/admin/role/menu/${roleId}`);
 }
 
 export { getUserTree, getResourcesTree, getMenuTree, getRoleIdToResources };

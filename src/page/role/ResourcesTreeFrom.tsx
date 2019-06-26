@@ -27,6 +27,28 @@ interface State {
   treeData: any[];
 }
 
+const valueMap = {};
+function loops(list, parent) {
+  return (list || []).map(({ children, value }) => {
+    const node = (valueMap[value] = {
+      parent,
+      value,
+    });
+    node.children = loops(children, node);
+    return node;
+  });
+}
+
+function getPath(value) {
+  const path = [];
+  let current = valueMap[value];
+  while (current) {
+    path.unshift(current.value);
+    current = current.parent;
+  }
+  return path;
+}
+
 class ResourcesTreeFrom extends React.Component<Props, State> {
   public treeData = [];
   constructor(props: Props) {
@@ -40,7 +62,6 @@ class ResourcesTreeFrom extends React.Component<Props, State> {
   public componentDidMount() {
     getMenuTree({ type: 'menu' }).then((result) => {
       const content = result.content;
-
       if (this.props.initialValues) {
         getRoleIdToResources(this.props.initialValues.roleId).then(
           (data: string[]) => {
@@ -58,8 +79,9 @@ class ResourcesTreeFrom extends React.Component<Props, State> {
     });
   }
 
-  public onChange = (value) => {
-    console.log('onChange ', value);
+  public onChange = (value, label, extra) => {
+    console.log(value, label, extra);
+    console.log('onChange ', getPath(value));
     this.setState({ value });
     this.props.onChange(value);
   };
@@ -69,7 +91,7 @@ class ResourcesTreeFrom extends React.Component<Props, State> {
       treeData: this.state.treeData,
       value: this.state.value,
       onChange: this.onChange,
-      treeCheckable: true,
+      multiple: true,
       showCheckedStrategy: SHOW_PARENT,
       searchPlaceholder: '请选择资源',
       getPopupContainer: () => document.getElementById('area'),

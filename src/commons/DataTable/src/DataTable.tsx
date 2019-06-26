@@ -6,6 +6,12 @@ interface Props {
   columns: any;
   // tslint:disable-next-line:no-any
   dataSource: any;
+  rowSelection: {
+    selectedRowKeys: string[];
+    onChange: (value: string[]) => void;
+  };
+  // tslint:disable-next-line:no-any
+  rowKey: (record: any) => string | undefined;
 }
 export default function DataTable(props: Props) {
   const onChangeTable = (pagination, filters, sorter) => {
@@ -44,7 +50,7 @@ export default function DataTable(props: Props) {
         total: pagination.totalElements,
         showSizeChanger: true,
         showQuickJumper: true,
-        pageSizeOptions: ['10', '15', '50', '100'],
+        pageSizeOptions: ['2', '15', '50', '100'],
       }
     : false;
   return (

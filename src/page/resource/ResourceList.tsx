@@ -5,7 +5,7 @@ import useRestListApi from '@sinoui/use-rest-list-api';
 import AddResourceModal from './AddResourceModal';
 import Resource from './types/Resource';
 import DataTable from '@commons/DataTable';
-import transformListResponse from '../../utils/transformListResponse';
+import transformListRequest from '../../utils/transformListRequest';
 function ResourceManagement() {
   let formRef = null;
   const [visible, setVisible] = useState(false);
@@ -23,7 +23,7 @@ function ResourceManagement() {
 
   const handleSearch = (condition) => {
     dataSource.query({
-      ...dataSource.searchParams,
+      // ...dataSource.searchParams,
       ...condition,
     });
   };
@@ -68,13 +68,15 @@ function ResourceManagement() {
       title: '提示',
       content: '确认删除？',
       onOk: () => {
-        dataSource.remove(`${item.menuId}`, false);
-        dataSource.reload();
+        dataSource.remove(`${item.menuId}`, false).then(() => {
+          dataSource.reload();
+        });
       },
     });
   };
-  const dataSource = useRestListApi<Resource>('/upms/menu', [], {
+  const dataSource = useRestListApi<Resource>('/admin/menu', [], {
     keyName: 'menuId',
+    transformListRequest,
   });
 
   return (
@@ -107,13 +109,7 @@ function ResourceManagement() {
             dataIndex: 'type',
             key: 'type',
             align: 'center',
-            filters: [
-              { text: '菜单', value: '0' },
-              { text: '按钮', value: '1' },
-            ],
-            render: (value, item, index) => {
-              return value === '0' ? '菜单' : '按钮';
-            },
+            render: (value) => (value === '0' ? '菜单' : '按钮'),
           },
           {
             title: '链接',
@@ -151,7 +147,10 @@ function ResourceManagement() {
       <AddResourceModal
         visible={visible}
         onOk={onOk}
-        onClose={() => setVisible(false)}
+        onClose={() => {
+          setLoading(false);
+          setVisible(false);
+        }}
         formOprType={formOprType}
         editItem={editItem}
         wrappedComponentRef={saveFormRef}

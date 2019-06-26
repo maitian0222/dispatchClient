@@ -1,37 +1,7 @@
 import React from 'react';
 import { FormComponentProps } from 'antd/lib/form';
-import {
-  Form,
-  Input,
-  Radio,
-  Button,
-  TreeSelect,
-  InputNumber,
-  Upload,
-  Icon,
-  message,
-} from 'antd';
+import { Form, Input, TreeSelect, InputNumber, message } from 'antd';
 import http from '@sinoui/http';
-const treeData = [
-  {
-    title: '信息管理',
-    value: 'info',
-    children: [
-      {
-        title: '刊物管理',
-        value: 'public',
-      },
-      {
-        title: '公告管理',
-        value: 'announcement',
-      },
-    ],
-  },
-  {
-    title: '公文管理',
-    value: 'archive',
-  },
-];
 
 interface Props {
   form: FormComponentProps;
@@ -70,7 +40,7 @@ class AddResourceForm extends React.Component<Props, State> {
   }
 
   public componentDidMount() {
-    http.get('/upms/menu').then((result) => {
+    http.get('/admin/menu').then((result) => {
       const resourceList = [
         {
           key: '0',
@@ -127,7 +97,7 @@ class AddResourceForm extends React.Component<Props, State> {
         <Form {...formItemLayout} style={{ width: '600px' }}>
           <Form.Item label="上级菜单">
             {getFieldDecorator('parentId', {
-              initialValue: initialValues && initialValues.parentId,
+              initialValue: '0',
             })(
               <TreeSelect
                 dropdownStyle={{ maxHeight: 400, overflow: 'auto' }}
@@ -181,8 +151,8 @@ class AddResourceForm extends React.Component<Props, State> {
                 {getFieldDecorator('orderNum', {
                   rules: [
                     {
-                      required: true,
-                      message: '请输入菜单的排序号',
+                      // required: true,
+                      // message: '请输入菜单的排序号',
                     },
                   ],
                   initialValue: initialValues && initialValues.orderNum,
@@ -192,8 +162,8 @@ class AddResourceForm extends React.Component<Props, State> {
                 {getFieldDecorator('icon', {
                   rules: [
                     {
-                      required: true,
-                      message: '请输入菜单图标',
+                      // required: true,
+                      // message: '请输入菜单图标',
                     },
                   ],
                   initialValue: initialValues && initialValues.icon,

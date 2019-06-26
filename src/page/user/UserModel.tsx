@@ -1,14 +1,17 @@
 import * as React from 'react';
 import { Modal, Button, Form } from 'antd';
 import UserForm from './UserForm';
-
+import User from './types/User';
 interface Props {
   visible: boolean;
   modelTitleType: string;
   onClose: () => void;
-  editItem: any;
+  editItem: User;
+  loading: boolean;
+  onOk: () => void;
+  form: Form;
 }
-class UserModel extends React.PureComponent {
+class UserModel extends React.PureComponent<Props, {}> {
   public render() {
     const {
       visible,
@@ -18,7 +21,6 @@ class UserModel extends React.PureComponent {
       onOk,
       form,
     } = this.props;
-    const { getFieldDecorator } = form;
 
     return (
       <Modal
@@ -39,7 +41,6 @@ class UserModel extends React.PureComponent {
         ]}
       >
         <UserForm
-          getFieldDecorator={getFieldDecorator}
           initialValues={this.props.editItem}
           form={form}
           modelTitleType={modelTitleType}

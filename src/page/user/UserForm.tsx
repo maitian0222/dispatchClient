@@ -1,19 +1,21 @@
 import React from 'react';
-import { FormComponentProps } from 'antd/lib/form';
 import { Form, Input, Radio, Select } from 'antd';
 import http from '@sinoui/http';
-
+import User from './types/user';
 interface Props {
-  form: FormComponentProps;
-  // tslint:disable-next-line:no-any
-  getFieldDecorator: any;
-  // tslint:disable-next-line:no-any
-  initialValues: any;
+  form: Form;
+  initialValues: User;
+  modelTitleType: string;
+}
+
+interface State {
+  confirmDirty: boolean;
+  roleList: number[];
 }
 
 class UserForm extends React.Component<Props, State> {
-  private props: any;
-  private state: any;
+  // private props: Props;
+  // private state: State;
   constructor(props: Props) {
     super(props);
     this.state = { confirmDirty: false, roleList: [] };
@@ -21,7 +23,7 @@ class UserForm extends React.Component<Props, State> {
 
   public componentDidMount() {
     http
-      .get(' /upms/role', { params: { page: 0, size: 10000 } })
+      .get(' /admin/role', { params: { page: 0, size: 10000 } })
       .then((result) => {
         this.setState({
           roleList: result.content,
@@ -55,7 +57,7 @@ class UserForm extends React.Component<Props, State> {
   public checkUserName = (rule, value, callback) => {
     callback();
     if (value && !this.props.initialValues.username) {
-      http.get(`/upms/user/check/${value}`).then((result) => {
+      http.get(`/admin/user/check/${value}`).then((result) => {
         if (!result) {
           callback('该用户名已被使用！');
         }
@@ -66,7 +68,9 @@ class UserForm extends React.Component<Props, State> {
   };
 
   public render() {
-    const { getFieldDecorator, modelTitleType } = this.props;
+    const { form, modelTitleType } = this.props;
+    // tslint:disable-next-line:no-any
+    const { getFieldDecorator } = form;
     let { initialValues } = this.props;
     initialValues = initialValues ? initialValues : {};
     const formItemLayout = {
@@ -242,7 +246,8 @@ class UserForm extends React.Component<Props, State> {
             {getFieldDecorator('description', {
               rules: [
                 {
-                  message: 'description',
+                  max: 200,
+                  message: '最多输入200个字符',
                 },
               ],
               initialValue: initialValues && initialValues.description,

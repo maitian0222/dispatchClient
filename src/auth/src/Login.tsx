@@ -1,5 +1,14 @@
 import React from 'react';
-import { Form, Icon, Input, Button, Checkbox, Typography, message } from 'antd';
+import {
+  Form,
+  Icon,
+  Input,
+  Button,
+  Checkbox,
+  Typography,
+  message,
+  Tooltip,
+} from 'antd';
 import { connect } from 'react-redux';
 import { ActionCreators } from './actions';
 import Register from './register/Register';
@@ -36,7 +45,7 @@ class NormalLoginForm extends React.PureComponent<Props, State> {
 
   public onChangeVerficationcode = () => {
     http
-      .get('/upms/validata/changeValidata', {
+      .get('/admin/validata/changeValidata', {
         params: {
           tokenCode: this.tokenCode,
         },
@@ -62,16 +71,24 @@ class NormalLoginForm extends React.PureComponent<Props, State> {
     this.props.form.validateFields((err, values) => {
       if (!err) {
         http
-          .post('/upms/login', {
+          .post('/admin/login', {
             ...values,
             tokenCode: this.tokenCode,
           })
           .then((result) => {
-            message.success('登录成功！');
-            this.props.dispatch(ActionCreators.loginSuccess(result.data.user));
+            if (result && result.status == 'success') {
+              message.success('登录成功！');
+              this.props.dispatch(
+                ActionCreators.loginSuccess(result.data.user),
+              );
+            } else {
+              message.success(`${result.message}`);
+            }
           })
           .catch((e) => {
-            message.error(e.response.data.message);
+            if (e.response && e.response.data) {
+              message.error(e.response.data.message);
+            }
           });
       }
     });
@@ -120,15 +137,17 @@ class NormalLoginForm extends React.PureComponent<Props, State> {
                     placeholder="验证码"
                     addonAfter={
                       verficationcodeImgSrc && (
-                        <img
-                          height="29"
-                          style={{
-                            height: '29px',
-                            cursor: 'pointer',
-                          }}
-                          onClick={this.onChangeVerficationcode}
-                          src={`data:image/png;base64,${verficationcodeImgSrc}`}
-                        />
+                        <Tooltip placement="top" title="点击重新获取验证码">
+                          <img
+                            height="29"
+                            style={{
+                              height: '29px',
+                              cursor: 'pointer',
+                            }}
+                            onClick={this.onChangeVerficationcode}
+                            src={`data:image/png;base64,${verficationcodeImgSrc}`}
+                          />
+                        </Tooltip>
                       )
                     }
                   />,

@@ -6,6 +6,10 @@ import logo from '../images/logo.svg';
 import Resource from '../../page/resource/types/Resource';
 interface Props {
   collapsed: boolean;
+  currentUser: {
+    userId: string;
+    username: string;
+  };
 }
 
 interface State {
@@ -23,19 +27,25 @@ class NavMenu extends Component<Props, State> {
 
   public componentDidMount() {
     const path = location.pathname;
-    http.get('/dispute/menu/list').then((data: Resource[]) => {
-      this.setState({
-        menuList: data,
+    http
+      .get(`/admin/menu/${this.props.currentUser.username}`)
+      .then((result: { content?: Resource[] }) => {
+        if (result && result.content) {
+          const data = result.content;
+          this.setState({
+            menuList: data,
+          });
+          // 设置菜单默认选中项
+          const selectedMenu = data.find(
+            (item: Resource) => path.indexOf(item.path) !== -1,
+          );
+          if (selectedMenu) {
+            this.setState({
+              selectedKeys: [selectedMenu.path],
+            });
+          }
+        }
       });
-
-      // 设置菜单默认选中项
-      const selectedMenu = data.find((item: Resource) => item.path === path);
-      if (selectedMenu) {
-        this.setState({
-          selectedKeys: [selectedMenu.path],
-        });
-      }
-    });
   }
 
   public onChangeSelectMenu = (path: string) => {
