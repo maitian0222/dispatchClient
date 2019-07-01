@@ -17,4 +17,12 @@ module.exports = {
       Connection: 'keep-alive',
     },
   },
+
+  '/oss/**': {
+    target: 'http://192.168.80.144:8082',
+    changeOrigin: true,
+    headers: {
+      Connection: 'keep-alive',
+    },
+  },
 };

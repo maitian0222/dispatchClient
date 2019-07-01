@@ -13,7 +13,7 @@ class DictionarySelect extends React.Component {
   }
   public componentDidMount() {
     http
-      .get('/admin/dict/finddict', {
+      .get('/upms/dict/finddict', {
         params: {
           fieldCode: this.props.fieldCode || 'CASE_TYPE',
         },
