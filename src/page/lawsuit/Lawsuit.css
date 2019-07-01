@@ -1,0 +1,14 @@
+.lawsuit-layout {
+}
+
+.lawsuit-layout :global(.ant-card) {
+  margin-bottom: 20px;
+}
+.lawsuit-layout :global(.ant-card-head-title) {
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.table-card :global(.ant-card-body) {
+  padding: 0;
+}

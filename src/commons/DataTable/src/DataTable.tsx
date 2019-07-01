@@ -62,6 +62,7 @@ export default function DataTable(props: Props) {
       loading={props.dataSource.isLoading}
       pagination={pagination}
       onChange={onChangeTable}
+      onRow={props.onRow}
     />
   );
 }

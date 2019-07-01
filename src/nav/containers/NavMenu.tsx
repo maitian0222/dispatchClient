@@ -52,6 +52,10 @@ class NavMenu extends Component<Props, State> {
               this.setState({
                 selectedKeys: [ziMenu.path],
               });
+            } else {
+              this.setState({
+                selectedKeys: [selectedMenu.path],
+              });
             }
           } else {
             let parentMenu: Resource;
@@ -142,12 +146,12 @@ class NavMenu extends Component<Props, State> {
           </Typography.Title>
         </div>
         <Menu mode="inline" theme="light" {...menuProps}>
-          <Menu.Item key="/" onClick={() => this.onChangeSelectMenu('/')}>
+          {/* <Menu.Item key="/" onClick={() => this.onChangeSelectMenu('/')}>
             <Link to="/">
               <Icon type="desktop" />
               <span>系统首页</span>
             </Link>
-          </Menu.Item>
+          </Menu.Item> */}
           {this.state.menuList.map((item: Resource) =>
             !item.children || item.children.length === 0 ? (
               <Menu.Item
