@@ -1,6 +1,7 @@
 import ResourceManagement from '../page/resource/ResourceList';
 import UserList from '../page/user/UserList';
 import RoleList from '../page/role/RoleList';
+import MaterialList from '../page/material/MaterialList';
 
 const routes = [
   {
@@ -17,6 +18,11 @@ const routes = [
     path: '/role/list',
     title: '角色管理',
     component: RoleList,
+  },
+  {
+    path: '/materialAudit/list',
+    title: '律师材料审核',
+    component: MaterialList,
   },
 ];
 

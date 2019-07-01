@@ -1,0 +1,32 @@
+.material :global(.ant-descriptions) {
+  border: 2px solid #fff;
+  box-shadow: 1px 2px 2px #ccc;
+}
+.material :global(.ant-descriptions-title) {
+  background: #ffffff;
+  margin-bottom: 0;
+  padding: 12px 0 12px 30px;
+}
+.material :global(.ant-descriptions-view) {
+  padding-top: 20px;
+  padding-left: 30px;
+}
+.material :global(.ant-list-header) {
+  padding-left: 30px;
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: bold;
+  background: #ffffff;
+  font-size: 1.17em;
+}
+.title {
+  color: rgba(0, 0, 0, 0.85);
+  font-weight: bold;
+  padding: 12px 0 12px 30px;
+  background: #ffffff;
+  margin-bottom: 0;
+}
+.content {
+  border: 2px solid #fff;
+  box-shadow: 1px 2px 2px #ccc;
+  margin-left: 5px;
+}
