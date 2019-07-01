@@ -3,6 +3,8 @@ import UserList from '../page/user/UserList';
 import RoleList from '../page/role/RoleList';
 import LawsuitList from '../page/lawsuit/LawsuitList';
 import LawsuitCaseEditor from '../page/lawsuit/LawsuitCaseEditor';
+import MaterialList from '../page/material/MaterialList';
+
 const routes = [
   {
     path: '/resource/list',
@@ -28,6 +30,11 @@ const routes = [
     path: '/lawsuit/edit/:id',
     title: '诉讼案件编辑',
     component: LawsuitCaseEditor,
+  },
+  {
+    path: '/materialAudit/list',
+    title: '律师材料审核',
+    component: MaterialList,
   },
 ];
 
