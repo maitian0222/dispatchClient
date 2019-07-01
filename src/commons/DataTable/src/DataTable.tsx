@@ -50,7 +50,7 @@ export default function DataTable(props: Props) {
         total: pagination.totalElements,
         showSizeChanger: true,
         showQuickJumper: true,
-        pageSizeOptions: ['2', '15', '50', '100'],
+        pageSizeOptions: ['10', '15', '50', '150', '500'],
       }
     : false;
   return (

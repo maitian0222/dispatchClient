@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { ActionCreators } from '@auth/user';
 import http from '@sinoui/http';
 import { Layout, Modal, Icon, Menu, Dropdown, Avatar } from 'antd';
+import { withRouter } from 'react-router-dom';
 import ChangePwdModal from '../components/ChangePwdModal';
 const { Header } = Layout;
 
@@ -15,12 +16,14 @@ class AppHeader extends React.PureComponent {
   }
   private showConfirm = () => {
     const logout = this.props.onLogout;
+    const history = this.props.history;
     Modal.confirm({
       title: '提示',
       content: '确定退出？',
       onOk() {
         http.post('/admin/logout').then(() => {
           logout();
+          history.replace('/');
         });
       },
     });
@@ -61,10 +64,9 @@ class AppHeader extends React.PureComponent {
           <Dropdown overlay={menu}>
             <a
               className="ant-dropdown-link"
-              href="#"
+              href="javascript:;"
               style={{ float: 'right' }}
             >
-              <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" />
               <span>{currentUser.username}</span>
             </a>
           </Dropdown>
@@ -86,7 +88,9 @@ class AppHeader extends React.PureComponent {
 const mapDispatchToProps = (dispatch) => ({
   onLogout: () => dispatch(ActionCreators.logoutSuccess()),
 });
-export default connect(
-  null,
-  mapDispatchToProps,
-)(AppHeader);
+export default withRouter(
+  connect(
+    null,
+    mapDispatchToProps,
+  )(AppHeader),
+);

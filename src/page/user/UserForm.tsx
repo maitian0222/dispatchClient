@@ -1,5 +1,5 @@
 import React from 'react';
-import { Form, Input, Radio, Select } from 'antd';
+import { Form, Input, Radio, Select, message } from 'antd';
 import http from '@sinoui/http';
 import User from './types/user';
 interface Props {
@@ -55,16 +55,20 @@ class UserForm extends React.Component<Props, State> {
 
   // 判断用户名是否重名
   public checkUserName = (rule, value, callback) => {
-    callback();
     if (value && !this.props.initialValues.username) {
       http.get(`/admin/user/check/${value}`).then((result) => {
         if (!result) {
           callback('该用户名已被使用！');
+          message.error('该用户名已被使用！');
         }
       });
     } else {
       callback();
     }
+
+    setTimeout(() => {
+      callback();
+    }, 1000);
   };
 
   public render() {

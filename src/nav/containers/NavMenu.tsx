@@ -15,13 +15,15 @@ interface Props {
 interface State {
   menuList: Resource[];
   selectedKeys: string[];
+  openKeys: string[];
 }
 class NavMenu extends Component<Props, State> {
   constructor(props: Props) {
     super(props);
     this.state = {
       menuList: [],
-      selectedKeys: ['/'],
+      selectedKeys: [],
+      openKeys: [],
     };
   }
 
@@ -31,7 +33,7 @@ class NavMenu extends Component<Props, State> {
       .get(`/admin/menu/${this.props.currentUser.username}`)
       .then((result: { content?: Resource[] }) => {
         if (result && result.content) {
-          const data = result.content;
+          const data: Resource[] = result.content || [];
           this.setState({
             menuList: data,
           });
@@ -40,12 +42,58 @@ class NavMenu extends Component<Props, State> {
             (item: Resource) => path.indexOf(item.path) !== -1,
           );
           if (selectedMenu) {
-            this.setState({
-              selectedKeys: [selectedMenu.path],
-            });
+            if (selectedMenu.children && selectedMenu.children.length > 0) {
+              const ziMenu = selectedMenu.children.find(
+                (item: Resource) => path.indexOf(item.path) !== -1,
+              );
+              this.setState({
+                openKeys: [selectedMenu.path],
+              });
+              this.setState({
+                selectedKeys: [ziMenu.path],
+              });
+            }
+          } else {
+            let parentMenu: Resource;
+            let ziMenu: Resource;
+            for (let i = 0; i < data.length; i++) {
+              ziMenu =
+                data[i].children &&
+                data[i].children.find(
+                  (item: Resource) => path.indexOf(item.path) !== -1,
+                );
+              if (ziMenu) {
+                parentMenu = data[i];
+                break;
+              }
+            }
+
+            if (parentMenu) {
+              this.setState({
+                openKeys: [parentMenu.path],
+              });
+              if (ziMenu) {
+                this.setState({
+                  selectedKeys: [ziMenu.path],
+                });
+              }
+            } else {
+              this.setState({
+                selectedKeys: ['/'],
+              });
+            }
           }
         }
       });
+  }
+
+  public componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.collapsed) {
+      this.setState({
+        selectedKeys: [],
+        openKeys: [],
+      });
+    }
   }
 
   public onChangeSelectMenu = (path: string) => {
@@ -53,26 +101,47 @@ class NavMenu extends Component<Props, State> {
       selectedKeys: [path],
     });
   };
+
+  // 点击含有子菜单的菜单节点
+  public onChangeSubMenu = (path: string) => {
+    if (this.state.openKeys.toString().indexOf(path) !== -1) {
+      this.setState({
+        openKeys: [],
+      });
+    } else {
+      this.setState({
+        openKeys: [path],
+      });
+    }
+  };
   public render() {
     const { Sider } = Layout;
     const { SubMenu } = Menu;
+    // 导航菜单折叠或取消折叠时 动态设置属性
+    const menuProps = this.props.collapsed
+      ? {}
+      : {
+          selectedKeys: this.state.selectedKeys,
+          openKeys: this.state.openKeys,
+        };
     return (
       <Sider
         trigger={null}
         collapsible
         collapsed={this.props.collapsed}
         width={240}
+        theme="light"
       >
         <div className="nav-header">
           <img src={logo} width="32" />
           <Typography.Title
             level={4}
-            style={{ color: '#fff', marginBottom: '0', marginLeft: '10px' }}
+            style={{ marginBottom: '0', marginLeft: '10px' }}
           >
             金融纠纷解决平台
           </Typography.Title>
         </div>
-        <Menu theme="dark" selectedKeys={this.state.selectedKeys} mode="inline">
+        <Menu mode="inline" theme="light" {...menuProps}>
           <Menu.Item key="/" onClick={() => this.onChangeSelectMenu('/')}>
             <Link to="/">
               <Icon type="desktop" />
@@ -93,6 +162,7 @@ class NavMenu extends Component<Props, State> {
             ) : (
               <SubMenu
                 key={item.path}
+                onTitleClick={() => this.onChangeSubMenu(item.path)}
                 title={
                   <span>
                     <Icon type={item.icon} />

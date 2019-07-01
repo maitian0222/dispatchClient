@@ -6,11 +6,12 @@ import zh_CN from 'antd/lib/locale-provider/zh_CN';
 import store from './store';
 import LayoutContainer from '../nav/containers/LayoutContainer';
 import { BrowserRouter as Router } from 'react-router-dom';
+import history from './history';
 export default function App() {
   return (
     <Provider store={store}>
       <LocaleProvider locale={zh_CN}>
-        <Router>
+        <Router history={history}>
           <LayoutContainer />
         </Router>
       </LocaleProvider>

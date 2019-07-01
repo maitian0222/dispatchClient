@@ -14,7 +14,7 @@ import { ActionCreators } from './actions';
 import Register from './register/Register';
 
 import http from '@sinoui/http';
-
+import { withRouter } from 'react-router-dom';
 const styles = require('./css/Login.css');
 
 const { Title } = Typography;
@@ -93,7 +93,11 @@ class NormalLoginForm extends React.PureComponent<Props, State> {
       }
     });
   };
-
+  public componentWillUnmount() {
+    this.setState = (state, callback) => {
+      return;
+    };
+  }
   public render() {
     const { getFieldDecorator } = this.props.form;
     const { verficationcodeImgSrc, isLoginPage } = this.state;
@@ -201,7 +205,9 @@ const mapDispatchToProps = (dispatch: any) => ({
   dispatch,
 });
 
-export default connect(
-  null,
-  mapDispatchToProps,
-)(WrappedNormalLoginForm);
+export default withRouter(
+  connect(
+    null,
+    mapDispatchToProps,
+  )(WrappedNormalLoginForm),
+);

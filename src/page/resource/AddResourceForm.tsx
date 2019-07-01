@@ -151,6 +151,16 @@ class AddResourceForm extends React.Component<Props, State> {
                 {getFieldDecorator('orderNum', {
                   rules: [
                     {
+                      type: 'string',
+                      transform: (value) => {
+                        console.log(value);
+                        if (value === null || value === undefined) {
+                          return '';
+                        }
+                        return value.toString();
+                      },
+                    },
+                    {
                       // required: true,
                       // message: '请输入菜单的排序号',
                     },

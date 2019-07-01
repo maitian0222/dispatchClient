@@ -1,6 +1,6 @@
 module.exports = {
   '/upms/**': {
-    target: 'http://192.168.80.144',
+    target: 'http://192.168.80.144:8080',
     changeOrigin: true,
   },
   '/admin/**': {
@@ -11,7 +11,7 @@ module.exports = {
     },
   },
   '/biz/**': {
-    target: 'http://192.168.80.144',
+    target: 'http://192.168.80.144:8081',
     changeOrigin: true,
     headers: {
       Connection: 'keep-alive',

@@ -27,8 +27,17 @@ class AdvancedSearchForm extends React.Component {
                 <Select mode={item.mode} placeholder={item.placeholder}>
                   {item.options.map((optionItem, index) => {
                     return (
-                      <Option key={index} value={optionItem.name}>
-                        {optionItem.name}
+                      <Option
+                        key={index}
+                        value={
+                          item.valueName
+                            ? optionItem[item.valueName]
+                            : optionItem.name
+                        }
+                      >
+                        {item.textName
+                          ? optionItem[item.textName]
+                          : optionItem.name}
                       </Option>
                     );
                   })}
@@ -76,17 +85,23 @@ class AdvancedSearchForm extends React.Component {
     e.preventDefault();
     this.props.form.validateFields((err, values) => {
       let customFormat = 'YYYY-MM-DD';
+      let startTime = 'startTime';
+      let endTime = 'endTime';
       this.props.condition.map((item, index) => {
         if (item.type === 'select') {
           values[item.name] = String(values[item.name]);
         }
         if (item.type === 'rangePicker') {
           customFormat = item.format;
+          if (item.startTimeName && item.endTimeName) {
+            startTime = item.startTimeName;
+            endTime = item.endTimeName;
+          }
         }
       });
       if (values.dateRange && values.dateRange.length > 0) {
-        values.startTime = moment(values.dateRange[0]).format(customFormat);
-        values.endTime = moment(values.dateRange[1]).format(customFormat);
+        values[startTime] = moment(values.dateRange[0]).format(customFormat);
+        values[endTime] = moment(values.dateRange[1]).format(customFormat);
         delete values.dateRange;
       }
       //console.log('Received values of form: ', values);
@@ -108,7 +123,8 @@ class AdvancedSearchForm extends React.Component {
     this.setState({ expand: !expand });
   };
   public componentWillMount() {
-    if (this.props.condition.length < 3 || this.props.condition.length === 5) {
+    let remainder = this.props.condition.length % 3;
+    if (remainder !== 0) {
       this.setState({ inRow: false });
     }
     if (this.props.condition.length <= 6) {

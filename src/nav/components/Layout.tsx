@@ -28,8 +28,8 @@ class LayoutPage extends React.Component<LayoutPageProps, LayoutPageState> {
         // 跳转到登录页
         this.props.onLogout();
       } else if (error.response && error.response.status === 403) {
-        this.props.history.push('/');
-        message.error('无权限访问此页面！');
+        this.props.history.push('/tip');
+        // message.error('无权限访问此页面！');
       }
 
       this.setState({

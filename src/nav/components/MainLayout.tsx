@@ -44,7 +44,7 @@ export default class MainLayout extends React.PureComponent {
                 }}
               >
                 <Switch>
-                  <Route path="/" exact component={() => <div>首页!</div>} />{' '}
+                  <Route path="/" exact component={() => <div>首页!</div>} />
                   {routes.map((item, index) => (
                     <Route
                       key={index}
@@ -53,7 +53,20 @@ export default class MainLayout extends React.PureComponent {
                     />
                   ))}
                   {/*path为空用来匹配任意路由 */}
-                  <Route component={() => <div>Page not found!</div>} />{' '}
+                  <Route
+                    component={() => (
+                      <div
+                        style={{
+                          display: 'flex',
+                          height: '100%',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                        }}
+                      >
+                        请等待, 页面正在建设中...
+                      </div>
+                    )}
+                  />
                 </Switch>
               </div>
             </div>

@@ -5,6 +5,7 @@ import useRestListApi from '@sinoui/use-rest-list-api';
 import AddResourceModal from './AddResourceModal';
 import Resource from './types/Resource';
 import DataTable from '@commons/DataTable';
+import withErrorCatch from '@commons/with-error-catch';
 import transformListRequest from '../../utils/transformListRequest';
 function ResourceManagement() {
   let formRef = null;
@@ -160,4 +161,6 @@ function ResourceManagement() {
   );
 }
 
-export default ResourceManagement;
+export default withErrorCatch({ errorTitle: '很抱歉，数据加载失败...' })(
+  ResourceManagement,
+);

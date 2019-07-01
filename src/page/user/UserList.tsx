@@ -94,7 +94,7 @@ function UserList() {
       content: '确认要重置密码？',
       onOk: () => {
         http
-          .put(`/admin/user/password/reset`)
+          .put(`/admin/user/password/reset/${item.userId}`)
           .then((result) => {
             message.success('重置密码成功！');
           })
@@ -207,8 +207,15 @@ function UserList() {
             title: '编号',
             key: 'index',
             align: 'center',
-            render: (value: string, item: User, index: number) => {
-              return index + 1;
+            render: (value: string, item: any, index: number) => {
+              if (dataSource && dataSource.pagination) {
+                return (
+                  dataSource.pagination.pageNo *
+                    dataSource.pagination.pageSize +
+                  index +
+                  1
+                );
+              }
             },
           },
           {
@@ -255,16 +262,6 @@ function UserList() {
             key: 'createTime',
             align: 'center',
             sorter: true,
-          },
-          {
-            title: '描述',
-            dataIndex: 'description',
-            key: 'description',
-            align: 'center',
-            sorter: true,
-            render: (value: string) => {
-              return <EllipsisText text={value} />;
-            },
           },
           {
             title: '操作',

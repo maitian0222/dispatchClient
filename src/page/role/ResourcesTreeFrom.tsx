@@ -69,6 +69,7 @@ class ResourcesTreeFrom extends React.Component<Props, State> {
               treeData: content,
               value: data,
             });
+            this.props.onChange(data);
           },
         );
       } else {
@@ -80,8 +81,6 @@ class ResourcesTreeFrom extends React.Component<Props, State> {
   }
 
   public onChange = (value, label, extra) => {
-    console.log(value, label, extra);
-    console.log('onChange ', getPath(value));
     this.setState({ value });
     this.props.onChange(value);
   };
