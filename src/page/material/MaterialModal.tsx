@@ -48,19 +48,38 @@ class MaterialModal extends React.Component<Props, State> {
         destroyOnClose
         onOk={this.handleOk}
         onCancel={onClose}
-        footer={[
-          <Button key="back" onClick={onClose}>
-            取消
-          </Button>,
-          <Button
-            key="submit"
-            type="primary"
-            loading={loading}
-            onClick={this.handleOk}
-          >
-            确定
-          </Button>,
-        ]}
+        footer={
+          formOprType === 'refuse'
+            ? [
+                <Button key="back" onClick={onClose}>
+                  取消
+                </Button>,
+                <Button
+                  key="submit"
+                  type="primary"
+                  loading={loading}
+                  onClick={this.handleOk}
+                >
+                  确定
+                </Button>,
+              ]
+            : [
+                <Button
+                  key="submit"
+                  type="primary"
+                  loading={loading}
+                  onClick={this.handleOk}
+                >
+                  通过并提交
+                </Button>,
+                <Button key="back" type="danger" onClick={onClose}>
+                  回退
+                </Button>,
+                <Button key="back" onClick={onClose}>
+                  取消
+                </Button>,
+              ]
+        }
       >
         {formOprType === 'refuse' ? (
           <RefuseForm

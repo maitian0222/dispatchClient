@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Divider, Badge, Row, Col, Button, Icon } from 'antd';
+import { Divider, Badge, Row, Col, Button, Icon, Modal } from 'antd';
 import SearchForm from '@commons/SearchForm';
 import withErrorCatch from '@commons/with-error-catch';
 import useRestPageAPi from '@sinoui/use-rest-page-api';
@@ -16,6 +16,7 @@ function MaterialManagement() {
   const [formOprType, setFormOprType] = useState('');
   const [editItem, setEditItem] = useState({});
   const [courtList, setCourtList] = useState([]);
+  const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
   useEffect(() => {
     http.get('/biz/court/list', {}).then((result) => {
       if (result) {
@@ -70,6 +71,27 @@ function MaterialManagement() {
   const dataSource = useRestPageAPi<Resource>('/biz/court', [], {
     keyName: 'id',
   });
+  // 多选配置
+  const rowSelection = {
+    selectedRowKeys: selectedRowIds,
+    onChange: (selectedRowKeys: string[]) => {
+      setSelectedRowIds(selectedRowKeys);
+    },
+  };
+  // 批量通过
+  const batchPass = () => {
+    Modal.confirm({
+      title: '提示',
+      content: '确认通过？',
+      onOk: () => {
+        // dataSource.remove(selectedRowIds).then(() => {
+        //   dataSource.reload();
+        //   setSelectedRowIds([]);
+        // });
+      },
+    });
+  };
+
   return (
     <React.Fragment>
       <SearchForm
@@ -105,7 +127,20 @@ function MaterialManagement() {
         ]}
         handleSearch={handleSearch}
       />
+      <Row style={{ padding: '20px 0', borderTop: '20px solid #f5f5f5' }}>
+        <Col span={24} style={{ padding: '0 10px' }}>
+          <Button
+            type="primary"
+            disabled={selectedRowIds.length <= 0}
+            style={{ marginLeft: 20 }}
+            onClick={() => batchPass()}
+          >
+            批量通过
+          </Button>
+        </Col>
+      </Row>
       <DataTable
+        rowSelection={rowSelection}
         rowKey={(record) => record.id}
         columns={[
           {
