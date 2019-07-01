@@ -3,6 +3,9 @@ import UserList from '../page/user/UserList';
 import RoleList from '../page/role/RoleList';
 import ContactList from '../page/contact/ContactList';
 import EntanglementList from '../page/entanglement/EntanglementList';
+import LawsuitList from '../page/lawsuit/LawsuitList';
+import LawsuitCaseEditor from '../page/lawsuit/LawsuitCaseEditor';
+import MaterialList from '../page/material/MaterialList';
 
 const routes = [
   {
@@ -29,6 +32,21 @@ const routes = [
     path: '/entanglement/list',
     title: '纠纷管理',
     component: EntanglementList,
+  },
+  {
+    path: '/lawsuit/list',
+    title: '诉讼管理',
+    component: LawsuitList,
+  },
+  {
+    path: '/lawsuit/edit/:id',
+    title: '诉讼案件编辑',
+    component: LawsuitCaseEditor,
+  },
+  {
+    path: '/materialAudit/list',
+    title: '律师材料审核',
+    component: MaterialList,
   },
 ];
 
