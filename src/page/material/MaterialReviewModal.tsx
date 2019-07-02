@@ -40,7 +40,7 @@ class MaterialReviewModal extends React.Component<Props, State> {
         onOk={onOk}
         onCancel={onClose}
         footer={
-          formOprType === 'accept'
+          formOprType === 'accept' || formOprType === 'back'
             ? [
                 <Button
                   key="submit"
@@ -50,7 +50,7 @@ class MaterialReviewModal extends React.Component<Props, State> {
                 >
                   通过并提交
                 </Button>,
-                <Button key="back" type="danger" onClick={goBack}>
+                <Button key="goBack" type="danger" onClick={goBack}>
                   回退
                 </Button>,
                 <Button key="back" onClick={onClose}>

@@ -233,13 +233,18 @@ function MaterialManagement() {
             align: 'center',
           },
           {
-            title: '标的金额',
-            dataIndex: 'amountMoney',
+            title: '诉讼主体名称',
+            dataIndex: 'subjectName',
             align: 'center',
           },
           {
             title: '被告',
             dataIndex: 'defendantName',
+            align: 'center',
+          },
+          {
+            title: '标的金额',
+            dataIndex: 'amountMoney',
             align: 'center',
           },
           {
