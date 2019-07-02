@@ -54,7 +54,7 @@ function MaterialManagement() {
       if (err) {
         return;
       }
-      console.log('Received values of form: ', values);
+      //console.log('Received values of form: ', values);
       setLoading(true);
       http
         .get('/biz/lawsuitVerify/pass', {
