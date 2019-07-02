@@ -5,8 +5,6 @@ interface Props {
   form: FormComponentProps;
   // tslint:disable-next-line:no-any
   getFieldDecorator: any;
-  // tslint:disable-next-line:no-any
-  initialValues: any;
 }
 class RefuseForm extends React.Component<Props, State> {
   private props: any;
@@ -15,7 +13,7 @@ class RefuseForm extends React.Component<Props, State> {
     super(props);
   }
   public render() {
-    const { getFieldDecorator, initialValues } = this.props;
+    const { getFieldDecorator } = this.props;
     const formItemLayout = {
       labelCol: {
         xs: { span: 24 },
@@ -36,9 +34,9 @@ class RefuseForm extends React.Component<Props, State> {
         }}
       >
         <Form {...formItemLayout} style={{ width: '600px' }}>
-          <Form.Item label="拒绝理由">
+          <Form.Item label="理由">
             {getFieldDecorator('description', {
-              initialValue: initialValues ? initialValues.description : null,
+              initialValue: '',
               rules: [
                 {
                   max: 400,
