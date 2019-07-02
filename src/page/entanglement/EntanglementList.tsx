@@ -7,7 +7,8 @@ import DataTable from '@commons/DataTable';
 import EntanglementModel from './EntanglementModel';
 import PutOnRecordModel from './PutOnRecordModel';
 import Entanglement from './types/Entanglement';
-import { getSaveAndSubmit } from './apis';
+import ContactsModel from './ContactsModel';
+import { getSaveAndSubmit, getBatchSubmit } from './apis';
 
 /**
  * 纠纷管理列表
@@ -19,12 +20,16 @@ function EntanglementList() {
   };
 
   const [visible, setVisible] = useState(false);
-  const [registerVisible, setRegisterVisible] = useState(false);
   const [modelTitleType, setModelTitleType] = useState();
   const [editItem, setEditItem] = useState({});
   const [loading, setLoading] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
 
+  const [registerVisible, setRegisterVisible] = useState(false);
+  const [contactVisible, setContactVisible] = useState(false);
+  const [contact, setContact] = useState({});
+
+  const [selectedRowIds, setSelectedRowIds] = useState([]);
   /**
    * 打开纠纷Model
    * @param item 数据对象
@@ -35,14 +40,9 @@ function EntanglementList() {
     setModelTitleType(type);
     setEditItem({});
     if (type === 'edit' && item) {
-      setEditItem(item);
       http.get(`/biz/dispute/${item.id}`).then((result) => {
-        setTimeout(() => {
-          setEditItem(result);
-        }, 2000);
+        setEditItem(result);
       });
-    } else {
-      setVisible(true);
     }
   };
 
@@ -96,6 +96,7 @@ function EntanglementList() {
     dataSource.query({
       ...condition,
     });
+    setSelectedRowIds([]);
   };
 
   const onOk = () => {
@@ -157,10 +158,21 @@ function EntanglementList() {
             )
           : dataSource.save(values, false);
       fn.then((result) => {
+        if (result.code !== '1') {
+          Modal.error({
+            title: '提示',
+            content: result.msg,
+            okText: '确定',
+          });
+          setLoading(false);
+          return;
+        }
         // 清空表单数据
         form.resetFields();
         setLoading(false);
         setVisible(false);
+        setSelectedRowIds([]);
+
         dataSource.reload();
         Modal.success({
           title: '提示',
@@ -179,9 +191,9 @@ function EntanglementList() {
   };
 
   /**
-   * 保存并提交
+   * 验证表单项，弹出联系人选择框
    */
-  const saveSubmit = () => {
+  const saveSelectContacts = () => {
     const form = formRef.props.form;
     return form.validateFields((err, values) => {
       // 检验失败return
@@ -227,14 +239,53 @@ function EntanglementList() {
         values.businessLicense = [];
       }
 
-      setLoading(true);
+      setContactVisible(true);
+    });
+  };
 
+  /**
+   * 获取选中联系人
+   * @param item
+   */
+  const onSelectContact = (item) => {
+    setContact(item);
+  };
+
+  /**
+   * 保存后提交
+   * @param item
+   */
+  const onSaveSubmit = () => {
+    const form = formRef.props.form;
+
+    if (!contact.id) {
+      Message.error('请选择联系人');
+      return;
+    }
+
+    form.validateFields((err, values) => {
+      values.contactsId = contact.id;
+      if (editItem) {
+        values.id = editItem.id;
+      }
       getSaveAndSubmit(values)
         .then((result) => {
+          if (result.code !== '1') {
+            Modal.error({
+              title: '提示',
+              content: result.msg,
+              okText: '确定',
+            });
+            setLoading(false);
+            return;
+          }
+
           // 清空表单数据
           form.resetFields();
-          setLoading(false);
+          setSelectedRowIds([]);
           setVisible(false);
+          setContactVisible(false);
+          setContact({});
           dataSource.reload();
           Modal.success({
             title: '提示',
@@ -243,7 +294,6 @@ function EntanglementList() {
           });
         })
         .catch(() => {
-          setLoading(false);
           Modal.error({
             title: '提示',
             content: `提交失败!`,
@@ -269,14 +319,54 @@ function EntanglementList() {
     });
   };
 
+  /**
+   * 关闭联系人model
+   */
+  const onCloseContactVisible = () => {
+    setContactVisible(false);
+  };
+
+  /**
+   * 批量立案
+   */
+  const batchSubmit = () => {
+    if (!contact.id) {
+      Message.error('请选择联系人');
+      return;
+    }
+    const items = selectedRows.map((item) => {
+      return item.id;
+    });
+
+    const params = {};
+    params.contactsId = contact.id;
+    params.disputes = items;
+
+    getBatchSubmit(params)
+      .then((result) => {
+        setRegisterVisible(false);
+        dataSource.reload();
+        Modal.success({
+          title: '提示',
+          content: `提交成功!`,
+          okText: '确定',
+        });
+      })
+      .catch(() => {
+        Modal.error({
+          title: '提示',
+          content: `提交失败!`,
+          okText: '确定',
+        });
+      });
+  };
+
   const rowSelection = {
-    onChange: (selectedRowKeys, selectedRows) => {
+    selectedRowKeys: selectedRowIds,
+    onChange: (selectedRowKeys: string[], selectedRows: any) => {
+      setSelectedRowIds(selectedRowKeys);
       setSelectedRows(selectedRows);
     },
-    getCheckboxProps: (record) => ({
-      disabled: record.name === 'Disabled User', // Column configuration not to be checked
-      name: record.name,
-    }),
   };
 
   return (
@@ -284,6 +374,11 @@ function EntanglementList() {
       <SearchForm
         condition={[
           { fieldName: '纠纷对象', placeholder: '请输入', name: 'peopleName' },
+          {
+            fieldName: '合同编号',
+            placeholder: '请输入',
+            name: 'contractNumber',
+          },
         ]}
         handleSearch={handleSearch}
       />
@@ -309,6 +404,7 @@ function EntanglementList() {
 
       <DataTable
         rowSelection={rowSelection}
+        rowKey={(record: Entanglement) => record.id}
         columns={[
           {
             title: '编号',
@@ -343,6 +439,12 @@ function EntanglementList() {
             title: '案件类型',
             dataIndex: 'caseTypeName',
             key: 'caseTypeName',
+            align: 'center',
+          },
+          {
+            title: '合同编号',
+            dataIndex: 'contractNumber',
+            key: 'contractNumber',
             align: 'center',
           },
           {
@@ -391,13 +493,23 @@ function EntanglementList() {
         editItem={editItem}
         wrappedComponentRef={disputeFormRef}
         loading={loading}
-        saveSubmit={saveSubmit}
+        saveSubmit={saveSelectContacts}
         onOk={onOk}
       />
 
       <PutOnRecordModel
         visible={registerVisible}
         onClose={closeRegisterModel}
+        selectedRows={selectedRows}
+        onSelectContact={onSelectContact}
+        onOk={batchSubmit}
+      />
+
+      <ContactsModel
+        onSelectContact={onSelectContact}
+        visible={contactVisible}
+        onClose={onCloseContactVisible}
+        onOk={onSaveSubmit}
       />
     </React.Fragment>
   );

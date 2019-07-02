@@ -7,9 +7,10 @@ function getCourtList(params?: any) {
 }
 
 function getSaveAndSubmit(params?: any) {
-  return http.post(`/biz/dispute/saveAndSubmit`, {
-    params,
-  });
+  return http.post(`/biz/dispute/saveAndSubmit`, params);
+}
+function getBatchSubmit(params?: any) {
+  return http.post(`/biz/dispute/submit`, params);
 }
 
-export { getCourtList, getSaveAndSubmit };
+export { getCourtList, getSaveAndSubmit, getBatchSubmit };
