@@ -5,7 +5,6 @@ import useRestPageAPi from '@sinoui/use-rest-page-api';
 import http from '@sinoui/http';
 import DataTable from '@commons/DataTable';
 import Lawsuit from './types/Lawsuit';
-import { Link } from 'react-router-dom';
 
 /**
  * 纠纷管理列表
@@ -108,19 +107,64 @@ function LawsuitList(props) {
       <SearchForm
         condition={[
           { fieldName: '案号', placeholder: '请输入', name: 'caseNumber' },
+            {
+              fieldName: '状态',
+              name: 'status',
+              type: 'select',
+              mode: 'false',
+              valueName: 'value',
+              textName: 'name',
+              options: [
+                {
+                  value: 1,
+                  name: '待审核'
+                },
+                {
+                  value: 2,
+                  name: '拒绝受理'
+                },
+                {
+                  value: 3,
+                  name: '审核通过'
+                },
+                {
+                  value: 4,
+                  name: '审核未通过'
+                },{
+                  value: 5,
+                  name: '已调解'
+                },
+                {
+                  value: 6,
+                  name: '已立案'
+                },
+                {
+                  value: 7,
+                  name: '代缴费'
+                },
+                {
+                  value: 8,
+                  name: '已缴费'
+                },
+                {
+                  value: 9,
+                  name: '结案'
+                },
+              ],
+            },
         ]}
         handleSearch={handleSearch}
       />
       <DataTable
-        onRow={(record) => {
-          return {
-            onClick: (event) => {
-              props.history.push(`/lawsuit/edit/${record.id}`, {
-                ...record,
-              });
-            }, // 点击行
-          };
-        }}
+        // onRow={(record) => {
+        //   return {
+        //     onClick: (event) => {
+        //       props.history.push(`/lawsuit/edit/${record.id}`, {
+        //         ...record,
+        //       });
+        //     }, // 点击行
+        //   };
+        // }}
         columns={[
           {
             title: '编号',
@@ -163,23 +207,30 @@ function LawsuitList(props) {
           },
           {
             title: '状态',
-            dataIndex: 'status',
-            key: 'status',
+            dataIndex: 'statusName',
+            key: 'statusName',
             align: 'center',
           },
-          // {
-          //   title: '操作',
-          //   dataIndex: 'opt',
-          //   key: 'opt',
-          //   align: 'center',
-          //   render: (value: string, item: Lawsuit, index: number) => {
-          //     return (
-          //       <div>
-          //         <Link to={`/lawsuit/edit/${item.id}`}>查看</Link>
-          //       </div>
-          //     );
-          //   },
-          // },
+          {
+            title: '操作',
+            dataIndex: 'opt',
+            key: 'opt',
+            align: 'center',
+            render: (value: string, item: Lawsuit, index: number) => {
+              return (
+                <div>
+                  <a
+                    href="javascript:;"
+                    onClick={() =>  {props.history.push(`/lawsuit/edit/${item.id}`, {
+                      ...item,
+                    })}}
+                  >
+                    查看
+                  </a>
+                </div>
+              );
+            },
+          },
         ]}
         dataSource={dataSource}
       />

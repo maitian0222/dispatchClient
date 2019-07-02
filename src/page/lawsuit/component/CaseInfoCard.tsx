@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Descriptions } from 'antd';
+import { Descriptions } from 'antd';
 import http from '@sinoui/http';
-
+import CardLayout from './CardLayout';
 interface Props {
   id: string; // 诉讼案件id
 }
@@ -14,6 +14,7 @@ interface CaseInfo {
 }
 export default function CaseInfoCard(props: Props) {
   const [caseInfo, setCaseInfo] = useState<CaseInfo>({});
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     http
       .get(`/biz/lawsuit/findbyid`, {
@@ -23,11 +24,12 @@ export default function CaseInfoCard(props: Props) {
       })
       .then((result: CaseInfo) => {
         setCaseInfo(result);
+        setLoading(false);
       });
   }, []);
 
   return (
-    <Card title="案件概况">
+    <CardLayout title="案件概况" loading={loading}>
       <Descriptions>
         <Descriptions.Item label="案件编号">
           {caseInfo.caseNumber}
@@ -35,6 +37,8 @@ export default function CaseInfoCard(props: Props) {
         <Descriptions.Item label="案号">
           {caseInfo.registerNumber}
         </Descriptions.Item>
+        <Descriptions.Item label="案由">{caseInfo.caseCause}</Descriptions.Item>
+
         <Descriptions.Item label="标的总金额">
           {`¥${caseInfo.amountMoney}`}
         </Descriptions.Item>
@@ -45,6 +49,6 @@ export default function CaseInfoCard(props: Props) {
           {`¥${caseInfo.amountReality}`}
         </Descriptions.Item>
       </Descriptions>
-    </Card>
+    </CardLayout>
   );
 }

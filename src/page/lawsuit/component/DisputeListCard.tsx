@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { Card } from 'antd';
 import DataTable from '@commons/DataTable';
 import http from '@sinoui/http';
 import styles from '../Lawsuit.css';
+import CardLayout from './CardLayout';
 interface Props {
   id: string; // id
+  status: string; // 案件状态
 }
 interface Dispute {
   name?: string;
@@ -16,6 +17,7 @@ export default function DisputeListCard(props: Props) {
     loading: true,
     items: [],
   });
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     http
       .get(`/biz/lawsuit/finddispute`, {
@@ -28,11 +30,16 @@ export default function DisputeListCard(props: Props) {
           items: result,
           loading: false,
         });
+        setLoading(false);
       });
   }, []);
 
   return (
-    <Card title="纠纷列表" className={styles['table-card']}>
+    <CardLayout
+      title="纠纷列表"
+      className={styles['table-card']}
+      loading={loading}
+    >
       <DataTable
         columns={[
           {
@@ -74,12 +81,12 @@ export default function DisputeListCard(props: Props) {
             key: 'opt',
             align: 'center',
             render: (value: string, item: any, index: number) => {
-              return <a href="javascript:;">查看</a>;
+              return <a href="javascript:;">{props.status === 4 ? '编辑' : '查看'}</a>;
             },
           },
         ]}
         dataSource={dispute}
       />
-    </Card>
+    </CardLayout>
   );
 }

@@ -1,6 +1,7 @@
 import React from 'react';
 
-import { Descriptions, Row, Col, Card } from 'antd';
+import { Descriptions, Row, Col, Card, Button } from 'antd';
+import http from '@sinoui/http';
 import ContactCard from './component/ContactCard';
 import CaseInfoCard from './component/CaseInfoCard';
 import DisputeListCard from './component/DisputeListCard';
@@ -14,14 +15,20 @@ class LawsuitCaseEditor extends React.Component<Props, State> {
     this.state = {};
   }
 
-  public componentWillMount() {
-    console.log(this.props.match.params.id);
-    console.log(this.props.location.state);
+  // 案件退回后再次提交案件
+  public onSubmit = () => {
+    //
+    alert('案件提交！待处理！');
   }
 
   public render() {
+    // 联系人id
     const contactsId = this.props.location.state.contactsId || '';
+    // 法院id
     const courtId = this.props.location.state.courtId || '';
+    // 案件状态id
+    const status = this.props.location.state.status || '';
+    // 诉讼案件id
     const id = this.props.match.params.id;
     return (
       <div className={styles['lawsuit-layout']} style={{ margin: '20px' }}>
@@ -29,7 +36,7 @@ class LawsuitCaseEditor extends React.Component<Props, State> {
           <Col span={16}>
             <CaseInfoCard id={id} />
             <ContactCard contactsId={contactsId} />
-            <DisputeListCard id={id} />
+            <DisputeListCard id={id} status={status}/>
           </Col>
           <Col span={8}>
             <CourtInfoCard courtId={courtId} />
@@ -38,6 +45,11 @@ class LawsuitCaseEditor extends React.Component<Props, State> {
             </Card>
           </Col>
         </Row>
+        {status === 4 && <Row>
+          <Col span={24} style={{textAlign: 'right'}}>
+             <Button type="primary" onClick={() => this.onSubmit()}>提交</Button>
+          </Col>
+          </Row>}
       </div>
     );
   }
