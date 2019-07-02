@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Modal, Button } from 'antd';
-import PutOnRecord from './PutOnRecord';
+import ContactList from './ContactList';
 
 interface Props {
   visible: boolean;
@@ -9,18 +9,11 @@ interface Props {
   onOk: () => void;
 }
 /**
- * 批量立案model
+ * 联系人model
  */
-class PutOnRecordModel extends React.PureComponent {
+class ContactsModel extends React.PureComponent {
   public render() {
-    const {
-      visible,
-      loading,
-      onClose,
-      onOk,
-      selectedRows,
-      onSelectContact,
-    } = this.props;
+    const { visible, loading, onClose, onOk, onSelectContact } = this.props;
 
     return (
       <Modal
@@ -40,13 +33,10 @@ class PutOnRecordModel extends React.PureComponent {
           </Button>,
         ]}
       >
-        <PutOnRecord
-          dataSource={selectedRows}
-          onSelectContact={onSelectContact}
-        />
+        <ContactList onSelectContact={onSelectContact} />
       </Modal>
     );
   }
 }
 
-export default PutOnRecordModel;
+export default ContactsModel;

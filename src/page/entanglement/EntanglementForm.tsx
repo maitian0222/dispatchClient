@@ -497,7 +497,8 @@ class EntanglementForm extends React.Component<Props, State> {
                     {getFieldDecorator('businessLicense', {
                       rules: [
                         {
-                          required: true,
+                          required:
+                            this.state.respondentType === 1 ? true : false,
                           message: '请上传营业执照',
                         },
                       ],
