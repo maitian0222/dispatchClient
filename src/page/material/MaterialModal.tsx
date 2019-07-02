@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { Modal, Button, Form } from 'antd';
-import MaterialReview from './MaterialReview';
 import RefuseForm from './RefuseForm';
 
 interface Props {
@@ -19,76 +18,30 @@ interface State {
 class MaterialModal extends React.Component<Props, State> {
   constructor(props: Props) {
     super(props);
-    this.state = {
-      loading: false,
-    };
   }
-
-  // tslint:disable-next-line:no-any
-  public handleOk = () => {
-    this.setState({ loading: true });
-    setTimeout(() => {
-      this.setState({ loading: false });
-    }, 1000);
-    this.props.onOk();
-  };
-
   public render() {
-    const { loading } = this.state;
-    const { visible, onClose, form, formOprType } = this.props;
+    const { visible, onClose, form, formOprType, loading, onOk } = this.props;
     const { getFieldDecorator } = form;
     return (
       <Modal
-        bodyStyle={formOprType === 'accept' ? { background: '#f0f2f5' } : {}}
         visible={visible}
-        title={formOprType === 'refuse' ? '信息填写' : '材料审核'}
+        title="信息填写"
         maskClosable={false}
-        width={formOprType === 'refuse' ? 650 : 1200}
+        width={650}
         keyboard={false}
         destroyOnClose
-        onOk={this.handleOk}
+        onOk={onOk}
         onCancel={onClose}
-        footer={
-          formOprType === 'refuse'
-            ? [
-                <Button key="back" onClick={onClose}>
-                  取消
-                </Button>,
-                <Button
-                  key="submit"
-                  type="primary"
-                  loading={loading}
-                  onClick={this.handleOk}
-                >
-                  确定
-                </Button>,
-              ]
-            : [
-                <Button
-                  key="submit"
-                  type="primary"
-                  loading={loading}
-                  onClick={this.handleOk}
-                >
-                  通过并提交
-                </Button>,
-                <Button key="back" type="danger" onClick={onClose}>
-                  回退
-                </Button>,
-                <Button key="back" onClick={onClose}>
-                  取消
-                </Button>,
-              ]
-        }
+        footer={[
+          <Button key="back" onClick={onClose}>
+            取消
+          </Button>,
+          <Button key="submit" type="primary" loading={loading} onClick={onOk}>
+            确定
+          </Button>,
+        ]}
       >
-        {formOprType === 'refuse' ? (
-          <RefuseForm
-            getFieldDecorator={getFieldDecorator}
-            initialValues={formOprType === 'refuse' ? this.props.editItem : ''}
-          />
-        ) : (
-          <MaterialReview />
-        )}
+        <RefuseForm getFieldDecorator={getFieldDecorator} />
       </Modal>
     );
   }
