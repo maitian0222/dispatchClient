@@ -131,7 +131,6 @@ class UpLoadModule extends React.Component {
         beforeUpload={this.beforeUpload}
         onChange={this.UploadOnchange}
         onRemove={this.onRemove}
-        showUploadList={false}
         style={style}
       >
         {fileList.length >= upLoadNumber
