@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import DataTable from '@commons/DataTable';
 import http from '@sinoui/http';
+import EntanglementDetailModel from '../../entanglement/EntanglementDetailModel';
 import styles from '../Lawsuit.css';
 import CardLayout from './CardLayout';
 interface Props {
@@ -18,6 +19,8 @@ export default function DisputeListCard(props: Props) {
     items: [],
   });
   const [loading, setLoading] = useState(true);
+  const [visible, setVisible] = useState(false);
+  const [editItem, setEditItem] = useState<Dispute>({});
   useEffect(() => {
     http
       .get(`/biz/lawsuit/finddispute`, {
@@ -33,6 +36,11 @@ export default function DisputeListCard(props: Props) {
         setLoading(false);
       });
   }, []);
+
+  const onSelectItem = (item: Dispute) => {
+    setEditItem(item);
+    setVisible(true);
+  };
 
   return (
     <CardLayout
@@ -51,6 +59,12 @@ export default function DisputeListCard(props: Props) {
             },
           },
           {
+            title: '放款主体',
+            dataIndex: 'subjectName',
+            key: 'subjectName',
+            align: 'center',
+          },
+          {
             title: '纠纷对象',
             dataIndex: 'peopleName',
             key: 'peopleName',
@@ -61,16 +75,20 @@ export default function DisputeListCard(props: Props) {
             dataIndex: 'amountMoney',
             key: 'amountMoney',
             align: 'center',
+            render: (value: string) => {
+              return `¥${value}`;
+            },
           },
 
           {
-            title: '产品',
+            title: '产品名称',
             dataIndex: 'productName',
             key: 'productName',
             align: 'center',
           },
+
           {
-            title: '添加时间',
+            title: '创建时间',
             dataIndex: 'createTime',
             key: 'createTime',
             align: 'center',
@@ -81,12 +99,24 @@ export default function DisputeListCard(props: Props) {
             key: 'opt',
             align: 'center',
             render: (value: string, item: any, index: number) => {
-              return <a href="javascript:;">{props.status === 4 ? '编辑' : '查看'}</a>;
+              return (
+                <a href="javascript:;" onClick={() => onSelectItem(item)}>
+                  {props.status === 4 ? '编辑' : '查看'}
+                </a>
+              );
             },
           },
         ]}
         dataSource={dispute}
       />
+      {editItem.id && (
+        <EntanglementDetailModel
+          id={editItem.id}
+          visible={visible}
+          onClose={() => setVisible(false)}
+          type={props.status === 4 ? 'edit' : 'view'}
+        />
+      )}
     </CardLayout>
   );
 }

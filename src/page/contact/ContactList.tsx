@@ -206,10 +206,6 @@ function ContactList() {
                   >
                     编辑
                   </a>
-                  <Divider type="vertical" />
-                  <a href="javascript:;">纠纷列表</a>
-                  <Divider type="vertical" />
-                  <a href="javascript:;">关联纠纷</a>
                 </div>
               );
             },

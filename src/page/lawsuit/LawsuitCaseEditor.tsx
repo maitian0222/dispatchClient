@@ -1,11 +1,12 @@
 import React from 'react';
 
-import { Descriptions, Row, Col, Card, Button } from 'antd';
+import { Row, Col, Card, Button, message } from 'antd';
 import http from '@sinoui/http';
 import ContactCard from './component/ContactCard';
 import CaseInfoCard from './component/CaseInfoCard';
 import DisputeListCard from './component/DisputeListCard';
 import CourtInfoCard from './component/CourtInfoCard';
+
 import styles from './Lawsuit.css';
 class LawsuitCaseEditor extends React.Component<Props, State> {
   private props: any;
@@ -17,9 +18,17 @@ class LawsuitCaseEditor extends React.Component<Props, State> {
 
   // 案件退回后再次提交案件
   public onSubmit = () => {
-    //
-    alert('案件提交！待处理！');
-  }
+    http
+      .get(`/biz/lawsuit/pass`, {
+        params: {
+          id: this.props.match.params.id,
+        },
+      })
+      .then((result) => {
+        message.success('案件提交成功');
+        this.props.history.goBack();
+      });
+  };
 
   public render() {
     // 联系人id
@@ -36,7 +45,7 @@ class LawsuitCaseEditor extends React.Component<Props, State> {
           <Col span={16}>
             <CaseInfoCard id={id} />
             <ContactCard contactsId={contactsId} />
-            <DisputeListCard id={id} status={status}/>
+            <DisputeListCard id={id} status={status} />
           </Col>
           <Col span={8}>
             <CourtInfoCard courtId={courtId} />
@@ -45,11 +54,15 @@ class LawsuitCaseEditor extends React.Component<Props, State> {
             </Card>
           </Col>
         </Row>
-        {status === 4 && <Row>
-          <Col span={24} style={{textAlign: 'right'}}>
-             <Button type="primary" onClick={() => this.onSubmit()}>提交</Button>
-          </Col>
-          </Row>}
+        {status === 4 && (
+          <Row>
+            <Col span={24} style={{ textAlign: 'right' }}>
+              <Button type="primary" onClick={() => this.onSubmit()}>
+                提交
+              </Button>
+            </Col>
+          </Row>
+        )}
       </div>
     );
   }
