@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Divider, Badge, Row, Col, Button, Icon, Modal } from 'antd';
+import { Divider, Badge, Row, Col, Button, Icon, Modal, message } from 'antd';
 import SearchForm from '@commons/SearchForm';
 import withErrorCatch from '@commons/with-error-catch';
 import useRestPageAPi from '@sinoui/use-rest-page-api';
@@ -20,6 +20,7 @@ function MaterialManagement() {
   const [courtList, setCourtList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
+  const [selectedRows, setSelectedRows] = useState<string[]>([]);
   useEffect(() => {
     http.get('/biz/court/list', {}).then((result) => {
       if (result) {
@@ -114,20 +115,39 @@ function MaterialManagement() {
   // 多选配置
   const rowSelection = {
     selectedRowKeys: selectedRowIds,
-    onChange: (selectedRowKeys: string[]) => {
+    onChange: (selectedRowKeys: string[], selectedRows: any) => {
       setSelectedRowIds(selectedRowKeys);
+      setSelectedRows(selectedRows);
     },
   };
   // 批量通过
   const batchPass = () => {
+    // console.log('selectedRowIds', selectedRowIds);
+    let flag = false;
+    selectedRows.map((item) => {
+      if (item.status !== 1) {
+        flag = true;
+        message.warn(`${item.caseNumber}数据非待审核状态！`);
+      }
+    });
+    if (flag) {
+      return;
+    }
     Modal.confirm({
       title: '提示',
       content: '确认通过？',
       onOk: () => {
-        // dataSource.remove(selectedRowIds).then(() => {
-        //   dataSource.reload();
-        //   setSelectedRowIds([]);
-        // });
+        http
+          .get('/biz/lawsuitVerify/pass', {
+            params: {
+              id: String(selectedRowIds),
+            },
+          })
+          .then((res) => {
+            dataSource.reload();
+            setSelectedRowIds([]);
+            setSelectedRows([]);
+          });
       },
     });
   };
