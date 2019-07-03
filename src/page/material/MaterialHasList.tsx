@@ -11,7 +11,7 @@ import DataTable from '@commons/DataTable';
 import transformListRequest from '../../utils/transformListRequest';
 import EllipsisText from '../../component/EllipsisText';
 
-function MaterialManagement() {
+function MaterialHasList() {
   let formRef = null;
   const [visible, setVisible] = useState(false);
   const [reviewVisible, setReviewVisible] = useState(false);
@@ -314,5 +314,5 @@ function MaterialManagement() {
   );
 }
 export default withErrorCatch({ errorTitle: '很抱歉，数据加载失败...' })(
-  MaterialManagement,
+  MaterialHasList,
 );
