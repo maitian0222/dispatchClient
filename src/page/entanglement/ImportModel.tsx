@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Modal, Button, Form } from 'antd';
-import EntanglementForm from './EntanglementForm';
+import ImportForm from './ImportForm';
 
 interface Props {
   visible: boolean;
@@ -11,28 +11,19 @@ interface Props {
   editItem: any;
 }
 /**
- * 纠纷管理model
+ * 导入model
  */
-class EntanglementModel extends React.PureComponent {
+class ImportModel extends React.PureComponent {
   public render() {
-    const {
-      visible,
-      loading,
-      modelTitleType,
-      onClose,
-      onOk,
-      form,
-      editItem,
-      saveSubmit,
-    } = this.props;
+    const { visible, loading, onClose, onOk, form, editItem } = this.props;
     const { getFieldDecorator } = form;
 
     return (
       <Modal
         visible={visible}
-        title={modelTitleType ? '修改纠纷信息' : '新建纠纷信息'}
+        title="纠纷数据导入"
         maskClosable={false}
-        width={1000}
+        width={800}
         keyboard={false}
         destoryOnClose={true}
         onCancel={onClose}
@@ -40,22 +31,18 @@ class EntanglementModel extends React.PureComponent {
           <Button key="back" onClick={onClose}>
             取消
           </Button>,
-          <Button key="submit" type="primary" onClick={saveSubmit}>
-            提交
-          </Button>,
           <Button key="submit" type="primary" loading={loading} onClick={onOk}>
             确定
           </Button>,
         ]}
       >
-        <EntanglementForm
+        <ImportForm
           getFieldDecorator={getFieldDecorator}
           initialValues={editItem}
-          form={form}
         />
       </Modal>
     );
   }
 }
 
-export default Form.create({})(EntanglementModel);
+export default Form.create({})(ImportModel);

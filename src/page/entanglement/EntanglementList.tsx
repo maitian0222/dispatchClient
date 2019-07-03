@@ -6,9 +6,10 @@ import http from '@sinoui/http';
 import DataTable from '@commons/DataTable';
 import EntanglementModel from './EntanglementModel';
 import PutOnRecordModel from './PutOnRecordModel';
+import ImportModel from './ImportModel';
 import Entanglement from './types/Entanglement';
 import ContactsModel from './ContactsModel';
-import { getSaveAndSubmit, getBatchSubmit } from './apis';
+import { getSaveAndSubmit, getBatchSubmit, getImport } from './apis';
 
 /**
  * 纠纷管理列表
@@ -19,17 +20,27 @@ function EntanglementList() {
     formRef = ref;
   };
 
+  let importForm;
+  const importFormRef = (ref: any) => {
+    importForm = ref;
+  };
+
   const [visible, setVisible] = useState(false);
   const [modelTitleType, setModelTitleType] = useState();
   const [editItem, setEditItem] = useState({});
   const [loading, setLoading] = useState(false);
   const [selectedRows, setSelectedRows] = useState([]);
 
+  // 批量立案
   const [registerVisible, setRegisterVisible] = useState(false);
+  // 联系人
   const [contactVisible, setContactVisible] = useState(false);
+  // 联系人数据
   const [contact, setContact] = useState({});
-
+  // 选择纠纷数据
   const [selectedRowIds, setSelectedRowIds] = useState([]);
+  // 导入数据
+  const [importVisible, setImportVisible] = useState(false);
   /**
    * 打开纠纷Model
    * @param item 数据对象
@@ -47,36 +58,11 @@ function EntanglementList() {
   };
 
   /**
-   * 打开立案model
-   */
-  const openRegisterModel = () => {
-    if (selectedRows.length === 0) {
-      Message.error('请选择纠纷案件');
-      return;
-    }
-    let items = new Map();
-    selectedRows.map((item) => {
-      items.set(item.caseType, '');
-    });
-
-    if (items.size !== 1) {
-      Message.error('请选择相同的案件类型');
-      return;
-    }
-
-    setRegisterVisible(true);
-  };
-  /**
-   * 关闭立案model
-   */
-  const closeRegisterModel = () => {
-    setRegisterVisible(false);
-  };
-
-  /**
    * 关闭纠纷Model
    */
   const onClose = () => {
+    const form = formRef.props.form;
+    form.resetFields();
     setVisible(false);
   };
 
@@ -176,14 +162,14 @@ function EntanglementList() {
         dataSource.reload();
         Modal.success({
           title: '提示',
-          content: `${oprText}纠纷模板成功!`,
+          content: `${oprText}纠纷成功!`,
           okText: '确定',
         });
       }).catch(() => {
         setLoading(false);
         Modal.error({
           title: '提示',
-          content: `${oprText}纠纷模板失败!`,
+          content: `${oprText}纠纷失败!`,
           okText: '确定',
         });
       });
@@ -327,6 +313,33 @@ function EntanglementList() {
   };
 
   /**
+   * 打开立案model
+   */
+  const openRegisterModel = () => {
+    if (selectedRows.length === 0) {
+      Message.error('请选择纠纷案件');
+      return;
+    }
+    let items = new Map();
+    selectedRows.map((item) => {
+      items.set(item.caseType, '');
+    });
+
+    if (items.size !== 1) {
+      Message.error('请选择相同的案件类型');
+      return;
+    }
+
+    setRegisterVisible(true);
+  };
+  /**
+   * 关闭立案model
+   */
+  const closeRegisterModel = () => {
+    setRegisterVisible(false);
+  };
+
+  /**
    * 批量立案
    */
   const batchSubmit = () => {
@@ -361,12 +374,64 @@ function EntanglementList() {
       });
   };
 
+  /**
+   * 获取选中
+   */
   const rowSelection = {
     selectedRowKeys: selectedRowIds,
     onChange: (selectedRowKeys: string[], selectedRows: any) => {
       setSelectedRowIds(selectedRowKeys);
       setSelectedRows(selectedRows);
     },
+  };
+
+  /**
+   * 打开导入数据model
+   */
+  const openImportVisible = () => {
+    setImportVisible(true);
+  };
+
+  /**
+   * 关闭导入数据model
+   */
+  const onCloseImportVisible = () => {
+    setImportVisible(false);
+  };
+
+  /**
+   * 导入数据
+   */
+  const onImport = () => {
+    const form = importForm.props.form;
+    return form.validateFields((err, values) => {
+      // 检验失败return
+      if (err) {
+        return;
+      }
+
+      // 数据导入
+      values.attachment = values.attachment[0].response.content[0];
+
+      getImport(values)
+        .then((result) => {
+          setImportVisible(false);
+          form.resetFields();
+          dataSource.reload();
+          Modal.success({
+            title: '提示',
+            content: `数据导入成功!`,
+            okText: '确定',
+          });
+        })
+        .catch(() => {
+          Modal.error({
+            title: '提示',
+            content: `数据导入失败!`,
+            okText: '确定',
+          });
+        });
+    });
   };
 
   return (
@@ -390,7 +455,7 @@ function EntanglementList() {
             新建
           </Button>
           <Divider type="vertical" />
-          <Button type="primary">
+          <Button type="primary" onClick={openImportVisible}>
             <Icon type="plus" />
             导入
           </Button>
@@ -510,6 +575,13 @@ function EntanglementList() {
         visible={contactVisible}
         onClose={onCloseContactVisible}
         onOk={onSaveSubmit}
+      />
+
+      <ImportModel
+        visible={importVisible}
+        onClose={onCloseImportVisible}
+        onOk={onImport}
+        wrappedComponentRef={importFormRef}
       />
     </React.Fragment>
   );
