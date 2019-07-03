@@ -174,6 +174,7 @@ function MaterialManagement() {
             type: 'rangePicker',
             startTimeName: 'stime',
             endTimeName: 'etime',
+            format: 'YYYY-MM-DD HH:mm:ss',
           },
         ]}
         handleSearch={handleSearch}
