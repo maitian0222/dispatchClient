@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>菜鸟教程(runoob.com)</title>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+<script>
+function displayDate(){
+	document.getElementById("demo").innerHTML=Date();
+}
+	
+	
+// 添加响应拦截器
+axios.interceptors.response.use(function (response) {
+    // 对响应数据做点什么
+	alert('response');
+    return response;
+  }, function (error) {
+	
+	if (error.response && error.response.status === 401) {
+        alert('会话超时,请重新登录！');
+        
+      } else if (error.response && error.response.status === 403) {
+        alert('无权限访问此页面！');
+      }
+
+    // 对响应错误做点什么
+    return Promise.reject(error);
+  });
+	axios.get('http://192.168.80.144/admin/menu/wang5')
+  .then(function (response) {
+    console.log(response);
+  })
+  .catch(function (error) {
+    console.log(error);
+  });
+</script>
+</head>
+<body>
+
+<h1>我的第一个 JavaScript 程序</h1>
+<p id="demo">这是一个段落</p>
+
+<button type="button" onclick="displayDate()">显示日期</button>
+
+</body>
+</html>
