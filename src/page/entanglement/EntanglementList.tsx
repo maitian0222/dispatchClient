@@ -158,7 +158,7 @@ function EntanglementList() {
             )
           : dataSource.save(values, false);
       fn.then((result) => {
-        if (result.code !== '1') {
+        if (result.code !== 0) {
           Modal.error({
             title: '提示',
             content: result.msg,
@@ -270,7 +270,7 @@ function EntanglementList() {
       }
       getSaveAndSubmit(values)
         .then((result) => {
-          if (result.code !== '1') {
+          if (result.code !== 0) {
             Modal.error({
               title: '提示',
               content: result.msg,
