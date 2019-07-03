@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Row, Col, Card, Button, message } from 'antd';
 import http from '@sinoui/http';
+import CardLayout from './component/CardLayout';
 import ContactCard from './component/ContactCard';
 import CaseInfoCard from './component/CaseInfoCard';
 import DisputeListCard from './component/DisputeListCard';
@@ -31,20 +32,27 @@ class LawsuitCaseEditor extends React.Component<Props, State> {
   };
 
   public render() {
-    // 联系人id
-    const contactsId = this.props.location.state.contactsId || '';
-    // 法院id
-    const courtId = this.props.location.state.courtId || '';
-    // 案件状态id
-    const status = this.props.location.state.status || '';
+    // 联系人id 法院id 案件状态 退回理由
+    const {
+      contactsId,
+      courtId,
+      status,
+      refuseAcceptReason,
+    } = this.props.location.state;
     // 诉讼案件id
     const id = this.props.match.params.id;
+
     return (
       <div className={styles['lawsuit-layout']} style={{ margin: '20px' }}>
         <Row gutter={20}>
           <Col span={16}>
             <CaseInfoCard id={id} />
             <ContactCard contactsId={contactsId} />
+            {status === 4 && (
+              <CardLayout title="退回理由">
+                <p>{refuseAcceptReason}</p>
+              </CardLayout>
+            )}
             <DisputeListCard id={id} status={status} />
           </Col>
           <Col span={8}>
