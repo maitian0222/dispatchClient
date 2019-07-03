@@ -17,15 +17,47 @@ import {
 } from 'antd';
 import { withRouter } from 'react-router-dom';
 import ChangePwdModal from '../components/ChangePwdModal';
+import NewsFast from './NewsFast';
+import { getNewsQuery, getNewsCount } from './apis';
 const { Header } = Layout;
 
 class AppHeader extends React.PureComponent {
+  private timer;
   constructor(props) {
     super(props);
     this.state = {
       visible: false,
+      newsCount: 0,
+      newsData: [],
     };
   }
+
+  public componentWillMount() {
+    this.refreshNews();
+    this.timer = setInterval(() => {
+      this.refreshNews();
+    }, 20000);
+  }
+  public componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
+  /**
+   * 刷新消息列表和消息数量
+   */
+  private refreshNews = () => {
+    getNewsQuery().then((result) => {
+      this.setState({
+        newsData: result.data,
+      });
+    });
+    getNewsCount().then((result) => {
+      this.setState({
+        newsCount: result,
+      });
+    });
+  };
+
   private showConfirm = () => {
     const logout = this.props.onLogout;
     const history = this.props.history;
@@ -66,45 +98,10 @@ class AppHeader extends React.PureComponent {
       </Menu>
     );
     const content = (
-      <div>
-        <Row>
-          <Col span={22}>123</Col>
-          <Col span={2}>
-            <Icon type="close" />
-          </Col>
-          <Col span={24}>
-            <div
-              style={{
-                width: '200px',
-                wordBreak: 'break-all',
-                wordWrap: 'break-word',
-                overflow: 'hidden',
-                display: 'inline-block',
-              }}
-            >
-              alksjdlaksjdlaskjdlaksjdlksajdlkasjdlakjsdlasjdoiquepqowepqo
-            </div>
-          </Col>
-        </Row>
-        <Row>
-          <Col span={22}>123</Col>
-          <Col span={2}>
-            <Icon type="close" />
-          </Col>
-          <Col span={24}>
-            <div
-              style={{
-                width: '200px',
-                wordBreak: 'break-all',
-                wordWrap: 'break-word',
-                overflow: 'hidden',
-                display: 'inline-block',
-              }}
-            >
-              alksjdlaksjdlaskjdlaksjdlksajdlkasjdlakjsdlasjdoiquepqowepqoiepqowiepqowjrpjaslkjdl;mczxlkclskjf
-            </div>
-          </Col>
-        </Row>
+      <div style={{ height: '80vh', overflow: 'auto' }}>
+        {this.state.newsData.map((item) => {
+          return <NewsFast news={item} />;
+        })}
       </div>
     );
 
@@ -125,17 +122,18 @@ class AppHeader extends React.PureComponent {
               <span>{currentUser.username}</span>
             </a>
           </Dropdown>
-          <a style={{ float: 'right', marginRight: '40px' }}>
-            <Badge count={5}>
-              <Popover
-                content={content}
-                title="消息列表"
-                trigger="click"
-                placement="bottom"
-              >
+          <a style={{ float: 'right', marginRight: '20px' }}>
+            <Popover
+              content={content}
+              title="消息列表"
+              trigger="click"
+              placement="bottom"
+              arrowPointAtCenter
+            >
+              <Badge count={this.state.newsCount}>
                 <Icon type="bell" style={{ fontSize: '18px' }} />
-              </Popover>
-            </Badge>
+              </Badge>
+            </Popover>
           </a>
         </Header>
         <ChangePwdModal

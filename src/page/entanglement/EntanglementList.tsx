@@ -396,7 +396,9 @@ function EntanglementList() {
    * 关闭导入数据model
    */
   const onCloseImportVisible = () => {
+    const form = importForm.props.form;
     setImportVisible(false);
+    form.resetFields();
   };
 
   /**
