@@ -4,6 +4,8 @@ import MainLayout from './MainLayout';
 import http from '@sinoui/http';
 import { message } from 'antd';
 import { withRouter } from 'react-router-dom';
+import Axios from 'axios';
+
 export interface LayoutPageProps {
   isLoggined: boolean;
   onRequestFresh: (item1: object, item2?: string) => void;
@@ -38,11 +40,7 @@ class LayoutPage extends React.Component<LayoutPageProps, LayoutPageState> {
 
       throw error;
     });
-    // this.props.onRequestFresh({
-    //   userId: 21,
-    //   username: 'wang5',
-    // });
-    // return;
+
     http.get('/admin/check').then((result) => {
       this.setState({
         refreshing: false,
@@ -56,7 +54,9 @@ class LayoutPage extends React.Component<LayoutPageProps, LayoutPageState> {
   public renderChildren() {
     const { currentUser } = this.props;
     if (this.props.isLoggined) {
-      return <MainLayout currentUser={currentUser} />;
+      return (
+        <MainLayout currentUser={currentUser} onLogout={this.props.onLogout} />
+      );
     } else if (this.state.refreshing) {
       return <div />;
     }

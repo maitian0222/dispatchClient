@@ -2,7 +2,7 @@ import React from 'react';
 import { Skeleton, Card } from 'antd';
 
 interface Props {
-  loading: boolean;
+  loading?: boolean;
   title: string;
   children: React.child;
 }

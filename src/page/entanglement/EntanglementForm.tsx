@@ -376,6 +376,146 @@ class EntanglementForm extends React.Component<Props, State> {
           <Typography>
             <Title level={4}>被告基本信息</Title>
           </Typography>
+          <Row>
+            <Col span={8}>
+              <Form.Item label="案件类型">
+                {getFieldDecorator('caseType', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择案件类型',
+                    },
+                  ],
+                  initialValue: initialValues ? initialValues.caseType : '',
+                })(<DictionarySelect mode="false" fieldCode="CASE_TYPE" />)}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="递交法院">
+                {getFieldDecorator('courtId', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择法院',
+                    },
+                  ],
+                  initialValue: initialValues ? initialValues.courtId : '',
+                })(<CourtSelect />)}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="被告主体人">
+                {getFieldDecorator('respondentType', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择被告人主体',
+                    },
+                  ],
+                  initialValue: initialValues
+                    ? initialValues.respondentType
+                      ? initialValues.respondentType
+                      : 0
+                    : 0,
+                })(
+                  <Radio.Group
+                    name="respondentType"
+                    onChange={(e) => {
+                      this.setState({
+                        respondentType: e.target.value,
+                      });
+                      this.props.form.resetFields({ ...initialValues });
+                    }}
+                  >
+                    <Radio value={0}>自然人</Radio>
+                    <Radio value={1}>法人</Radio>
+                  </Radio.Group>,
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
+          {this.state.respondentType === 1 ? legalPerson() : naturalPerson()}
+          <Row>
+            <Col span={8}>
+              <Form.Item label="身份证正面">
+                {getFieldDecorator('idFront', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请上传身份证正面',
+                    },
+                  ],
+                })(
+                  <UpLoadModule
+                    action="/oss/attachment/fileupload"
+                    listType="picture-card"
+                    upLoadNumber="1"
+                    files={initialValues && initialValues.idFront}
+                  >
+                    <div>
+                      <Icon type="plus" />
+                      <div className="ant-upload-text">上传文件</div>
+                    </div>
+                  </UpLoadModule>,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="身份证反面">
+                {getFieldDecorator('idReverse', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请上传身份证反面',
+                    },
+                  ],
+                })(
+                  <UpLoadModule
+                    action="/oss/attachment/fileupload"
+                    listType="picture-card"
+                    upLoadNumber="1"
+                    files={initialValues && initialValues.idReverse}
+                  >
+                    <div>
+                      <Icon type="plus" />
+                      <div className="ant-upload-text">上传文件</div>
+                    </div>
+                  </UpLoadModule>,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                style={
+                  this.state.respondentType === 1
+                    ? {}
+                    : { visibility: 'hidden' }
+                }
+                label="营业执照"
+              >
+                {getFieldDecorator('businessLicense', {
+                  rules: [
+                    {
+                      required: this.state.respondentType === 1 ? true : false,
+                      message: '请上传营业执照',
+                    },
+                  ],
+                })(
+                  <UpLoadModule
+                    action="/oss/attachment/fileupload"
+                    listType="picture-card"
+                    upLoadNumber="1"
+                    files={initialValues && initialValues.businessLicense}
+                  >
+                    <div>
+                      <Icon type="plus" />
+                      <div className="ant-upload-text">上传文件</div>
+                    </div>
+                  </UpLoadModule>,
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
 
           <Row>
             <Col span={8}>
