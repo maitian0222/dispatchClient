@@ -92,7 +92,7 @@ class AdvancedSearchForm extends React.Component {
           values[item.name] = String(values[item.name]);
         }
         if (item.type === 'rangePicker') {
-          customFormat = item.format;
+          customFormat = item.format ? item.format : customFormat;
           if (item.startTimeName && item.endTimeName) {
             startTime = item.startTimeName;
             endTime = item.endTimeName;
