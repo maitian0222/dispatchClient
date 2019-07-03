@@ -729,7 +729,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     defaultValue={0}
                     min={0}
                     precision={2}
-                    formatter={(value) => `${value}￥`}
+                    formatter={(value) => `￥${value}`}
                     parser={(value) => value.replace('￥', '')}
                   />,
                 )}
@@ -819,7 +819,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     defaultValue={0}
                     min={0}
                     precision={2}
-                    formatter={(value) => `${value}￥`}
+                    formatter={(value) => `￥${value}`}
                     parser={(value) => value.replace('￥', '')}
                     onChange={(value) => {
                       const owingInterests = this.props.form.getFieldValue(
@@ -850,7 +850,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     defaultValue={0}
                     min={0}
                     precision={2}
-                    formatter={(value) => `${value}￥`}
+                    formatter={(value) => `￥${value}`}
                     parser={(value) => value.replace('￥', '')}
                     onChange={(value) => {
                       const overdueMoney = this.props.form.getFieldValue(
@@ -882,7 +882,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     defaultValue={0}
                     min={0}
                     precision={2}
-                    formatter={(value) => `${value}￥`}
+                    formatter={(value) => `￥${value}`}
                     parser={(value) => value.replace('￥', '')}
                   />,
                 )}
