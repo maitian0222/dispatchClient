@@ -6,6 +6,8 @@ import EntanglementList from '../page/entanglement/EntanglementList';
 import LawsuitList from '../page/lawsuit/LawsuitList';
 import LawsuitCaseEditor from '../page/lawsuit/LawsuitCaseEditor';
 import MaterialList from '../page/material/MaterialList';
+import MaterialHasList from '../page/material/MaterialHasList';
+import MaterialWaitList from '../page/material/MaterialWaitList';
 
 const routes = [
   {
@@ -44,9 +46,14 @@ const routes = [
     component: LawsuitCaseEditor,
   },
   {
-    path: '/materialAudit/list',
-    title: '律师材料审核',
-    component: MaterialList,
+    path: '/materialAudit/hasList',
+    title: '律师材料已审核',
+    component: MaterialHasList,
+  },
+  {
+    path: '/materialAudit/waitList',
+    title: '律师材料待审核',
+    component: MaterialWaitList,
   },
 ];
 
