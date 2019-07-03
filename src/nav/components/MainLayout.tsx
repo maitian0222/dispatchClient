@@ -28,6 +28,7 @@ export default class MainLayout extends React.PureComponent {
           <NavMenu
             collapsed={this.state.collapsed}
             currentUser={this.props.currentUser}
+            onLogout={this.props.onLogout}
           />
           <Content>
             <HeaderContainer

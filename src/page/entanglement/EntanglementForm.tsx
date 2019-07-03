@@ -374,433 +374,424 @@ class EntanglementForm extends React.Component<Props, State> {
         <Form {...formItemLayout} style={{ width: '1000px' }}>
           <Typography>
             <Title level={4}>被告基本信息</Title>
-            <Paragraph>
-              <Row>
-                <Col span={8}>
-                  <Form.Item label="案件类型">
-                    {getFieldDecorator('caseType', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请选择案件类型',
-                        },
-                      ],
-                      initialValue: initialValues ? initialValues.caseType : '',
-                    })(<DictionarySelect mode="false" fieldCode="CASE_TYPE" />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="递交法院">
-                    {getFieldDecorator('courtId', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请选择法院',
-                        },
-                      ],
-                      initialValue: initialValues ? initialValues.courtId : '',
-                    })(<CourtSelect />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="被告主体人">
-                    {getFieldDecorator('respondentType', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请选择被告人主体',
-                        },
-                      ],
-                      initialValue: initialValues
-                        ? initialValues.respondentType
-                          ? initialValues.respondentType
-                          : 0
-                        : 0,
-                    })(
-                      <Radio.Group
-                        name="respondentType"
-                        onChange={(e) => {
-                          this.setState({
-                            respondentType: e.target.value,
-                          });
-                          this.props.form.resetFields({ ...initialValues });
-                        }}
-                      >
-                        <Radio value={0}>自然人</Radio>
-                        <Radio value={1}>法人</Radio>
-                      </Radio.Group>,
-                    )}
-                  </Form.Item>
-                </Col>
-              </Row>
-              {this.state.respondentType === 1
-                ? legalPerson()
-                : naturalPerson()}
-              <Row>
-                <Col span={8}>
-                  <Form.Item label="身份证正面">
-                    {getFieldDecorator('idFront', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请上传身份证正面',
-                        },
-                      ],
-                    })(
-                      <UpLoadModule
-                        action="/oss/attachment/fileupload"
-                        listType="picture-card"
-                        upLoadNumber="1"
-                        files={initialValues && initialValues.idFront}
-                      >
-                        <div>
-                          <Icon type="plus" />
-                          <div className="ant-upload-text">上传文件</div>
-                        </div>
-                      </UpLoadModule>,
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="身份证反面">
-                    {getFieldDecorator('idReverse', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请上传身份证反面',
-                        },
-                      ],
-                    })(
-                      <UpLoadModule
-                        action="/oss/attachment/fileupload"
-                        listType="picture-card"
-                        upLoadNumber="1"
-                        files={initialValues && initialValues.idReverse}
-                      >
-                        <div>
-                          <Icon type="plus" />
-                          <div className="ant-upload-text">上传文件</div>
-                        </div>
-                      </UpLoadModule>,
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item
-                    style={
-                      this.state.respondentType === 1
-                        ? {}
-                        : { visibility: 'hidden' }
-                    }
-                    label="营业执照"
-                  >
-                    {getFieldDecorator('businessLicense', {
-                      rules: [
-                        {
-                          required:
-                            this.state.respondentType === 1 ? true : false,
-                          message: '请上传营业执照',
-                        },
-                      ],
-                    })(
-                      <UpLoadModule
-                        action="/oss/attachment/fileupload"
-                        listType="picture-card"
-                        upLoadNumber="1"
-                        files={initialValues && initialValues.businessLicense}
-                      >
-                        <div>
-                          <Icon type="plus" />
-                          <div className="ant-upload-text">上传文件</div>
-                        </div>
-                      </UpLoadModule>,
-                    )}
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Paragraph>
           </Typography>
+          <Row>
+            <Col span={8}>
+              <Form.Item label="案件类型">
+                {getFieldDecorator('caseType', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择案件类型',
+                    },
+                  ],
+                  initialValue: initialValues ? initialValues.caseType : '',
+                })(<DictionarySelect mode="false" fieldCode="CASE_TYPE" />)}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="递交法院">
+                {getFieldDecorator('courtId', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择法院',
+                    },
+                  ],
+                  initialValue: initialValues ? initialValues.courtId : '',
+                })(<CourtSelect />)}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="被告主体人">
+                {getFieldDecorator('respondentType', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择被告人主体',
+                    },
+                  ],
+                  initialValue: initialValues
+                    ? initialValues.respondentType
+                      ? initialValues.respondentType
+                      : 0
+                    : 0,
+                })(
+                  <Radio.Group
+                    name="respondentType"
+                    onChange={(e) => {
+                      this.setState({
+                        respondentType: e.target.value,
+                      });
+                      this.props.form.resetFields({ ...initialValues });
+                    }}
+                  >
+                    <Radio value={0}>自然人</Radio>
+                    <Radio value={1}>法人</Radio>
+                  </Radio.Group>,
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
+          {this.state.respondentType === 1 ? legalPerson() : naturalPerson()}
+          <Row>
+            <Col span={8}>
+              <Form.Item label="身份证正面">
+                {getFieldDecorator('idFront', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请上传身份证正面',
+                    },
+                  ],
+                })(
+                  <UpLoadModule
+                    action="/oss/attachment/fileupload"
+                    listType="picture-card"
+                    upLoadNumber="1"
+                    files={initialValues && initialValues.idFront}
+                  >
+                    <div>
+                      <Icon type="plus" />
+                      <div className="ant-upload-text">上传文件</div>
+                    </div>
+                  </UpLoadModule>,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="身份证反面">
+                {getFieldDecorator('idReverse', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请上传身份证反面',
+                    },
+                  ],
+                })(
+                  <UpLoadModule
+                    action="/oss/attachment/fileupload"
+                    listType="picture-card"
+                    upLoadNumber="1"
+                    files={initialValues && initialValues.idReverse}
+                  >
+                    <div>
+                      <Icon type="plus" />
+                      <div className="ant-upload-text">上传文件</div>
+                    </div>
+                  </UpLoadModule>,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                style={
+                  this.state.respondentType === 1
+                    ? {}
+                    : { visibility: 'hidden' }
+                }
+                label="营业执照"
+              >
+                {getFieldDecorator('businessLicense', {
+                  rules: [
+                    {
+                      required: this.state.respondentType === 1 ? true : false,
+                      message: '请上传营业执照',
+                    },
+                  ],
+                })(
+                  <UpLoadModule
+                    action="/oss/attachment/fileupload"
+                    listType="picture-card"
+                    upLoadNumber="1"
+                    files={initialValues && initialValues.businessLicense}
+                  >
+                    <div>
+                      <Icon type="plus" />
+                      <div className="ant-upload-text">上传文件</div>
+                    </div>
+                  </UpLoadModule>,
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
 
           <Divider />
 
           <Typography>
             <Title level={4}>违约情况</Title>
-            <Paragraph>
-              <Row>
-                <Col span={8}>
-                  <Form.Item label="合同编号">
-                    {getFieldDecorator('contractNumber', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请填写合同编号',
-                        },
-                      ],
-                      initialValue:
-                        initialValues && initialValues.contractNumber,
-                    })(<Input />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="购买产品">
-                    {getFieldDecorator('productName', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请填写购买产品',
-                        },
-                      ],
-                      initialValue: initialValues && initialValues.productName,
-                    })(<Input />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="日利率">
-                    {getFieldDecorator('annualInterestRate', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请填写日利率',
-                        },
-                      ],
-                      initialValue:
-                        initialValues && initialValues.annualInterestRate,
-                    })(
-                      <InputNumber
-                        defaultValue={0}
-                        min={0}
-                        max={100}
-                        formatter={(value) => `${value}%`}
-                        parser={(value) => value.replace('%', '')}
-                      />,
-                    )}
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col span={8}>
-                  <Form.Item label="标的金额">
-                    {getFieldDecorator('amountMoney', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请填写标的金额',
-                        },
-                      ],
-                      initialValue: initialValues && initialValues.amountMoney,
-                    })(
-                      <InputNumber
-                        defaultValue={0}
-                        min={0}
-                        formatter={(value) => `${value}￥`}
-                        parser={(value) => value.replace('￥', '')}
-                      />,
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="借款日期">
-                    {getFieldDecorator('borrowDateBegin', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请选择借款日期',
-                        },
-                      ],
-                      initialValue:
-                        initialValues &&
-                        initialValues.borrowDateBegin &&
-                        moment(initialValues.borrowDateBegin, 'YYYY-MM-DD'),
-                    })(<DatePicker format="YYYY-MM-DD" />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="截止日期">
-                    {getFieldDecorator('borrowDateEnd', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请选择截止日期',
-                        },
-                      ],
-                      initialValue:
-                        initialValues &&
-                        initialValues.borrowDateEnd &&
-                        moment(initialValues.borrowDateEnd, 'YYYY-MM-DD'),
-                    })(<DatePicker format="YYYY-MM-DD" />)}
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col span={8}>
-                  <Form.Item label="逾期日期">
-                    {getFieldDecorator('overdueDate', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请选择逾期日期',
-                        },
-                      ],
-                      initialValue:
-                        initialValues &&
-                        initialValues.overdueDate &&
-                        moment(initialValues.overdueDate, 'YYYY-MM-DD'),
-                    })(<DatePicker format="YYYY-MM-DD" />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="清偿日">
-                    {getFieldDecorator('liquidationDate', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请选择清偿日',
-                        },
-                      ],
-                      initialValue:
-                        initialValues &&
-                        initialValues.liquidationDate &&
-                        moment(initialValues.liquidationDate, 'YYYY-MM-DD'),
-                    })(<DatePicker format="YYYY-MM-DD" />)}
-                  </Form.Item>
-                </Col>
-                <Col span={8} />
-              </Row>
-              <Row>
-                <Col span={8}>
-                  <Form.Item label="逾期金额">
-                    {getFieldDecorator('overdueMoney', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请填写逾期金额',
-                        },
-                      ],
-                      initialValue: initialValues && initialValues.overdueMoney,
-                    })(
-                      <InputNumber
-                        defaultValue={0}
-                        min={0}
-                        formatter={(value) => `${value}￥`}
-                        parser={(value) => value.replace('￥', '')}
-                        onChange={(value) => {
-                          const owingInterests = this.props.form.getFieldValue(
-                            'owingInterests',
-                          );
-                          if (owingInterests) {
-                            this.props.form.setFieldsValue({
-                              total: owingInterests + value,
-                            });
-                          }
-                        }}
-                      />,
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="欠息">
-                    {getFieldDecorator('owingInterests', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请填写欠息',
-                        },
-                      ],
-                      initialValue:
-                        initialValues && initialValues.owingInterests,
-                    })(
-                      <InputNumber
-                        defaultValue={0}
-                        min={0}
-                        formatter={(value) => `${value}￥`}
-                        parser={(value) => value.replace('￥', '')}
-                        onChange={(value) => {
-                          const overdueMoney = this.props.form.getFieldValue(
-                            'overdueMoney',
-                          );
-                          if (overdueMoney) {
-                            this.props.form.setFieldsValue({
-                              total: overdueMoney + value,
-                            });
-                          }
-                        }}
-                      />,
-                    )}
-                  </Form.Item>
-                </Col>
-                <Col span={8}>
-                  <Form.Item label="合计">
-                    {getFieldDecorator('total', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请填写合计',
-                        },
-                      ],
-                      initialValue: initialValues && initialValues.total,
-                    })(
-                      <InputNumber
-                        defaultValue={0}
-                        min={0}
-                        formatter={(value) => `${value}￥`}
-                        parser={(value) => value.replace('￥', '')}
-                      />,
-                    )}
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Form.Item
-                    labelCol={{ span: 3 }}
-                    wrapperCol={{ span: 18 }}
-                    label="事实与理由"
-                  >
-                    {getFieldDecorator('reason', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请填写事实与理由',
-                        },
-                      ],
-                      initialValue: initialValues && initialValues.reason,
-                    })(<Input.TextArea />)}
-                  </Form.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col>
-                  <Form.Item
-                    labelCol={{ span: 3 }}
-                    wrapperCol={{ span: 18 }}
-                    label="证据"
-                    extra="请上传合同文件"
-                  >
-                    {getFieldDecorator('evidence', {
-                      rules: [
-                        {
-                          required: true,
-                          message: '请上传合同文件',
-                        },
-                      ],
-                    })(
-                      <UpLoadModule
-                        action="/oss/attachment/fileupload"
-                        listType="picture-card"
-                        upLoadNumber="1"
-                        files={initialValues && initialValues.evidence}
-                      >
-                        <div>
-                          <Icon type="plus" />
-                          <div className="ant-upload-text">上传文件</div>
-                        </div>
-                      </UpLoadModule>,
-                    )}
-                  </Form.Item>
-                </Col>
-              </Row>
-            </Paragraph>
           </Typography>
+          <Row>
+            <Col span={8}>
+              <Form.Item label="合同编号">
+                {getFieldDecorator('contractNumber', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请填写合同编号',
+                    },
+                  ],
+                  initialValue: initialValues && initialValues.contractNumber,
+                })(<Input />)}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="购买产品">
+                {getFieldDecorator('productName', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请填写购买产品',
+                    },
+                  ],
+                  initialValue: initialValues && initialValues.productName,
+                })(<Input />)}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="日利率">
+                {getFieldDecorator('annualInterestRate', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请填写日利率',
+                    },
+                  ],
+                  initialValue:
+                    initialValues && initialValues.annualInterestRate,
+                })(
+                  <InputNumber
+                    defaultValue={0}
+                    min={0}
+                    max={100}
+                    formatter={(value) => `${value}%`}
+                    parser={(value) => value.replace('%', '')}
+                  />,
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={8}>
+              <Form.Item label="标的金额">
+                {getFieldDecorator('amountMoney', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请填写标的金额',
+                    },
+                  ],
+                  initialValue: initialValues && initialValues.amountMoney,
+                })(
+                  <InputNumber
+                    defaultValue={0}
+                    min={0}
+                    formatter={(value) => `${value}￥`}
+                    parser={(value) => value.replace('￥', '')}
+                  />,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="借款日期">
+                {getFieldDecorator('borrowDateBegin', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择借款日期',
+                    },
+                  ],
+                  initialValue:
+                    initialValues &&
+                    initialValues.borrowDateBegin &&
+                    moment(initialValues.borrowDateBegin, 'YYYY-MM-DD'),
+                })(<DatePicker format="YYYY-MM-DD" />)}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="截止日期">
+                {getFieldDecorator('borrowDateEnd', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择截止日期',
+                    },
+                  ],
+                  initialValue:
+                    initialValues &&
+                    initialValues.borrowDateEnd &&
+                    moment(initialValues.borrowDateEnd, 'YYYY-MM-DD'),
+                })(<DatePicker format="YYYY-MM-DD" />)}
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col span={8}>
+              <Form.Item label="逾期日期">
+                {getFieldDecorator('overdueDate', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择逾期日期',
+                    },
+                  ],
+                  initialValue:
+                    initialValues &&
+                    initialValues.overdueDate &&
+                    moment(initialValues.overdueDate, 'YYYY-MM-DD'),
+                })(<DatePicker format="YYYY-MM-DD" />)}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="清偿日">
+                {getFieldDecorator('liquidationDate', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择清偿日',
+                    },
+                  ],
+                  initialValue:
+                    initialValues &&
+                    initialValues.liquidationDate &&
+                    moment(initialValues.liquidationDate, 'YYYY-MM-DD'),
+                })(<DatePicker format="YYYY-MM-DD" />)}
+              </Form.Item>
+            </Col>
+            <Col span={8} />
+          </Row>
+          <Row>
+            <Col span={8}>
+              <Form.Item label="逾期金额">
+                {getFieldDecorator('overdueMoney', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请填写逾期金额',
+                    },
+                  ],
+                  initialValue: initialValues && initialValues.overdueMoney,
+                })(
+                  <InputNumber
+                    defaultValue={0}
+                    min={0}
+                    formatter={(value) => `${value}￥`}
+                    parser={(value) => value.replace('￥', '')}
+                    onChange={(value) => {
+                      const owingInterests = this.props.form.getFieldValue(
+                        'owingInterests',
+                      );
+                      if (owingInterests) {
+                        this.props.form.setFieldsValue({
+                          total: owingInterests + value,
+                        });
+                      }
+                    }}
+                  />,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="欠息">
+                {getFieldDecorator('owingInterests', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请填写欠息',
+                    },
+                  ],
+                  initialValue: initialValues && initialValues.owingInterests,
+                })(
+                  <InputNumber
+                    defaultValue={0}
+                    min={0}
+                    formatter={(value) => `${value}￥`}
+                    parser={(value) => value.replace('￥', '')}
+                    onChange={(value) => {
+                      const overdueMoney = this.props.form.getFieldValue(
+                        'overdueMoney',
+                      );
+                      if (overdueMoney) {
+                        this.props.form.setFieldsValue({
+                          total: overdueMoney + value,
+                        });
+                      }
+                    }}
+                  />,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="合计">
+                {getFieldDecorator('total', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请填写合计',
+                    },
+                  ],
+                  initialValue: initialValues && initialValues.total,
+                })(
+                  <InputNumber
+                    defaultValue={0}
+                    min={0}
+                    formatter={(value) => `${value}￥`}
+                    parser={(value) => value.replace('￥', '')}
+                  />,
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Item
+                labelCol={{ span: 3 }}
+                wrapperCol={{ span: 18 }}
+                label="事实与理由"
+              >
+                {getFieldDecorator('reason', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请填写事实与理由',
+                    },
+                  ],
+                  initialValue: initialValues && initialValues.reason,
+                })(<Input.TextArea />)}
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row>
+            <Col>
+              <Form.Item
+                labelCol={{ span: 3 }}
+                wrapperCol={{ span: 18 }}
+                label="证据"
+                extra="请上传合同文件"
+              >
+                {getFieldDecorator('evidence', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请上传合同文件',
+                    },
+                  ],
+                })(
+                  <UpLoadModule
+                    action="/oss/attachment/fileupload"
+                    listType="picture-card"
+                    upLoadNumber="1"
+                    files={initialValues && initialValues.evidence}
+                  >
+                    <div>
+                      <Icon type="plus" />
+                      <div className="ant-upload-text">上传文件</div>
+                    </div>
+                  </UpLoadModule>,
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
         </Form>
       </div>
     );

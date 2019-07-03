@@ -88,6 +88,17 @@ class NavMenu extends Component<Props, State> {
             }
           }
         }
+      })
+      .catch((error) => {
+        // 拦截到异常后重定向
+        // if (error.response && error.response.status === 401) {
+        //   // message.error('会话超时,请重新登录！');
+        //   // 跳转到登录页
+        //   this.props.onLogout();
+        // } else if (error.response && error.response.status === 403) {
+        //   this.props.history.push('/tip');
+        //   // message.error('无权限访问此页面！');
+        // }
       });
   }
 
