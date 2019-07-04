@@ -26,18 +26,13 @@ class NewsFast extends React.Component {
   public render() {
     return (
       <Row>
-        <Col span={24}>
-          <Card
-            onMouseOver={() => this.handleMouseOver()}
-            onMouseLeave={() => this.handleMouseOut()}
-            style={{ width: 200 }}
-            size="small"
-          >
-            <Icon
-              style={this.state.IconStyle}
-              type="close"
-              onClick={() => this.onDelete(this.props.news.id)}
-            />
+        <Card
+          onMouseOver={() => this.handleMouseOver()}
+          onMouseLeave={() => this.handleMouseOut()}
+          style={{ width: 200 }}
+          size="small"
+        >
+          <Col span={23}>
             <div
               style={{
                 width: '100%',
@@ -49,11 +44,16 @@ class NewsFast extends React.Component {
             >
               {this.props.news.content}
             </div>
-            <div style={{ textAlign: 'right' }}>
-              {this.props.news.createTime}
-            </div>
-          </Card>
-        </Col>
+            <div style={{ textAlign: 'right' }}>{this.props.news.time}</div>
+          </Col>
+          <Col span={1}>
+            <Icon
+              style={this.state.IconStyle}
+              type="close"
+              onClick={() => this.onDelete(this.props.news.id)}
+            />
+          </Col>
+        </Card>
       </Row>
     );
   }
