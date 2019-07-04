@@ -29,7 +29,7 @@ class NewsFast extends React.Component {
         <Card
           onMouseOver={() => this.handleMouseOver()}
           onMouseLeave={() => this.handleMouseOut()}
-          style={{ width: 200 }}
+          style={{ width: 200, cursor: 'pointer' }}
           size="small"
         >
           <Col span={23}>

@@ -37,12 +37,14 @@ class EntanglementForm extends React.Component<Props, State> {
       content: [],
       fileList: [],
       respondentType: 0,
+      certificateType: '',
     };
   }
 
   public componentDidMount() {
     this.setState({
       respondentType: this.props.initialValues.respondentType,
+      certificateType: this.props.initialValues.certificateType,
     });
   }
 
@@ -53,6 +55,15 @@ class EntanglementForm extends React.Component<Props, State> {
     ) {
       this.setState({
         respondentType: nextProps.initialValues.respondentType,
+      });
+    }
+    if (
+      nextProps.initialValues.certificateType !==
+      this.props.initialValues.certificateType
+    ) {
+      console.log(nextProps.initialValues.certificateType);
+      this.setState({
+        certificateType: nextProps.initialValues.certificateType,
       });
     }
   }
@@ -142,7 +153,6 @@ class EntanglementForm extends React.Component<Props, State> {
                 {getFieldDecorator('email', {
                   rules: [
                     {
-                      required: true,
                       pattern: /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/,
                       message: '请输入正确的邮箱地址',
                     },
@@ -158,7 +168,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     {
                       required: true,
                       pattern: /^1[3456789]\d{9}$/,
-                      message: '请输入正确的电话号码',
+                      message: '请输入正确的手机号码',
                     },
                   ],
                   initialValue: initialValues && initialValues.phone,
@@ -172,7 +182,6 @@ class EntanglementForm extends React.Component<Props, State> {
                 {getFieldDecorator('fixedPhone', {
                   rules: [
                     {
-                      required: true,
                       pattern: /^(0[0-9]{2,3}\-)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$/,
                       message: '请填写正确的固话',
                     },
@@ -298,7 +307,18 @@ class EntanglementForm extends React.Component<Props, State> {
                   initialValue: initialValues
                     ? initialValues.certificateType
                     : '',
-                })(<DictionarySelect mode="dan" fieldCode="ID_TYPE" />)}
+                })(
+                  <DictionarySelect
+                    mode="dan"
+                    fieldCode="ID_TYPE"
+                    onChange={(value) => {
+                      console.log(value);
+                      this.setState({
+                        certificateType: value,
+                      });
+                    }}
+                  />,
+                )}
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -307,7 +327,13 @@ class EntanglementForm extends React.Component<Props, State> {
                   rules: [
                     {
                       required: true,
-                      message: '请填写证件号',
+                      message: '请填写正确证件号',
+                      pattern:
+                        this.state.certificateType === 'ID_CARD'
+                          ? /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}[0-9Xx]$)/
+                          : this.state.certificateType === 'PASSPORT'
+                          ? /^1[45][0-9]{7}|([P|p|S|s]\d{7})|([S|s|G|g]\d{8})|([Gg|Tt|Ss|Ll|Qq|Dd|Aa|Ff]\d{8})|([H|h|M|m]\d{8，10})$/
+                          : '',
                     },
                   ],
                   initialValue: initialValues
@@ -336,7 +362,6 @@ class EntanglementForm extends React.Component<Props, State> {
                 {getFieldDecorator('email', {
                   rules: [
                     {
-                      required: true,
                       pattern: /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/,
                       message: '请输入正确的邮箱地址',
                     },
@@ -346,14 +371,8 @@ class EntanglementForm extends React.Component<Props, State> {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label="电话">
+              <Form.Item label="固话">
                 {getFieldDecorator('fixedPhone', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请填写电话',
-                    },
-                  ],
                   initialValue: initialValues ? initialValues.fixedPhone : '',
                 })(<Input />)}
               </Form.Item>
@@ -376,147 +395,6 @@ class EntanglementForm extends React.Component<Props, State> {
           <Typography>
             <Title level={4}>被告基本信息</Title>
           </Typography>
-          <Row>
-            <Col span={8}>
-              <Form.Item label="案件类型">
-                {getFieldDecorator('caseType', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请选择案件类型',
-                    },
-                  ],
-                  initialValue: initialValues ? initialValues.caseType : '',
-                })(<DictionarySelect mode="false" fieldCode="CASE_TYPE" />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="递交法院">
-                {getFieldDecorator('courtId', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请选择法院',
-                    },
-                  ],
-                  initialValue: initialValues ? initialValues.courtId : '',
-                })(<CourtSelect />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="被告主体人">
-                {getFieldDecorator('respondentType', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请选择被告人主体',
-                    },
-                  ],
-                  initialValue: initialValues
-                    ? initialValues.respondentType
-                      ? initialValues.respondentType
-                      : 0
-                    : 0,
-                })(
-                  <Radio.Group
-                    name="respondentType"
-                    onChange={(e) => {
-                      this.setState({
-                        respondentType: e.target.value,
-                      });
-                      this.props.form.resetFields({ ...initialValues });
-                    }}
-                  >
-                    <Radio value={0}>自然人</Radio>
-                    <Radio value={1}>法人</Radio>
-                  </Radio.Group>,
-                )}
-              </Form.Item>
-            </Col>
-          </Row>
-          {this.state.respondentType === 1 ? legalPerson() : naturalPerson()}
-          <Row>
-            <Col span={8}>
-              <Form.Item label="身份证正面">
-                {getFieldDecorator('idFront', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请上传身份证正面',
-                    },
-                  ],
-                })(
-                  <UpLoadModule
-                    action="/oss/attachment/fileupload"
-                    listType="picture-card"
-                    upLoadNumber="1"
-                    files={initialValues && initialValues.idFront}
-                  >
-                    <div>
-                      <Icon type="plus" />
-                      <div className="ant-upload-text">上传文件</div>
-                    </div>
-                  </UpLoadModule>,
-                )}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="身份证反面">
-                {getFieldDecorator('idReverse', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请上传身份证反面',
-                    },
-                  ],
-                })(
-                  <UpLoadModule
-                    action="/oss/attachment/fileupload"
-                    listType="picture-card"
-                    upLoadNumber="1"
-                    files={initialValues && initialValues.idReverse}
-                  >
-                    <div>
-                      <Icon type="plus" />
-                      <div className="ant-upload-text">上传文件</div>
-                    </div>
-                  </UpLoadModule>,
-                )}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item
-                style={
-                  this.state.respondentType === 1
-                    ? {}
-                    : { visibility: 'hidden' }
-                }
-                label="营业执照"
-              >
-                {getFieldDecorator('businessLicense', {
-                  rules: [
-                    {
-                      required: this.state.respondentType === 1 ? true : false,
-                      message: '请上传营业执照',
-                    },
-                  ],
-                })(
-                  <UpLoadModule
-                    action="/oss/attachment/fileupload"
-                    listType="picture-card"
-                    upLoadNumber="1"
-                    files={initialValues && initialValues.businessLicense}
-                  >
-                    <div>
-                      <Icon type="plus" />
-                      <div className="ant-upload-text">上传文件</div>
-                    </div>
-                  </UpLoadModule>,
-                )}
-              </Form.Item>
-            </Col>
-          </Row>
-
           <Row>
             <Col span={8}>
               <Form.Item label="案件类型">
