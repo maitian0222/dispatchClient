@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Descriptions } from 'antd';
+import { Descriptions, Button } from 'antd';
 import http from '@sinoui/http';
 import CardLayout from './CardLayout';
 interface Props {
@@ -49,6 +49,9 @@ export default function CaseInfoCard(props: Props) {
           {`¥${caseInfo.amountReality}`}
         </Descriptions.Item>
       </Descriptions>
+      <div style={{ textAlign: 'right' }}>
+        <Button type="primary">诉状书预览</Button>
+      </div>
     </CardLayout>
   );
 }

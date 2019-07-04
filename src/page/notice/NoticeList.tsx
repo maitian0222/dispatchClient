@@ -11,7 +11,6 @@ import {
   message,
 } from 'antd';
 import SearchForm from '@commons/SearchForm';
-import UserModel from './UserModel';
 import useRestPageAPi from '@sinoui/use-rest-page-api';
 import http from '@sinoui/http';
 import DataTable from '@commons/DataTable';
@@ -19,7 +18,6 @@ import withErrorCatch from '@commons/with-error-catch';
 import transformListRequest from '../../utils/transformListRequest';
 import Notice from './types/Notice';
 import ResponseResult from '../../types/ResponseResult';
-
 /**
  * 消息管理列表
  */
@@ -40,26 +38,22 @@ function NoticeList() {
     });
   };
 
-  // 批量删除
+  // 批量阅毕未读消息
   const batchDeletion = () => {
-    Modal.confirm({
-      title: '提示',
-      content: '确认删除？',
-      onOk: () => {
-        dataSource
-          .remove(selectedRowIds)
-          .then((result: ResponseResult) => {
-            if (result.code === 0) {
-              dataSource.reload();
-              setSelectedRowIds([]);
-            }
-            message.success(result.msg);
-          })
-          .catch((e) => {
-            message.error(e.response.data.msg);
-          });
-      },
-    });
+    http
+      .put('/biz/information', {
+        ids: selectedRowIds.toString(),
+      })
+      .then((result: ResponseResult) => {
+        if (result.code === 0) {
+          dataSource.reload();
+          setSelectedRowIds([]);
+        }
+        message.success(result.msg);
+      })
+      .catch((e) => {
+        message.error(e.response.data.msg);
+      });
   };
 
   /**
@@ -108,24 +102,20 @@ function NoticeList() {
       {/* style={{ padding: '20px 0', borderTop: '20px solid #f5f5f5' }} */}
       <Row>
         <Col span={24} style={{ padding: '0 10px' }}>
-          <Button type="primary" onClick={() => openModel()}>
-            <Icon type="plus" />
-            新建
-          </Button>
           <Button
             type="primary"
             disabled={selectedRowIds.length <= 0}
             style={{ marginLeft: 20 }}
             onClick={() => batchDeletion()}
           >
-            批量删除
+            批量阅毕
           </Button>
         </Col>
       </Row>
 
       <DataTable
         rowSelection={rowSelection}
-        rowKey={(record: User) => record.userId}
+        rowKey={(record: Notice) => record.id}
         columns={[
           {
             title: '消息状态',
