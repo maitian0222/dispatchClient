@@ -29,77 +29,79 @@ class NavMenu extends Component<Props, State> {
 
   public componentDidMount() {
     const path = location.pathname;
-    http
-      .get(`/admin/menu/${this.props.currentUser.username}`)
-      .then((result: { content?: Resource[] }) => {
-        if (result && result.content) {
-          const data: Resource[] = result.content || [];
-          this.setState({
-            menuList: data,
-          });
-          // 设置菜单默认选中项
-          const selectedMenu = data.find(
-            (item: Resource) => path.indexOf(item.path) !== -1,
-          );
-          if (selectedMenu) {
-            if (selectedMenu.children && selectedMenu.children.length > 0) {
-              const ziMenu = selectedMenu.children.find(
-                (item: Resource) => path.indexOf(item.path) !== -1,
-              );
-              this.setState({
-                openKeys: [selectedMenu.path],
-              });
-              this.setState({
-                selectedKeys: [ziMenu.path],
-              });
-            } else {
-              this.setState({
-                selectedKeys: [selectedMenu.path],
-              });
-            }
-          } else {
-            let parentMenu: Resource;
-            let ziMenu: Resource;
-            for (let i = 0; i < data.length; i++) {
-              ziMenu =
-                data[i].children &&
-                data[i].children.find(
+    setTimeout(() => {
+      http
+        .get(`/admin/menu/${this.props.currentUser.username}`)
+        .then((result: { content?: Resource[] }) => {
+          if (result && result.content) {
+            const data: Resource[] = result.content || [];
+            this.setState({
+              menuList: data,
+            });
+            // 设置菜单默认选中项
+            const selectedMenu = data.find(
+              (item: Resource) => path.indexOf(item.path) !== -1,
+            );
+            if (selectedMenu) {
+              if (selectedMenu.children && selectedMenu.children.length > 0) {
+                const ziMenu = selectedMenu.children.find(
                   (item: Resource) => path.indexOf(item.path) !== -1,
                 );
-              if (ziMenu) {
-                parentMenu = data[i];
-                break;
-              }
-            }
-
-            if (parentMenu) {
-              this.setState({
-                openKeys: [parentMenu.path],
-              });
-              if (ziMenu) {
+                this.setState({
+                  openKeys: [selectedMenu.path],
+                });
                 this.setState({
                   selectedKeys: [ziMenu.path],
                 });
+              } else {
+                this.setState({
+                  selectedKeys: [selectedMenu.path],
+                });
               }
             } else {
-              this.setState({
-                selectedKeys: ['/'],
-              });
+              let parentMenu: Resource;
+              let ziMenu: Resource;
+              for (let i = 0; i < data.length; i++) {
+                ziMenu =
+                  data[i].children &&
+                  data[i].children.find(
+                    (item: Resource) => path.indexOf(item.path) !== -1,
+                  );
+                if (ziMenu) {
+                  parentMenu = data[i];
+                  break;
+                }
+              }
+
+              if (parentMenu) {
+                this.setState({
+                  openKeys: [parentMenu.path],
+                });
+                if (ziMenu) {
+                  this.setState({
+                    selectedKeys: [ziMenu.path],
+                  });
+                }
+              } else {
+                this.setState({
+                  selectedKeys: ['/'],
+                });
+              }
             }
           }
-        }
-      })
-      .catch((error) => {
-        // 拦截到异常后重定向
-        // if (error.response && error.response.status === 401) {
-        //   // message.error('会话超时,请重新登录！');
-        //   // 跳转到登录页
-        //   this.props.onLogout();
-        // } else if (error.response && error.response.status === 403) {
-        //   this.props.history.push('/tip');
-        //   // message.error('无权限访问此页面！');
-        // }
-      });
+        })
+        .catch((error) => {
+          // 拦截到异常后重定向
+          if (error.response && error.response.status === 401) {
+            // message.error('会话超时,请重新登录！');
+            // 跳转到登录页
+            this.props.onLogout();
+          } else if (error.response && error.response.status === 403) {
+            this.props.history.push('/tip');
+            // message.error('无权限访问此页面！');
+          }
+        });
+    }, 0);
   }
 
   public componentWillReceiveProps(nextProps: Props) {

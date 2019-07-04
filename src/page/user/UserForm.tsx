@@ -14,8 +14,8 @@ interface State {
 }
 
 class UserForm extends React.Component<Props, State> {
-  // private props: Props;
-  // private state: State;
+  private props: Props;
+  private state: State;
   constructor(props: Props) {
     super(props);
     this.state = { confirmDirty: false, roleList: [] };
@@ -33,7 +33,7 @@ class UserForm extends React.Component<Props, State> {
 
   public compareToFirstPassword = (rule, value, callback) => {
     const form = this.props.form;
-    if (value && value !== form.getFieldValue('password')) {
+    if (value && value !== form!.getFieldValue('password')) {
       callback('两次输入密码不一致！');
     } else {
       callback();
@@ -43,12 +43,12 @@ class UserForm extends React.Component<Props, State> {
   public validateToNextPassword = (rule, value, callback) => {
     const form = this.props.form;
     if (value && this.state.confirmDirty) {
-      form.validateFields(['rePassword'], { force: true });
+      form!.validateFields(['rePassword'], { force: true });
     }
     callback();
   };
 
-  public handleConfirmBlur = (e) => {
+  public handleConfirmBlur = (e: React.MouseEvent<HTMLElement>) => {
     const value = e.target.value;
     this.setState({ confirmDirty: this.state.confirmDirty || !!value });
   };

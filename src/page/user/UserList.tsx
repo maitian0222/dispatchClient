@@ -30,9 +30,6 @@ function UserList() {
   const [loading, setLoading] = useState(false);
   const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
 
-  useEffect(() => {
-    // http.get('/oa/info/notice?page=0&size=15');
-  }, []);
   const userFormRef = (ref: Form) => {
     formRef = ref;
   };
@@ -65,7 +62,7 @@ function UserList() {
         modelTitleType === 'edit'
           ? dataSource.update(
               {
-                userId: editItem!.userId,
+                userId: editItem.userId,
                 ...values,
               },
               false,
@@ -155,8 +152,7 @@ function UserList() {
    * @param item 数据对象
    * @param type 判断是新建还是修改
    */
-  const openModel = (item: User, type?: string) => {
-    dataSource.fetch();
+  const openModel = (item?: User, type?: string) => {
     setVisible(true);
     setModelTitleType(type || 'add');
     setEditItem({});
@@ -199,10 +195,10 @@ function UserList() {
         ]}
         handleSearch={handleSearch}
       />
-
-      <Row style={{ padding: '20px 0', borderTop: '20px solid #f5f5f5' }}>
+      {/* style={{ padding: '20px 0', borderTop: '20px solid #f5f5f5' }} */}
+      <Row>
         <Col span={24} style={{ padding: '0 10px' }}>
-          <Button type="primary" onClick={openModel}>
+          <Button type="primary" onClick={() => openModel()}>
             <Icon type="plus" />
             新建
           </Button>
