@@ -103,7 +103,9 @@ class NormalLoginForm extends React.PureComponent<Props, State> {
     const { verficationcodeImgSrc, isLoginPage } = this.state;
     return (
       <div className={styles.loginLayout}>
-        <Title style={{ margin: '60px 0' }}>金融纠纷解决平台</Title>
+        <Title style={{ margin: '60px 0', fontSize: '33px' }}>
+          金融纠纷解决平台
+        </Title>
 
         {isLoginPage === true ? (
           <div className={styles.loginContainer}>
