@@ -1,7 +1,7 @@
 import { Express } from 'express';
 
 export default function setup(app: Express) {
-  app.get(`/dispute/menu`, (req, res) => {
+  app.get(`/mock/menu`, (req, res) => {
     const { page = 0, size = 10 } = req.query;
     if (req.body.fileName) {
       res.json({ conent: [] });
@@ -50,13 +50,18 @@ export default function setup(app: Express) {
     });
   });
 
-  app.post(`/dispute/menu`, (req, res) => {
-    res.json({
-      menuName: '系统管理配置save',
-      type: '0',
-      path: '/sys/setting',
-      order: '10',
-    });
+  app.post(`/mock/menu`, (req, res) => {
+    res.json(
+      {
+        code: 0,
+        msg: '新增资源成功',
+        data: {
+          menuName: '系统管理配置save',
+          type: '0',
+          path: '/sys/setting',
+          order: '10',
+        }
+      });
   });
 
   app.put(`/dispute/menu/:menuId`, (req, res) => {

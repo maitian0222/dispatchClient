@@ -1,4 +1,8 @@
 module.exports = {
+  '/mock/**': {
+    target: 'http://localhost:5001',
+    changeOrigin: true,
+  },
   '/upms/**': {
     target: 'http://192.168.80.144',
     changeOrigin: true,

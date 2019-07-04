@@ -7,11 +7,12 @@ import Resource from './types/Resource';
 import DataTable from '@commons/DataTable';
 import withErrorCatch from '@commons/with-error-catch';
 import transformListRequest from '../../utils/transformListRequest';
+import ResponseResult from 'src/types/ResponseResult';
 function ResourceManagement() {
   let formRef: Form;
   const [visible, setVisible] = useState(false);
   const [formOprType, setFormOprType] = useState('add');
-  const [editItem, setEditItem] = useState<Resource>();
+  const [editItem, setEditItem] = useState<Partial<Resource>>({});
   const [loading, setLoading] = useState(false);
   const saveFormRef = (ref: Form) => {
     formRef = ref;
@@ -19,7 +20,7 @@ function ResourceManagement() {
   const showModal = (type?: string, item?: Resource) => {
     setVisible(true);
     setFormOprType(type ? type : 'add');
-    setEditItem(type === 'edit' ? item : {});
+    setEditItem(item || {});
   };
 
   // tslint:disable-next-line:no-any
@@ -40,11 +41,10 @@ function ResourceManagement() {
         return;
       }
       setLoading(true);
-      const oprText = formOprType === 'edit' ? '修改' : '添加';
       const fn =
         formOprType === 'edit'
           ? dataSource.update({
-              menuId: editItem!.menuId,
+              menuId: editItem.menuId,
               type: '0', // 资源类型为菜单
               ...values,
             })
@@ -52,16 +52,19 @@ function ResourceManagement() {
               ...values,
               type: '0',
             });
-      fn.then((result) => {
-        // 清空表单数据
-        form!.resetFields();
+      // tslint:disable-next-line:no-any
+      fn.then((result: any) => {
+        if (result.code === 0) {
+          // 清空表单数据
+          form!.resetFields();
+          setLoading(false);
+          setVisible(false);
+          dataSource.reload();
+        }
+        message.success(result.msg);
+      }).catch((e) => {
         setLoading(false);
-        setVisible(false);
-        dataSource.reload();
-        message.success(`${oprText}资源成功!`);
-      }).catch(() => {
-        message.error(`${oprText}资源失败!`);
-        setLoading(false);
+        message.success(e.response.data.msg);
       });
     });
   };
@@ -71,9 +74,16 @@ function ResourceManagement() {
       title: '提示',
       content: '确认删除？',
       onOk: () => {
-        dataSource.remove(`${item.menuId}`, false).then(() => {
-          dataSource.reload();
-        });
+        // tslint:disable-next-line:no-any
+        dataSource
+          .remove(`${item.menuId}`, false)
+          .then((result: any) => {
+            if (result.code === 0) {
+              dataSource.reload();
+            }
+            message.success(result.msg);
+          })
+          .catch((e) => message.error(e.response.data.msg));
       },
     });
   };

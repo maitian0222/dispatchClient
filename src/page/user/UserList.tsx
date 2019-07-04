@@ -19,6 +19,7 @@ import withErrorCatch from '@commons/with-error-catch';
 import transformListRequest from '../../utils/transformListRequest';
 import User from './types/User';
 import ResponseResult from '../../types/ResponseResult';
+
 /**
  * 用户管理列表
  */
@@ -26,7 +27,7 @@ function UserList() {
   let formRef: Form;
   const [visible, setVisible] = useState(false);
   const [modelTitleType, setModelTitleType] = useState('add');
-  const [editItem, setEditItem] = useState<User>();
+  const [editItem, setEditItem] = useState<Partial<User>>({});
   const [loading, setLoading] = useState(false);
   const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
 
