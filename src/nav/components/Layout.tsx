@@ -3,12 +3,14 @@ import Login from '@auth/user';
 import MainLayout from './MainLayout';
 import http from '@sinoui/http';
 import { message } from 'antd';
-import { withRouter } from 'react-router-dom';
-import Axios from 'axios';
-
+import { withRouter, History } from 'react-router-dom';
+import User from '../../page/user/types/user';
 export interface LayoutPageProps {
+  currentUser: User;
   isLoggined: boolean;
+  onLogout: () => void;
   onRequestFresh: (item1: object, item2?: string) => void;
+  history: History;
 }
 
 export interface LayoutPageState {
@@ -16,6 +18,8 @@ export interface LayoutPageState {
 }
 
 class LayoutPage extends React.Component<LayoutPageProps, LayoutPageState> {
+  private props: LayoutPageProps;
+  private state: LayoutPageState;
   constructor(props: LayoutPageProps) {
     super(props);
     this.state = {
@@ -41,7 +45,8 @@ class LayoutPage extends React.Component<LayoutPageProps, LayoutPageState> {
       throw error;
     });
 
-    http.get('/admin/check').then((result) => {
+    // tslint:disable-next-line:no-any
+    http.get('/admin/check').then((result: any) => {
       this.setState({
         refreshing: false,
       });
@@ -54,9 +59,7 @@ class LayoutPage extends React.Component<LayoutPageProps, LayoutPageState> {
   public renderChildren() {
     const { currentUser } = this.props;
     if (this.props.isLoggined) {
-      return (
-        <MainLayout currentUser={currentUser} onLogout={this.props.onLogout} />
-      );
+      return <MainLayout currentUser={currentUser} />;
     } else if (this.state.refreshing) {
       return <div />;
     }

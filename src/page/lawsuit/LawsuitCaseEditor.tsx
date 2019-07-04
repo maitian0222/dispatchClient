@@ -37,7 +37,7 @@ class LawsuitCaseEditor extends React.Component<Props, State> {
       contactsId,
       courtId,
       status,
-      refuseAcceptReason,
+      checkFailReason,
     } = this.props.location.state;
     // 诉讼案件id
     const id = this.props.match.params.id;
@@ -50,7 +50,7 @@ class LawsuitCaseEditor extends React.Component<Props, State> {
             <ContactCard contactsId={contactsId} />
             {status === 4 && (
               <CardLayout title="退回理由">
-                <p>{refuseAcceptReason}</p>
+                <p>{checkFailReason}</p>
               </CardLayout>
             )}
             <DisputeListCard id={id} status={status} />
