@@ -102,6 +102,7 @@ class AppHeader extends React.PureComponent {
         {this.state.newsData.map((item) => {
           return <NewsFast news={item} />;
         })}
+        {/* <NewsFast news={{ id: '1', content: '11111', time: '2019-7-4' }} /> */}
       </div>
     );
 
@@ -130,7 +131,7 @@ class AppHeader extends React.PureComponent {
               placement="bottom"
               arrowPointAtCenter
             >
-              <Badge count={this.state.newsCount}>
+              <Badge count={this.state.newsData && this.state.newsData.length}>
                 <Icon type="bell" style={{ fontSize: '18px' }} />
               </Badge>
             </Popover>
