@@ -7,14 +7,17 @@ import ContactCard from './component/ContactCard';
 import CaseInfoCard from './component/CaseInfoCard';
 import DisputeListCard from './component/DisputeListCard';
 import CourtInfoCard from './component/CourtInfoCard';
-
 import styles from './Lawsuit.css';
-class LawsuitCaseEditor extends React.Component<Props, State> {
-  private props: any;
-  private state: any;
+import { Location, Match } from 'react-router-dom';
+
+interface Props {
+  location: Location;
+  match: Match;
+}
+class LawsuitCaseEditor extends React.Component<Props, {}> {
+  private props: Props;
   constructor(props: Props) {
     super(props);
-    this.state = {};
   }
 
   // 案件退回后再次提交案件
