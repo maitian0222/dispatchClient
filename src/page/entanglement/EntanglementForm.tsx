@@ -173,7 +173,8 @@ class EntanglementForm extends React.Component<Props, State> {
                   rules: [
                     {
                       required: true,
-                      message: '请填写固话',
+                      pattern: /^(0[0-9]{2,3}\-)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$/,
+                      message: '请填写正确的固话',
                     },
                   ],
                   initialValue: initialValues ? initialValues.fixedPhone : '',
@@ -186,7 +187,7 @@ class EntanglementForm extends React.Component<Props, State> {
                 wrapperCol={{ span: 18 }}
                 label="地址"
               >
-                {getFieldDecorator('postalAddress', {
+                {getFieldDecorator('peopleAddress', {
                   rules: [
                     {
                       required: true,
@@ -194,7 +195,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     },
                   ],
                   initialValue: initialValues
-                    ? initialValues.postalAddress
+                    ? initialValues.peopleAddress
                     : '',
                 })(<Input />)}
               </Form.Item>
@@ -516,6 +517,147 @@ class EntanglementForm extends React.Component<Props, State> {
             </Col>
           </Row>
 
+          <Row>
+            <Col span={8}>
+              <Form.Item label="案件类型">
+                {getFieldDecorator('caseType', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择案件类型',
+                    },
+                  ],
+                  initialValue: initialValues ? initialValues.caseType : '',
+                })(<DictionarySelect mode="false" fieldCode="CASE_TYPE" />)}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="递交法院">
+                {getFieldDecorator('courtId', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择法院',
+                    },
+                  ],
+                  initialValue: initialValues ? initialValues.courtId : '',
+                })(<CourtSelect />)}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="被告主体人">
+                {getFieldDecorator('respondentType', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请选择被告人主体',
+                    },
+                  ],
+                  initialValue: initialValues
+                    ? initialValues.respondentType
+                      ? initialValues.respondentType
+                      : 0
+                    : 0,
+                })(
+                  <Radio.Group
+                    name="respondentType"
+                    onChange={(e) => {
+                      this.setState({
+                        respondentType: e.target.value,
+                      });
+                      this.props.form.resetFields({ ...initialValues });
+                    }}
+                  >
+                    <Radio value={0}>自然人</Radio>
+                    <Radio value={1}>法人</Radio>
+                  </Radio.Group>,
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
+          {this.state.respondentType === 1 ? legalPerson() : naturalPerson()}
+          <Row>
+            <Col span={8}>
+              <Form.Item label="身份证正面">
+                {getFieldDecorator('idFront', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请上传身份证正面',
+                    },
+                  ],
+                })(
+                  <UpLoadModule
+                    action="/oss/attachment/fileupload"
+                    listType="picture-card"
+                    upLoadNumber="1"
+                    files={initialValues && initialValues.idFront}
+                  >
+                    <div>
+                      <Icon type="plus" />
+                      <div className="ant-upload-text">上传文件</div>
+                    </div>
+                  </UpLoadModule>,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="身份证反面">
+                {getFieldDecorator('idReverse', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请上传身份证反面',
+                    },
+                  ],
+                })(
+                  <UpLoadModule
+                    action="/oss/attachment/fileupload"
+                    listType="picture-card"
+                    upLoadNumber="1"
+                    files={initialValues && initialValues.idReverse}
+                  >
+                    <div>
+                      <Icon type="plus" />
+                      <div className="ant-upload-text">上传文件</div>
+                    </div>
+                  </UpLoadModule>,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item
+                style={
+                  this.state.respondentType === 1
+                    ? {}
+                    : { visibility: 'hidden' }
+                }
+                label="营业执照"
+              >
+                {getFieldDecorator('businessLicense', {
+                  rules: [
+                    {
+                      required: this.state.respondentType === 1 ? true : false,
+                      message: '请上传营业执照',
+                    },
+                  ],
+                })(
+                  <UpLoadModule
+                    action="/oss/attachment/fileupload"
+                    listType="picture-card"
+                    upLoadNumber="1"
+                    files={initialValues && initialValues.businessLicense}
+                  >
+                    <div>
+                      <Icon type="plus" />
+                      <div className="ant-upload-text">上传文件</div>
+                    </div>
+                  </UpLoadModule>,
+                )}
+              </Form.Item>
+            </Col>
+          </Row>
+
           <Divider />
 
           <Typography>
@@ -586,7 +728,8 @@ class EntanglementForm extends React.Component<Props, State> {
                   <InputNumber
                     defaultValue={0}
                     min={0}
-                    formatter={(value) => `${value}￥`}
+                    precision={2}
+                    formatter={(value) => `￥${value}`}
                     parser={(value) => value.replace('￥', '')}
                   />,
                 )}
@@ -675,7 +818,8 @@ class EntanglementForm extends React.Component<Props, State> {
                   <InputNumber
                     defaultValue={0}
                     min={0}
-                    formatter={(value) => `${value}￥`}
+                    precision={2}
+                    formatter={(value) => `￥${value}`}
                     parser={(value) => value.replace('￥', '')}
                     onChange={(value) => {
                       const owingInterests = this.props.form.getFieldValue(
@@ -705,7 +849,8 @@ class EntanglementForm extends React.Component<Props, State> {
                   <InputNumber
                     defaultValue={0}
                     min={0}
-                    formatter={(value) => `${value}￥`}
+                    precision={2}
+                    formatter={(value) => `￥${value}`}
                     parser={(value) => value.replace('￥', '')}
                     onChange={(value) => {
                       const overdueMoney = this.props.form.getFieldValue(
@@ -733,9 +878,11 @@ class EntanglementForm extends React.Component<Props, State> {
                   initialValue: initialValues && initialValues.total,
                 })(
                   <InputNumber
+                    readOnly
                     defaultValue={0}
                     min={0}
-                    formatter={(value) => `${value}￥`}
+                    precision={2}
+                    formatter={(value) => `￥${value}`}
                     parser={(value) => value.replace('￥', '')}
                   />,
                 )}

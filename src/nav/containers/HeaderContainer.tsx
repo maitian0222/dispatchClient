@@ -2,18 +2,62 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { ActionCreators } from '@auth/user';
 import http from '@sinoui/http';
-import { Layout, Modal, Icon, Menu, Dropdown, Avatar } from 'antd';
+import {
+  Layout,
+  Modal,
+  Icon,
+  Menu,
+  Dropdown,
+  Avatar,
+  Divider,
+  Badge,
+  Popover,
+  Row,
+  Col,
+} from 'antd';
 import { withRouter } from 'react-router-dom';
 import ChangePwdModal from '../components/ChangePwdModal';
+import NewsFast from './NewsFast';
+import { getNewsQuery, getNewsCount } from './apis';
 const { Header } = Layout;
 
 class AppHeader extends React.PureComponent {
+  private timer;
   constructor(props) {
     super(props);
     this.state = {
       visible: false,
+      newsCount: 0,
+      newsData: [],
     };
   }
+
+  public componentWillMount() {
+    this.refreshNews();
+    this.timer = setInterval(() => {
+      this.refreshNews();
+    }, 20000);
+  }
+  public componentWillUnmount() {
+    clearInterval(this.timer);
+  }
+
+  /**
+   * 刷新消息列表和消息数量
+   */
+  private refreshNews = () => {
+    getNewsQuery().then((result) => {
+      this.setState({
+        newsData: result.data,
+      });
+    });
+    getNewsCount().then((result) => {
+      this.setState({
+        newsCount: result,
+      });
+    });
+  };
+
   private showConfirm = () => {
     const logout = this.props.onLogout;
     const history = this.props.history;
@@ -53,6 +97,14 @@ class AppHeader extends React.PureComponent {
         </Menu.Item>
       </Menu>
     );
+    const content = (
+      <div style={{ height: '80vh', overflow: 'auto' }}>
+        {this.state.newsData.map((item) => {
+          return <NewsFast news={item} />;
+        })}
+      </div>
+    );
+
     return (
       <React.Fragment>
         <Header style={{ background: '#fff', padding: '0 20px' }}>
@@ -70,6 +122,19 @@ class AppHeader extends React.PureComponent {
               <span>{currentUser.username}</span>
             </a>
           </Dropdown>
+          <a style={{ float: 'right', marginRight: '20px' }}>
+            <Popover
+              content={content}
+              title="消息列表"
+              trigger="click"
+              placement="bottom"
+              arrowPointAtCenter
+            >
+              <Badge count={this.state.newsCount}>
+                <Icon type="bell" style={{ fontSize: '18px' }} />
+              </Badge>
+            </Popover>
+          </a>
         </Header>
         <ChangePwdModal
           visible={this.state.visible}
