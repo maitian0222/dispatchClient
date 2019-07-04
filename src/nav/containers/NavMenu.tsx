@@ -43,31 +43,33 @@ class NavMenu extends Component<Props, State> {
           );
           if (selectedMenu) {
             if (selectedMenu.children && selectedMenu.children.length > 0) {
-              const ziMenu = selectedMenu.children.find(
+              const ziMenu: Resource | undefined = selectedMenu.children.find(
                 (item: Resource) => path.indexOf(item.path) !== -1,
               );
               this.setState({
                 openKeys: [selectedMenu.path],
               });
-              this.setState({
-                selectedKeys: [ziMenu.path],
-              });
+              if (ziMenu) {
+                this.setState({
+                  selectedKeys: [ziMenu!.path],
+                });
+              }
             } else {
               this.setState({
                 selectedKeys: [selectedMenu.path],
               });
             }
           } else {
-            let parentMenu: Resource;
-            let ziMenu: Resource;
-            for (let i = 0; i < data.length; i++) {
+            let parentMenu: Resource | undefined;
+            let ziMenu: Resource | undefined;
+            for (const menu of data) {
               ziMenu =
-                data[i].children &&
-                data[i].children.find(
+                menu.children &&
+                menu!.children.find(
                   (item: Resource) => path.indexOf(item.path) !== -1,
                 );
               if (ziMenu) {
-                parentMenu = data[i];
+                parentMenu = menu;
                 break;
               }
             }
@@ -88,17 +90,6 @@ class NavMenu extends Component<Props, State> {
             }
           }
         }
-      })
-      .catch((error) => {
-        // 拦截到异常后重定向
-        // if (error.response && error.response.status === 401) {
-        //   // message.error('会话超时,请重新登录！');
-        //   // 跳转到登录页
-        //   this.props.onLogout();
-        // } else if (error.response && error.response.status === 403) {
-        //   this.props.history.push('/tip');
-        //   // message.error('无权限访问此页面！');
-        // }
       });
   }
 

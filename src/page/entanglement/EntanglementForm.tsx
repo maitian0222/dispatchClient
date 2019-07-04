@@ -37,12 +37,14 @@ class EntanglementForm extends React.Component<Props, State> {
       content: [],
       fileList: [],
       respondentType: 0,
+      certificateType: '',
     };
   }
 
   public componentDidMount() {
     this.setState({
       respondentType: this.props.initialValues.respondentType,
+      certificateType: this.props.initialValues.certificateType,
     });
   }
 
@@ -53,6 +55,15 @@ class EntanglementForm extends React.Component<Props, State> {
     ) {
       this.setState({
         respondentType: nextProps.initialValues.respondentType,
+      });
+    }
+    if (
+      nextProps.initialValues.certificateType !==
+      this.props.initialValues.certificateType
+    ) {
+      console.log(nextProps.initialValues.certificateType);
+      this.setState({
+        certificateType: nextProps.initialValues.certificateType,
       });
     }
   }
@@ -142,7 +153,6 @@ class EntanglementForm extends React.Component<Props, State> {
                 {getFieldDecorator('email', {
                   rules: [
                     {
-                      required: true,
                       pattern: /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/,
                       message: '请输入正确的邮箱地址',
                     },
@@ -158,7 +168,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     {
                       required: true,
                       pattern: /^1[3456789]\d{9}$/,
-                      message: '请输入正确的电话号码',
+                      message: '请输入正确的手机号码',
                     },
                   ],
                   initialValue: initialValues && initialValues.phone,
@@ -172,8 +182,8 @@ class EntanglementForm extends React.Component<Props, State> {
                 {getFieldDecorator('fixedPhone', {
                   rules: [
                     {
-                      required: true,
-                      message: '请填写固话',
+                      pattern: /^(0[0-9]{2,3}\-)?([2-9][0-9]{6,7})+(\-[0-9]{1,4})?$/,
+                      message: '请填写正确的固话',
                     },
                   ],
                   initialValue: initialValues ? initialValues.fixedPhone : '',
@@ -186,7 +196,7 @@ class EntanglementForm extends React.Component<Props, State> {
                 wrapperCol={{ span: 18 }}
                 label="地址"
               >
-                {getFieldDecorator('postalAddress', {
+                {getFieldDecorator('peopleAddress', {
                   rules: [
                     {
                       required: true,
@@ -194,7 +204,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     },
                   ],
                   initialValue: initialValues
-                    ? initialValues.postalAddress
+                    ? initialValues.peopleAddress
                     : '',
                 })(<Input />)}
               </Form.Item>
@@ -297,7 +307,18 @@ class EntanglementForm extends React.Component<Props, State> {
                   initialValue: initialValues
                     ? initialValues.certificateType
                     : '',
-                })(<DictionarySelect mode="dan" fieldCode="ID_TYPE" />)}
+                })(
+                  <DictionarySelect
+                    mode="dan"
+                    fieldCode="ID_TYPE"
+                    onChange={(value) => {
+                      console.log(value);
+                      this.setState({
+                        certificateType: value,
+                      });
+                    }}
+                  />,
+                )}
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -306,7 +327,13 @@ class EntanglementForm extends React.Component<Props, State> {
                   rules: [
                     {
                       required: true,
-                      message: '请填写证件号',
+                      message: '请填写正确证件号',
+                      pattern:
+                        this.state.certificateType === 'ID_CARD'
+                          ? /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}[0-9Xx]$)/
+                          : this.state.certificateType === 'PASSPORT'
+                          ? /^1[45][0-9]{7}|([P|p|S|s]\d{7})|([S|s|G|g]\d{8})|([Gg|Tt|Ss|Ll|Qq|Dd|Aa|Ff]\d{8})|([H|h|M|m]\d{8，10})$/
+                          : '',
                     },
                   ],
                   initialValue: initialValues
@@ -335,7 +362,6 @@ class EntanglementForm extends React.Component<Props, State> {
                 {getFieldDecorator('email', {
                   rules: [
                     {
-                      required: true,
                       pattern: /^[a-zA-Z0-9_.-]+@[a-zA-Z0-9-]+(\.[a-zA-Z0-9-]+)*\.[a-zA-Z0-9]{2,6}$/,
                       message: '请输入正确的邮箱地址',
                     },
@@ -345,14 +371,8 @@ class EntanglementForm extends React.Component<Props, State> {
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item label="电话">
+              <Form.Item label="固话">
                 {getFieldDecorator('fixedPhone', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请填写电话',
-                    },
-                  ],
                   initialValue: initialValues ? initialValues.fixedPhone : '',
                 })(<Input />)}
               </Form.Item>
@@ -586,7 +606,8 @@ class EntanglementForm extends React.Component<Props, State> {
                   <InputNumber
                     defaultValue={0}
                     min={0}
-                    formatter={(value) => `${value}￥`}
+                    precision={2}
+                    formatter={(value) => `￥${value}`}
                     parser={(value) => value.replace('￥', '')}
                   />,
                 )}
@@ -675,7 +696,8 @@ class EntanglementForm extends React.Component<Props, State> {
                   <InputNumber
                     defaultValue={0}
                     min={0}
-                    formatter={(value) => `${value}￥`}
+                    precision={2}
+                    formatter={(value) => `￥${value}`}
                     parser={(value) => value.replace('￥', '')}
                     onChange={(value) => {
                       const owingInterests = this.props.form.getFieldValue(
@@ -705,7 +727,8 @@ class EntanglementForm extends React.Component<Props, State> {
                   <InputNumber
                     defaultValue={0}
                     min={0}
-                    formatter={(value) => `${value}￥`}
+                    precision={2}
+                    formatter={(value) => `￥${value}`}
                     parser={(value) => value.replace('￥', '')}
                     onChange={(value) => {
                       const overdueMoney = this.props.form.getFieldValue(
@@ -733,9 +756,11 @@ class EntanglementForm extends React.Component<Props, State> {
                   initialValue: initialValues && initialValues.total,
                 })(
                   <InputNumber
+                    readOnly
                     defaultValue={0}
                     min={0}
-                    formatter={(value) => `${value}￥`}
+                    precision={2}
+                    formatter={(value) => `￥${value}`}
                     parser={(value) => value.replace('￥', '')}
                   />,
                 )}
@@ -779,7 +804,7 @@ class EntanglementForm extends React.Component<Props, State> {
                 })(
                   <UpLoadModule
                     action="/oss/attachment/fileupload"
-                    listType="picture-card"
+                    listType="picture"
                     upLoadNumber="1"
                     files={initialValues && initialValues.evidence}
                   >

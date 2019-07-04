@@ -12,5 +12,8 @@ function getSaveAndSubmit(params?: any) {
 function getBatchSubmit(params?: any) {
   return http.post(`/biz/dispute/submit`, params);
 }
+function getImport(params?: any) {
+  return http.post(`/biz/dispute/import`, params);
+}
 
-export { getCourtList, getSaveAndSubmit, getBatchSubmit };
+export { getCourtList, getSaveAndSubmit, getBatchSubmit, getImport };

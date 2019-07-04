@@ -18,7 +18,8 @@ import DataTable from '@commons/DataTable';
 import withErrorCatch from '@commons/with-error-catch';
 import transformListRequest from '../../utils/transformListRequest';
 import User from './types/User';
-import EllipsisText from '../../component/EllipsisText';
+import ResponseResult from '../../types/ResponseResult';
+
 /**
  * 用户管理列表
  */
@@ -26,13 +27,10 @@ function UserList() {
   let formRef: Form;
   const [visible, setVisible] = useState(false);
   const [modelTitleType, setModelTitleType] = useState('add');
-  const [editItem, setEditItem] = useState<User>({});
+  const [editItem, setEditItem] = useState<Partial<User>>({});
   const [loading, setLoading] = useState(false);
   const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
 
-  useEffect(() => {
-    // http.get('/oa/info/notice?page=0&size=15');
-  }, []);
   const userFormRef = (ref: Form) => {
     formRef = ref;
   };
@@ -61,7 +59,6 @@ function UserList() {
       }
 
       setLoading(true);
-      const oprText = modelTitleType === 'edit' ? '修改' : '添加';
       const fn =
         modelTitleType === 'edit'
           ? dataSource.update(
@@ -73,15 +70,18 @@ function UserList() {
             )
           : dataSource.save(values, false);
 
-      fn.then((result) => {
-        // 清空表单数据
-        form!.resetFields();
-        setLoading(false);
-        setVisible(false);
-        dataSource.reload();
-        message.success(`${oprText}用户成功!`);
-      }).catch(() => {
-        message.error(`${oprText}用户失败!`);
+      // tslint:disable-next-line:no-any
+      fn.then((result: any) => {
+        if (result.code === 0) {
+          // 清空表单数据
+          form!.resetFields();
+          setLoading(false);
+          setVisible(false);
+          dataSource.reload();
+        }
+        message.success(result.msg);
+      }).catch((e) => {
+        message.error(e.response.data.msg);
         setLoading(false);
       });
     });
@@ -95,11 +95,11 @@ function UserList() {
       onOk: () => {
         http
           .put(`/admin/user/password/reset/${item.userId}`)
-          .then((result) => {
-            message.success('重置密码成功！');
+          .then((result: ResponseResult) => {
+            message.success(result.msg);
           })
           .catch((e) => {
-            message.error('重置密码失败！');
+            message.error(e.response.data.msg);
           });
       },
     });
@@ -111,10 +111,18 @@ function UserList() {
       title: '提示',
       content: '确认删除？',
       onOk: () => {
-        dataSource.remove(selectedRowIds).then(() => {
-          dataSource.reload();
-          setSelectedRowIds([]);
-        });
+        dataSource
+          .remove(selectedRowIds)
+          .then((result: ResponseResult) => {
+            if (result.code === 0) {
+              dataSource.reload();
+              setSelectedRowIds([]);
+            }
+            message.success(result.msg);
+          })
+          .catch((e) => {
+            message.error(e.response.data.msg);
+          });
       },
     });
   };
@@ -125,9 +133,17 @@ function UserList() {
       title: '提示',
       content: '确认删除？',
       onOk: () => {
-        dataSource.remove(`${item.userId}`, false).then(() => {
-          dataSource.reload();
-        });
+        dataSource
+          .remove(`${item.userId}`, false)
+          .then((result: ResponseResult) => {
+            if (result.code === 0) {
+              dataSource.reload();
+            }
+            message.success(result.msg);
+          })
+          .catch((e) => {
+            message.error(e.response.data.msg);
+          });
       },
     });
   };
@@ -137,13 +153,12 @@ function UserList() {
    * @param item 数据对象
    * @param type 判断是新建还是修改
    */
-  const openModel = (item: any, type?: string) => {
-    dataSource.fetch();
+  const openModel = (item?: User, type?: string) => {
     setVisible(true);
     setModelTitleType(type || 'add');
     setEditItem({});
     if (type === 'edit' && item) {
-      http.get(`/admin/user/${item.username}`).then((result) => {
+      http.get(`/admin/user/${item.username}`).then((result: User) => {
         setEditItem(result);
       });
     }
@@ -181,10 +196,10 @@ function UserList() {
         ]}
         handleSearch={handleSearch}
       />
-
-      <Row style={{ padding: '20px 0', borderTop: '20px solid #f5f5f5' }}>
+      {/* style={{ padding: '20px 0', borderTop: '20px solid #f5f5f5' }} */}
+      <Row>
         <Col span={24} style={{ padding: '0 10px' }}>
-          <Button type="primary" onClick={openModel}>
+          <Button type="primary" onClick={() => openModel()}>
             <Icon type="plus" />
             新建
           </Button>
@@ -207,7 +222,7 @@ function UserList() {
             title: '编号',
             key: 'index',
             align: 'center',
-            render: (value: string, item: any, index: number) => {
+            render: (value: string, item: User, index: number) => {
               if (dataSource && dataSource.pagination) {
                 return (
                   dataSource.pagination.pageNo *

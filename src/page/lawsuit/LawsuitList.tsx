@@ -1,48 +1,20 @@
 import React, { useState } from 'react';
-import { Modal, Icon, Row, Col, Button, Divider, Statistic } from 'antd';
+import withErrorCatch from '@commons/with-error-catch';
 import SearchForm from '@commons/SearchForm';
 import useRestPageAPi from '@sinoui/use-rest-page-api';
-import http from '@sinoui/http';
 import DataTable from '@commons/DataTable';
 import Lawsuit from './types/Lawsuit';
-
+import transformListRequest from '../../utils/transformListRequest';
 /**
  * 纠纷管理列表
  */
-function LawsuitList(props) {
-  let formRef;
-  const disputeFormRef = (ref: any) => {
-    formRef = ref;
-  };
-
-  const [visible, setVisible] = useState(false);
-  const [modelTitleType, setModelTitleType] = useState();
-  const [editItem, setEditItem] = useState({});
-  const [loading, setLoading] = useState(false);
-
-  /**
-   * 打开纠纷Model
-   * @param item 数据对象
-   * @param type 判断是新建还是修改
-   */
-  const openModel = (item: any, type?: string) => {
-    setVisible(true);
-    setModelTitleType(type);
-    setEditItem(type === 'edit' ? item : {});
-  };
-
-  /**
-   * 关闭纠纷Model
-   */
-  const onClose = () => {
-    setVisible(false);
-  };
-
+function LawsuitList(props: {}) {
   /**
    * 数据管理api
    */
   const dataSource = useRestPageAPi<Lawsuit>('/biz/lawsuit', [], {
     keyName: 'id',
+    transformListRequest,
   });
 
   /**
@@ -107,51 +79,52 @@ function LawsuitList(props) {
       <SearchForm
         condition={[
           { fieldName: '案号', placeholder: '请输入', name: 'caseNumber' },
-            {
-              fieldName: '状态',
-              name: 'status',
-              type: 'select',
-              mode: 'false',
-              valueName: 'value',
-              textName: 'name',
-              options: [
-                {
-                  value: 1,
-                  name: '待审核'
-                },
-                {
-                  value: 2,
-                  name: '拒绝受理'
-                },
-                {
-                  value: 3,
-                  name: '审核通过'
-                },
-                {
-                  value: 4,
-                  name: '审核未通过'
-                },{
-                  value: 5,
-                  name: '已调解'
-                },
-                {
-                  value: 6,
-                  name: '已立案'
-                },
-                {
-                  value: 7,
-                  name: '代缴费'
-                },
-                {
-                  value: 8,
-                  name: '已缴费'
-                },
-                {
-                  value: 9,
-                  name: '结案'
-                },
-              ],
-            },
+          {
+            fieldName: '状态',
+            name: 'status',
+            type: 'select',
+            mode: 'false',
+            valueName: 'value',
+            textName: 'name',
+            options: [
+              {
+                value: 1,
+                name: '待审核',
+              },
+              {
+                value: 2,
+                name: '拒绝受理',
+              },
+              {
+                value: 3,
+                name: '审核通过',
+              },
+              {
+                value: 4,
+                name: '审核未通过',
+              },
+              {
+                value: 5,
+                name: '已调解',
+              },
+              {
+                value: 6,
+                name: '已立案',
+              },
+              {
+                value: 7,
+                name: '代缴费',
+              },
+              {
+                value: 8,
+                name: '已缴费',
+              },
+              {
+                value: 9,
+                name: '结案',
+              },
+            ],
+          },
         ]}
         handleSearch={handleSearch}
       />
@@ -221,9 +194,11 @@ function LawsuitList(props) {
                 <div>
                   <a
                     href="javascript:;"
-                    onClick={() =>  {props.history.push(`/lawsuit/edit/${item.id}`, {
-                      ...item,
-                    })}}
+                    onClick={() => {
+                      props.history.push(`/lawsuit/edit/${item.id}`, {
+                        ...item,
+                      });
+                    }}
                   >
                     查看
                   </a>
@@ -238,4 +213,6 @@ function LawsuitList(props) {
   );
 }
 
-export default LawsuitList;
+export default withErrorCatch({ errorTitle: '很抱歉，数据加载失败...' })(
+  LawsuitList,
+);

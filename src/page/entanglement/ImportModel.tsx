@@ -1,37 +1,31 @@
 import * as React from 'react';
 import { Modal, Button, Form } from 'antd';
-import AddResourceForm from './AddResourceForm';
-import { FromTo } from 'moment';
+import ImportForm from './ImportForm';
 
 interface Props {
-  loading: boolean;
   visible: boolean;
+  loading?: boolean;
+  modelTitleType: string;
   onClose: () => void;
   onOk: () => void;
-  // tslint:disable-next-line:no-any
-  wrappedComponentRef: (formRef: Form) => Form;
-  formOprType: string;
-  // tslint:disable-next-line:no-any
   editItem: any;
-  form: FromTo;
 }
-
-class AddResourceModal extends React.Component<Props, {}> {
-  constructor(props: Props) {
-    super(props);
-  }
-
+/**
+ * 导入model
+ */
+class ImportModel extends React.PureComponent {
   public render() {
-    const { visible, onClose, form, formOprType, onOk, loading } = this.props;
+    const { visible, loading, onClose, onOk, form, editItem } = this.props;
     const { getFieldDecorator } = form;
+
     return (
       <Modal
         visible={visible}
-        title={formOprType === 'edit' ? '修改资源' : '新增资源'}
+        title="纠纷数据导入"
         maskClosable={false}
         width={800}
         keyboard={false}
-        destroyOnClose
+        destoryOnClose={true}
         onCancel={onClose}
         footer={[
           <Button key="back" onClick={onClose}>
@@ -42,14 +36,13 @@ class AddResourceModal extends React.Component<Props, {}> {
           </Button>,
         ]}
       >
-        <AddResourceForm
+        <ImportForm
           getFieldDecorator={getFieldDecorator}
-          initialValues={this.props.editItem}
-          form={form}
+          initialValues={editItem}
         />
       </Modal>
     );
   }
 }
 
-export default Form.create({ name: 'addResource' })(AddResourceModal);
+export default Form.create({})(ImportModel);

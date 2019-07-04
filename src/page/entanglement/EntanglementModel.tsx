@@ -40,12 +40,7 @@ class EntanglementModel extends React.PureComponent {
           <Button key="back" onClick={onClose}>
             取消
           </Button>,
-          <Button
-            key="submit"
-            type="primary"
-            loading={loading}
-            onClick={saveSubmit}
-          >
+          <Button key="submit" type="primary" onClick={saveSubmit}>
             提交
           </Button>,
           <Button key="submit" type="primary" loading={loading} onClick={onOk}>

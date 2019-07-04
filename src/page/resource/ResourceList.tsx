@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Icon, Row, Col, Button, Divider, message } from 'antd';
+import { Modal, Icon, Row, Col, Button, Divider, message, Form } from 'antd';
 import SearchForm from '@commons/SearchForm';
 import useRestListApi from '@sinoui/use-rest-list-api';
 import AddResourceModal from './AddResourceModal';
@@ -7,22 +7,24 @@ import Resource from './types/Resource';
 import DataTable from '@commons/DataTable';
 import withErrorCatch from '@commons/with-error-catch';
 import transformListRequest from '../../utils/transformListRequest';
+import ResponseResult from 'src/types/ResponseResult';
 function ResourceManagement() {
-  let formRef = null;
+  let formRef: Form;
   const [visible, setVisible] = useState(false);
   const [formOprType, setFormOprType] = useState('add');
-  const [editItem, setEditItem] = useState({});
+  const [editItem, setEditItem] = useState<Partial<Resource>>({});
   const [loading, setLoading] = useState(false);
-  const saveFormRef = (ref: any) => {
+  const saveFormRef = (ref: Form) => {
     formRef = ref;
   };
-  const showModal = (type?: string, item?: any) => {
+  const showModal = (type?: string, item?: Resource) => {
     setVisible(true);
     setFormOprType(type ? type : 'add');
-    setEditItem(type === 'edit' ? item : {});
+    setEditItem(item || {});
   };
 
-  const handleSearch = (condition) => {
+  // tslint:disable-next-line:no-any
+  const handleSearch = (condition: any) => {
     dataSource.query({
       // ...dataSource.searchParams,
       ...condition,
@@ -31,14 +33,14 @@ function ResourceManagement() {
 
   const onOk = () => {
     const form = formRef.props.form;
-    form.validateFields((err, values) => {
+    // tslint:disable-next-line:no-any
+    form!.validateFields((err: any, values: Resource) => {
       // 检验失败return
 
       if (err) {
         return;
       }
       setLoading(true);
-      const oprText = formOprType === 'edit' ? '修改' : '添加';
       const fn =
         formOprType === 'edit'
           ? dataSource.update({
@@ -50,16 +52,19 @@ function ResourceManagement() {
               ...values,
               type: '0',
             });
-      fn.then((result) => {
-        // 清空表单数据
-        form.resetFields();
+      // tslint:disable-next-line:no-any
+      fn.then((result: any) => {
+        if (result.code === 0) {
+          // 清空表单数据
+          form!.resetFields();
+          setLoading(false);
+          setVisible(false);
+          dataSource.reload();
+        }
+        message.success(result.msg);
+      }).catch((e) => {
         setLoading(false);
-        setVisible(false);
-        dataSource.reload();
-        message.success(`${oprText}资源成功!`);
-      }).catch(() => {
-        message.error(`${oprText}资源失败!`);
-        setLoading(false);
+        message.success(e.response.data.msg);
       });
     });
   };
@@ -69,9 +74,16 @@ function ResourceManagement() {
       title: '提示',
       content: '确认删除？',
       onOk: () => {
-        dataSource.remove(`${item.menuId}`, false).then(() => {
-          dataSource.reload();
-        });
+        // tslint:disable-next-line:no-any
+        dataSource
+          .remove(`${item.menuId}`, false)
+          .then((result: any) => {
+            if (result.code === 0) {
+              dataSource.reload();
+            }
+            message.success(result.msg);
+          })
+          .catch((e) => message.error(e.response.data.msg));
       },
     });
   };
@@ -98,6 +110,7 @@ function ResourceManagement() {
       </Row>
 
       <DataTable
+        rowKey={(record) => record.menuId}
         columns={[
           {
             title: '名称',
@@ -110,7 +123,7 @@ function ResourceManagement() {
             dataIndex: 'type',
             key: 'type',
             align: 'center',
-            render: (value) => (value === '0' ? '菜单' : '按钮'),
+            render: (value: string) => (value === '0' ? '菜单' : '按钮'),
           },
           {
             title: '链接',
@@ -123,7 +136,7 @@ function ResourceManagement() {
             dataIndex: 'opt',
             key: 'opt',
             align: 'center',
-            render: (value, item, index) => {
+            render: (value: string, item: Resource) => {
               return (
                 <div>
                   <a href="javascript:;" onClick={(event) => onDelete(item)}>

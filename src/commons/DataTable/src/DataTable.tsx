@@ -6,7 +6,7 @@ interface Props {
   columns: any;
   // tslint:disable-next-line:no-any
   dataSource: any;
-  rowSelection: {
+  rowSelection?: {
     selectedRowKeys: string[];
     onChange: (value: string[]) => void;
   };
