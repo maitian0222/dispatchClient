@@ -5,7 +5,7 @@ import ContactList from '../page/contact/ContactList';
 import EntanglementList from '../page/entanglement/EntanglementList';
 import LawsuitList from '../page/lawsuit/LawsuitList';
 import LawsuitCaseEditor from '../page/lawsuit/LawsuitCaseEditor';
-import MaterialList from '../page/material/MaterialList';
+import NoticeList from '../page/notice/NoticeList';
 import MaterialHasList from '../page/material/MaterialHasList';
 import MaterialWaitList from '../page/material/MaterialWaitList';
 
@@ -55,6 +55,7 @@ const routes = [
     title: '律师材料待审核',
     component: MaterialWaitList,
   },
+  { epath: '/notice/list', title: '我的消息', component: NoticeList },
 ];
 
 export default routes;
