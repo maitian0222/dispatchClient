@@ -57,15 +57,6 @@ class EntanglementForm extends React.Component<Props, State> {
         respondentType: nextProps.initialValues.respondentType,
       });
     }
-    if (
-      nextProps.initialValues.certificateType !==
-      this.props.initialValues.certificateType
-    ) {
-      console.log(nextProps.initialValues.certificateType);
-      this.setState({
-        certificateType: nextProps.initialValues.certificateType,
-      });
-    }
   }
 
   public render() {
@@ -214,6 +205,35 @@ class EntanglementForm extends React.Component<Props, State> {
       );
     };
 
+    //  根据类型验证
+    const certificateIdValidator = (rule: any, value: any, callback: any) => {
+      const { getFieldValue } = this.props.form;
+
+      switch (getFieldValue('certificateType')) {
+        case 'ID_CARD':
+          const IdCard = /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}[0-9Xx]$)/;
+          if (!IdCard.test(value)) {
+            callback('请输入正确的身份证号');
+          } else {
+            callback();
+          }
+          break;
+        case 'PASSPORT':
+          const passport = /^1[45][0-9]{7}|([P|p|S|s]\d{7})|([S|s|G|g]\d{8})|([Gg|Tt|Ss|Ll|Qq|Dd|Aa|Ff]\d{8})|([H|h|M|m]\d{8，10})$/;
+          if (!passport.test(value)) {
+            callback('请输入正确的护照');
+          } else {
+            callback();
+          }
+          break;
+        default:
+          callback();
+      }
+
+      // 必须总是返回一个 callback，否则 validateFields 无法响应
+      // callback();
+    };
+
     /**
      * 法人
      */
@@ -307,18 +327,7 @@ class EntanglementForm extends React.Component<Props, State> {
                   initialValue: initialValues
                     ? initialValues.certificateType
                     : '',
-                })(
-                  <DictionarySelect
-                    mode="dan"
-                    fieldCode="ID_TYPE"
-                    onChange={(value) => {
-                      console.log(value);
-                      this.setState({
-                        certificateType: value,
-                      });
-                    }}
-                  />,
-                )}
+                })(<DictionarySelect mode="dan" fieldCode="ID_TYPE" />)}
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -327,13 +336,10 @@ class EntanglementForm extends React.Component<Props, State> {
                   rules: [
                     {
                       required: true,
-                      message: '请填写正确证件号',
-                      pattern:
-                        this.state.certificateType === 'ID_CARD'
-                          ? /(^[1-9]\d{5}(18|19|([23]\d))\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$)|(^[1-9]\d{5}\d{2}((0[1-9])|(10|11|12))(([0-2][1-9])|10|20|30|31)\d{2}[0-9Xx]$)/
-                          : this.state.certificateType === 'PASSPORT'
-                          ? /^1[45][0-9]{7}|([P|p|S|s]\d{7})|([S|s|G|g]\d{8})|([Gg|Tt|Ss|Ll|Qq|Dd|Aa|Ff]\d{8})|([H|h|M|m]\d{8，10})$/
-                          : '',
+                      message: '请填写证件号',
+                    },
+                    {
+                      validator: certificateIdValidator,
                     },
                   ],
                   initialValue: initialValues
@@ -584,6 +590,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     defaultValue={0}
                     min={0}
                     max={100}
+                    precision={2}
                     formatter={(value) => `${value}%`}
                     parser={(value) => value.replace('%', '')}
                   />,

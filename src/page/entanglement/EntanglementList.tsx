@@ -417,6 +417,14 @@ function EntanglementList() {
 
       getImport(values)
         .then((result) => {
+          if (result.code !== '0') {
+            Modal.error({
+              title: '提示',
+              content: `数据导入失败!`,
+              okText: '确定',
+            });
+          }
+
           setImportVisible(false);
           form.resetFields();
           dataSource.reload();

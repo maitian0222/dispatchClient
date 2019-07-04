@@ -18,7 +18,7 @@ import {
 import { withRouter } from 'react-router-dom';
 import ChangePwdModal from '../components/ChangePwdModal';
 import NewsFast from './NewsFast';
-import { getNewsQuery, getNewsCount } from './apis';
+import { getNewsQuery } from './apis';
 const { Header } = Layout;
 
 class AppHeader extends React.PureComponent {
@@ -27,7 +27,6 @@ class AppHeader extends React.PureComponent {
     super(props);
     this.state = {
       visible: false,
-      newsCount: 0,
       newsData: [],
     };
   }
@@ -49,11 +48,6 @@ class AppHeader extends React.PureComponent {
     getNewsQuery().then((result) => {
       this.setState({
         newsData: result.data,
-      });
-    });
-    getNewsCount().then((result) => {
-      this.setState({
-        newsCount: result,
       });
     });
   };
