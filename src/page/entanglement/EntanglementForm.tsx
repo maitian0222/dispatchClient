@@ -590,6 +590,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     defaultValue={0}
                     min={0}
                     max={100}
+                    precision={2}
                     formatter={(value) => `${value}%`}
                     parser={(value) => value.replace('%', '')}
                   />,
