@@ -133,7 +133,7 @@ function MaterialHasList() {
             type: 'select',
             options: [
               { code: '', name: '请选择' },
-              { code: 0, name: '已提交' },
+              //{ code: 0, name: '已提交' },
               // { code: 1, name: '待审核' },
               { code: 2, name: '拒绝受理' },
               { code: 3, name: '审核通过' },
