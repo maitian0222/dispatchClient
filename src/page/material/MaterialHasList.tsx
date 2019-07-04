@@ -132,6 +132,7 @@ function MaterialHasList() {
             name: 'status',
             type: 'select',
             options: [
+              { code: '', name: '请选择' },
               { code: 0, name: '已提交' },
               // { code: 1, name: '待审核' },
               { code: 2, name: '拒绝受理' },
@@ -152,7 +153,7 @@ function MaterialHasList() {
             type: 'rangePicker',
             startTimeName: 'stime',
             endTimeName: 'etime',
-            format: 'YYYY-MM-DD HH:mm:ss',
+            format: 'YYYY-MM-DD',
           },
         ]}
         handleSearch={handleSearch}
