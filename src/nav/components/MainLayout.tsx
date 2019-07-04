@@ -6,10 +6,18 @@ import HeaderContainer from '../containers/HeaderContainer';
 import GlobalFooter from '@commons/GlobalFooter';
 import routes from '../../app/routes';
 import styles from '../Layout.css';
+import User from '../../page/User/types/User';
 const { Header, Content } = Layout;
 
-export default class MainLayout extends React.PureComponent {
-  constructor(props: {}) {
+interface Props {
+  currentUser: User;
+}
+
+interface State {
+  collapsed: boolean;
+}
+export default class MainLayout extends React.PureComponent<Props, State> {
+  constructor(props: Props) {
     super(props);
     this.state = {
       collapsed: false,
@@ -28,7 +36,6 @@ export default class MainLayout extends React.PureComponent {
           <NavMenu
             collapsed={this.state.collapsed}
             currentUser={this.props.currentUser}
-            onLogout={this.props.onLogout}
           />
           <Content>
             <HeaderContainer

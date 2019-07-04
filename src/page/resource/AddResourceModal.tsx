@@ -1,19 +1,22 @@
 import * as React from 'react';
 import { Modal, Button, Form } from 'antd';
 import AddResourceForm from './AddResourceForm';
+import { FromTo } from 'moment';
 
 interface Props {
+  loading: boolean;
   visible: boolean;
   onClose: () => void;
   onOk: () => void;
   // tslint:disable-next-line:no-any
-  wrappedComponentRef: (formRef: any) => any;
+  wrappedComponentRef: (formRef: Form) => Form;
   formOprType: string;
   // tslint:disable-next-line:no-any
   editItem: any;
+  form: FromTo;
 }
 
-class AddResourceModal extends React.Component<Props, State> {
+class AddResourceModal extends React.Component<Props, {}> {
   constructor(props: Props) {
     super(props);
   }

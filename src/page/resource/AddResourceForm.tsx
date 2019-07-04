@@ -1,46 +1,31 @@
 import React from 'react';
-import { FormComponentProps } from 'antd/lib/form';
-import { Form, Input, TreeSelect, InputNumber, message } from 'antd';
+import { Form, Input, TreeSelect, InputNumber } from 'antd';
 import http from '@sinoui/http';
-
+import Resource from './types/Resource';
 interface Props {
-  form: FormComponentProps;
+  form: Form;
   // tslint:disable-next-line:no-any
   getFieldDecorator: any;
-  // tslint:disable-next-line:no-any
-  initialValues: any;
+  initialValues: Resource;
 }
 
 interface State {
   resourceType: 'menu' | 'button';
+  resourceList: Resource[];
 }
 class AddResourceForm extends React.Component<Props, State> {
-  private props: any;
-  private state: any;
+  private props: Props;
+  private state: State;
   constructor(props: Props) {
     super(props);
     this.state = {
       resourceType: 'menu',
-      fileList: [
-        {
-          uid: '1',
-          name: 'xxx.png',
-          status: 'done',
-          url: 'http://www.baidu.com/xxx.png',
-        },
-        {
-          uid: '2',
-          name: 'yyy.png',
-          status: 'done',
-          url: 'http://www.baidu.com/yyy.png',
-        },
-      ],
       resourceList: [],
     };
   }
 
   public componentDidMount() {
-    http.get('/admin/menu').then((result) => {
+    http.get('/admin/menu').then((result: { content: Resource[] }) => {
       const resourceList = [
         {
           key: '0',
@@ -55,25 +40,18 @@ class AddResourceForm extends React.Component<Props, State> {
     });
   }
 
-  public compareToFirstPassword = (rule, value, callback) => {
+  public compareToFirstPassword = (
+    // tslint:disable-next-line:no-any
+    rule: any,
+    // tslint:disable-next-line:no-any
+    value: any,
+    callback: (value?: string) => void,
+  ) => {
     if (typeof value === 'string') {
       callback('只能输入数字!');
     } else {
       callback();
     }
-  };
-
-  public onChangeFile = ({ fileList }) => {
-    this.setState({
-      fileList,
-    });
-  };
-
-  public beforeUpload = () => {
-    if (this.state.fileList.length >= 3) {
-      message.error('最大允许上传3个附件！');
-    }
-    return false;
   };
 
   public render() {
@@ -152,8 +130,7 @@ class AddResourceForm extends React.Component<Props, State> {
                   rules: [
                     {
                       type: 'string',
-                      transform: (value) => {
-                        console.log(value);
+                      transform: (value: number) => {
                         if (value === null || value === undefined) {
                           return '';
                         }
@@ -179,29 +156,6 @@ class AddResourceForm extends React.Component<Props, State> {
                   initialValue: initialValues && initialValues.icon,
                 })(<Input />)}
               </Form.Item>
-              {/*
-              <Form.Item label="上传模板">
-                {getFieldDecorator('files', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请上传模板',
-                    },
-                  ],
-                })(
-                  <Upload
-                    accept=".doc,.pdf"
-                    action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                    fileList={this.state.fileList}
-                    onChange={this.onChangeFile}
-                    beforeUpload={this.beforeUpload}
-                  >
-                    <Button>
-                      <Icon type="upload" /> Upload
-                    </Button>
-                  </Upload>,
-                )}
-              </Form.Item> */}
             </React.Fragment>
           ) : (
             <Form.Item label="按钮id">

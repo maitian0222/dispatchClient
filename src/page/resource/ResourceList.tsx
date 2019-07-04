@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Icon, Row, Col, Button, Divider, message } from 'antd';
+import { Modal, Icon, Row, Col, Button, Divider, message, Form } from 'antd';
 import SearchForm from '@commons/SearchForm';
 import useRestListApi from '@sinoui/use-rest-list-api';
 import AddResourceModal from './AddResourceModal';
@@ -8,21 +8,22 @@ import DataTable from '@commons/DataTable';
 import withErrorCatch from '@commons/with-error-catch';
 import transformListRequest from '../../utils/transformListRequest';
 function ResourceManagement() {
-  let formRef = null;
+  let formRef: Form;
   const [visible, setVisible] = useState(false);
   const [formOprType, setFormOprType] = useState('add');
-  const [editItem, setEditItem] = useState({});
+  const [editItem, setEditItem] = useState<Resource>();
   const [loading, setLoading] = useState(false);
-  const saveFormRef = (ref: any) => {
+  const saveFormRef = (ref: Form) => {
     formRef = ref;
   };
-  const showModal = (type?: string, item?: any) => {
+  const showModal = (type?: string, item?: Resource) => {
     setVisible(true);
     setFormOprType(type ? type : 'add');
     setEditItem(type === 'edit' ? item : {});
   };
 
-  const handleSearch = (condition) => {
+  // tslint:disable-next-line:no-any
+  const handleSearch = (condition: any) => {
     dataSource.query({
       // ...dataSource.searchParams,
       ...condition,
@@ -31,7 +32,8 @@ function ResourceManagement() {
 
   const onOk = () => {
     const form = formRef.props.form;
-    form.validateFields((err, values) => {
+    // tslint:disable-next-line:no-any
+    form!.validateFields((err: any, values: Resource) => {
       // 检验失败return
 
       if (err) {
@@ -42,7 +44,7 @@ function ResourceManagement() {
       const fn =
         formOprType === 'edit'
           ? dataSource.update({
-              menuId: editItem.menuId,
+              menuId: editItem!.menuId,
               type: '0', // 资源类型为菜单
               ...values,
             })
@@ -52,7 +54,7 @@ function ResourceManagement() {
             });
       fn.then((result) => {
         // 清空表单数据
-        form.resetFields();
+        form!.resetFields();
         setLoading(false);
         setVisible(false);
         dataSource.reload();
@@ -98,6 +100,7 @@ function ResourceManagement() {
       </Row>
 
       <DataTable
+        rowKey={(record) => record.menuId}
         columns={[
           {
             title: '名称',
@@ -110,7 +113,7 @@ function ResourceManagement() {
             dataIndex: 'type',
             key: 'type',
             align: 'center',
-            render: (value) => (value === '0' ? '菜单' : '按钮'),
+            render: (value: string) => (value === '0' ? '菜单' : '按钮'),
           },
           {
             title: '链接',
@@ -123,7 +126,7 @@ function ResourceManagement() {
             dataIndex: 'opt',
             key: 'opt',
             align: 'center',
-            render: (value, item, index) => {
+            render: (value: string, item: Resource) => {
               return (
                 <div>
                   <a href="javascript:;" onClick={(event) => onDelete(item)}>

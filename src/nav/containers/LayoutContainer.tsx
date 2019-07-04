@@ -2,13 +2,16 @@ import { connect } from 'react-redux';
 import Layout from '../components/Layout';
 import { ActionCreators } from '@auth/user';
 
-const mapStateToProps = (state, props) => ({
+// tslint:disable-next-line:no-any
+const mapStateToProps = (state: any) => ({
   isLoggined: state.auth.loginStatus === 'LOGIN_SUCCESS',
   currentUser: state.auth.currentUser,
 });
 
-const mapDispatchToProps = (dispatch) => ({
-  onRequestFresh: (user) => dispatch(ActionCreators.loginSuccess(user)),
+// tslint:disable-next-line:no-any
+const mapDispatchToProps = (dispatch: any) => ({
+  // tslint:disable-next-line:no-any
+  onRequestFresh: (user: any) => dispatch(ActionCreators.loginSuccess(user)),
   onLogout: () => dispatch(ActionCreators.logoutSuccess()),
 });
 
