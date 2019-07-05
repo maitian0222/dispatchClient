@@ -15,10 +15,21 @@
   align-items: center;
 }
 
+:global(.logo-title) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 10px;
+  margin-bottom: 0;
+}
+:global(.logo-title p) {
+  margin-bottom: 0;
+}
+
 :global(.ant-layout-sider-collapsed .nav-header) {
   width: 80px;
 }
 
-:global(.ant-layout-sider-collapsed .nav-header .ant-typography) {
+:global(.ant-layout-sider-collapsed .nav-header .logo-title) {
   display: none;
 }
