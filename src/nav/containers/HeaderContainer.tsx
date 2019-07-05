@@ -14,12 +14,13 @@ import {
   Popover,
   Row,
   Col,
-  Button,
+  Tooltip,
 } from 'antd';
 import { withRouter } from 'react-router-dom';
 import ChangePwdModal from '../components/ChangePwdModal';
 import NewsFast from './NewsFast';
 import { getNewsQuery } from './apis';
+import styles from './NewsList.css';
 const { Header } = Layout;
 
 class AppHeader extends React.PureComponent {
@@ -93,25 +94,32 @@ class AppHeader extends React.PureComponent {
       </Menu>
     );
     const content = (
-      <div style={{ maxHeight: '80vh', overflow: 'auto' }}>
-        {this.state.newsData.map((item, index) => {
+      <div>
+        {(this.state.newsData || []).map((item, index) => {
           return (
             index < 10 && (
               <NewsFast news={item} refreshNews={this.refreshNews} />
             )
           );
         })}
-        <Button
-          style={{ margin: '10px 0' }}
-          type="primary"
-          block
-          onClick={() => {
-            this.props.history.push('/notice/list');
-          }}
-        >
-          更多
-        </Button>
       </div>
+    );
+
+    const title = (
+      <Row>
+        <Col span={22}>消息列表</Col>
+        <Col span={2}>
+          <Tooltip placement="left" title="更多消息">
+            <a
+              onClick={() => {
+                this.props.history.push('/notice/list');
+              }}
+            >
+              <Icon type="double-right" />
+            </a>
+          </Tooltip>
+        </Col>
+      </Row>
     );
 
     return (
@@ -131,13 +139,14 @@ class AppHeader extends React.PureComponent {
               <span>{currentUser.username}</span>
             </a>
           </Dropdown>
-          <a style={{ float: 'right', marginRight: '20px' }}>
+          <a className={styles.newsList}>
             <Popover
               content={content}
-              title="消息列表"
+              title={title}
               trigger="click"
               placement="bottom"
               arrowPointAtCenter
+              autoAdjustOverflow={false}
             >
               <Badge count={this.state.newsData && this.state.newsData.length}>
                 <Icon type="bell" style={{ fontSize: '18px' }} />
