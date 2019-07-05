@@ -18,12 +18,11 @@ import withErrorCatch from '@commons/with-error-catch';
 import transformListRequest from '../../utils/transformListRequest';
 import Notice from './types/Notice';
 import ResponseResult from '../../types/ResponseResult';
+import { getInformation } from './apis';
 /**
  * 消息管理列表
  */
 function NoticeList() {
-  const [visible, setVisible] = useState(false);
-  const [editItem, setEditItem] = useState<Partial<User>>({});
   const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
 
   /**
@@ -36,6 +35,22 @@ function NoticeList() {
       // ...dataSource.searchParams,
       ...condition,
     });
+  };
+
+  // 批量删除
+  const batchDelete = () => {
+    http
+      .delete(`/biz/information/${selectedRowIds.toString()}`)
+      .then((result: ResponseResult) => {
+        if (result.code === 0) {
+          dataSource.reload();
+          setSelectedRowIds([]);
+        }
+        message.success(result.msg);
+      })
+      .catch((e) => {
+        message.error(e.response.data.msg);
+      });
   };
 
   // 批量阅毕未读消息
@@ -57,26 +72,6 @@ function NoticeList() {
   };
 
   /**
-   * 打开Modal
-   */
-  const openModel = (item?: User, type?: string) => {
-    setVisible(true);
-    setEditItem({});
-    if (type === 'edit' && item) {
-      http.get(`/admin/user/${item.username}`).then((result: User) => {
-        setEditItem(result);
-      });
-    }
-  };
-
-  /**
-   * 关闭用户Model
-   */
-  const onClose = () => {
-    setVisible(false);
-  };
-
-  /**
    * 数据管理api
    */
   const dataSource = useRestPageAPi<Notice>('/biz/information', [], {
@@ -91,6 +86,39 @@ function NoticeList() {
     },
   };
 
+  const openModel = (id: string) => {
+    getInformation(id).then((result) => {
+      Modal.info({
+        title: '消息详情',
+        content: (
+          <div>
+            <Row>
+              <Col span={6}>
+                <p>消息标题：</p>
+              </Col>
+              <Col span={18}>{result.data.title}</Col>
+            </Row>
+            <Row>
+              <Col span={6}>
+                <p>消息内容：</p>
+              </Col>
+              <Col span={18}>{result.data.content}</Col>
+            </Row>
+            <Row>
+              <Col span={6}>
+                <p>时间：</p>
+              </Col>
+              <Col span={18}>{result.data.createTime}</Col>
+            </Row>
+          </div>
+        ),
+        onOk: () => {
+          dataSource.reload();
+        },
+      });
+    });
+  };
+
   return (
     <React.Fragment>
       <SearchForm
@@ -100,15 +128,22 @@ function NoticeList() {
         handleSearch={handleSearch}
       />
       {/* style={{ padding: '20px 0', borderTop: '20px solid #f5f5f5' }} */}
-      <Row>
-        <Col span={24} style={{ padding: '0 10px' }}>
+      <Row style={{ padding: '0 24px 10px' }}>
+        <Col>
           <Button
             type="primary"
             disabled={selectedRowIds.length <= 0}
-            style={{ marginLeft: 20 }}
             onClick={() => batchDeletion()}
           >
             批量阅毕
+          </Button>
+          <Divider type="vertical" />
+          <Button
+            type="primary"
+            disabled={selectedRowIds.length <= 0}
+            onClick={() => batchDelete()}
+          >
+            批量删除
           </Button>
         </Col>
       </Row>
@@ -143,7 +178,6 @@ function NoticeList() {
             key: 'content',
             align: 'center',
           },
-
           {
             title: '创建时间',
             dataIndex: 'createTime',
@@ -151,19 +185,24 @@ function NoticeList() {
             align: 'center',
             sorter: true,
           },
+          {
+            title: '操作',
+            dataIndex: 'opt',
+            key: 'opt',
+            align: 'center',
+            render: (value: string, item: Notice, index: number) => {
+              return (
+                <div>
+                  <a href="javascript:;" onClick={() => openModel(item.id)}>
+                    详情
+                  </a>
+                </div>
+              );
+            },
+          },
         ]}
         dataSource={dataSource}
       />
-
-      {/* <UserModel
-        visible={visible}
-        modelTitleType={modelTitleType}
-        onClose={onClose}
-        onOk={onOk}
-        loading={loading}
-        editItem={editItem}
-        wrappedComponentRef={userFormRef}
-      /> */}
     </React.Fragment>
   );
 }

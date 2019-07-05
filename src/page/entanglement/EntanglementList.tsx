@@ -1,5 +1,15 @@
 import React, { useState } from 'react';
-import { Modal, Icon, Row, Col, Button, Divider, Message } from 'antd';
+import {
+  Modal,
+  Icon,
+  Row,
+  Col,
+  Button,
+  Divider,
+  Message,
+  Table,
+  Descriptions,
+} from 'antd';
 import SearchForm from '@commons/SearchForm';
 import useRestPageAPi from '@sinoui/use-rest-page-api';
 import http from '@sinoui/http';
@@ -398,7 +408,9 @@ function EntanglementList() {
   const onCloseImportVisible = () => {
     const form = importForm.props.form;
     setImportVisible(false);
+    console.log(form);
     form.resetFields();
+    console.log(form);
   };
 
   /**
@@ -412,17 +424,21 @@ function EntanglementList() {
         return;
       }
 
-      // 数据导入
-      values.attachment = values.attachment[0].response.content[0];
+      const data = { ...values };
 
-      getImport(values)
+      // 数据导入
+      data.attachment = data.attachment[0].response.content[0];
+
+      getImport(data)
         .then((result) => {
-          if (result.code !== '0') {
+          if (result.code !== 0) {
             Modal.error({
               title: '提示',
-              content: `数据导入失败!`,
+              content: <ImportInfo data={result.data} />,
               okText: '确定',
+              width: 600,
             });
+            return;
           }
 
           setImportVisible(false);
@@ -443,6 +459,56 @@ function EntanglementList() {
         });
     });
   };
+
+  /**
+   * 导入数据提示信息
+   */
+  function ImportInfo(props) {
+    return (
+      <div style={{ textAlign: 'center' }}>
+        <Descriptions>
+          <Descriptions.Item label="  总条数">
+            {props.data.total}
+          </Descriptions.Item>
+          <Descriptions.Item label="成功条数">
+            {props.data.successNum}
+          </Descriptions.Item>
+          <Descriptions.Item label="失败条数">
+            {props.data.failedNum}
+          </Descriptions.Item>
+        </Descriptions>
+        <Table
+          pagination={false}
+          dataSource={props.data.data}
+          columns={[
+            {
+              title: '编号',
+              dataIndex: 'lineNumber',
+              key: 'lineNumber',
+              align: 'center',
+              width: 50,
+            },
+            {
+              title: '合同编号',
+              dataIndex: 'contractNumber',
+              key: 'contractNumber',
+              align: 'center',
+              width: 100,
+            },
+            {
+              title: '失败原因',
+              dataIndex: 'reason',
+              key: 'reason',
+              align: 'center',
+              width: 150,
+            },
+          ]}
+          size="middle"
+          scroll={{ y: 300 }}
+        />
+      </div>
+    );
+  }
 
   return (
     <React.Fragment>

@@ -120,7 +120,14 @@ class UpLoadModule extends React.Component {
         <Icon type="upload" /> 上传文件
       </Button>
     );
-    const { action, listType, upLoadNumber, accept, style } = this.props;
+    const {
+      action,
+      listType,
+      upLoadNumber,
+      accept,
+      style,
+      disabled,
+    } = this.props;
     const { fileList } = this.state;
     return (
       <Upload
@@ -131,6 +138,7 @@ class UpLoadModule extends React.Component {
         beforeUpload={this.beforeUpload}
         onChange={this.UploadOnchange}
         onRemove={this.onRemove}
+        disabled={disabled || false}
         style={style}
       >
         {fileList.length >= upLoadNumber

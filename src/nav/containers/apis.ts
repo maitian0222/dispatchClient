@@ -6,5 +6,8 @@ function getNewsQuery(params?: any) {
 function getInformation(id: string) {
   return http.get(`/biz/information/${id}`);
 }
+function getBatchUpdate(params?: any) {
+  return http.put(`/biz/information`, params);
+}
 
-export { getNewsQuery, getInformation };
+export { getNewsQuery, getInformation, getBatchUpdate };

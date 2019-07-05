@@ -14,6 +14,7 @@ import {
   Popover,
   Row,
   Col,
+  Button,
 } from 'antd';
 import { withRouter } from 'react-router-dom';
 import ChangePwdModal from '../components/ChangePwdModal';
@@ -92,11 +93,24 @@ class AppHeader extends React.PureComponent {
       </Menu>
     );
     const content = (
-      <div style={{ height: '80vh', overflow: 'auto' }}>
-        {this.state.newsData.map((item) => {
-          return <NewsFast news={item} />;
+      <div style={{ maxHeight: '80vh', overflow: 'auto' }}>
+        {this.state.newsData.map((item, index) => {
+          return (
+            index < 10 && (
+              <NewsFast news={item} refreshNews={this.refreshNews} />
+            )
+          );
         })}
-        {/* <NewsFast news={{ id: '1', content: '11111', time: '2019-7-4' }} /> */}
+        <Button
+          style={{ margin: '10px 0' }}
+          type="primary"
+          block
+          onClick={() => {
+            this.props.history.push('/notice/list');
+          }}
+        >
+          更多
+        </Button>
       </div>
     );
 
