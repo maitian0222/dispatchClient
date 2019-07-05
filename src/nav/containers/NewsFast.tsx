@@ -1,7 +1,6 @@
 import React from 'react';
-import { Icon, Row, Col, Card, Modal } from 'antd';
-import { getInformation } from './apis';
-import moment from 'moment';
+import { Icon, Row, Col, Card, Modal, message } from 'antd';
+import { getInformation, getBatchUpdate } from './apis';
 class NewsFast extends React.Component {
   constructor(props: Props) {
     super(props);
@@ -38,15 +37,17 @@ class NewsFast extends React.Component {
             </Row>
           </div>
         ),
-        onOk() {
-          console.log(111111);
+        onOk: () => {
+          this.props.refreshNews();
         },
       });
     });
   };
 
   private onDelete = (id: string) => {
-    console.log(id);
+    getBatchUpdate({ ids: id }).then((result) => {
+      this.props.refreshNews();
+    });
   };
   private handleMouseOver = () => {
     this.setState({

@@ -16,7 +16,7 @@ import Register from './register/Register';
 import http from '@sinoui/http';
 import { withRouter } from 'react-router-dom';
 const styles = require('./css/Login.css');
-
+import logo from './images/logo.png';
 const { Title } = Typography;
 
 interface VerficationcodeResult {
@@ -103,9 +103,17 @@ class NormalLoginForm extends React.PureComponent<Props, State> {
     const { verficationcodeImgSrc, isLoginPage } = this.state;
     return (
       <div className={styles.loginLayout}>
-        <Title style={{ margin: '60px 0', fontSize: '33px' }}>
-          金融纠纷解决平台
-        </Title>
+        <div>
+          <Title
+            style={{ fontSize: '33px', display: 'flex', alignItems: 'center' }}
+          >
+            <img src={logo} width="40" style={{ marginRight: '10px' }} />
+            速骓偿
+          </Title>
+          <p style={{ marginBottom: '40px', color: 'rgba(0,0,0,.45)' }}>
+            综合智能司法追偿服务商
+          </p>
+        </div>
 
         {isLoginPage === true ? (
           <div className={styles.loginContainer}>

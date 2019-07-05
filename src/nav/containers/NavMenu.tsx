@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Layout, Menu, Icon, Typography } from 'antd';
 import { Link } from 'react-router-dom';
 import http from '@commons/http';
-import logo from '../images/logo.svg';
+import logo from '../images/logo.png';
 import Resource from '../../page/resource/types/Resource';
 interface Props {
   collapsed: boolean;
@@ -139,13 +139,16 @@ class NavMenu extends Component<Props, State> {
         theme="light"
       >
         <div className="nav-header">
-          <img src={logo} width="32" />
-          <Typography.Title
-            level={4}
-            style={{ marginBottom: '0', marginLeft: '10px' }}
-          >
-            金融纠纷解决平台
-          </Typography.Title>
+          <img src={logo} width="48" />
+          <div className="logo-title">
+            <Typography.Title
+              level={4}
+              style={{ marginBottom: '0', letterSpacing: '8px' }}
+            >
+              速骓偿
+            </Typography.Title>
+            <p>综合智能司法追偿服务商</p>
+          </div>
         </div>
         <Menu mode="inline" theme="light" {...menuProps}>
           {/* <Menu.Item key="/" onClick={() => this.onChangeSelectMenu('/')}>
