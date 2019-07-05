@@ -5,6 +5,7 @@ import useRestPageAPi from '@sinoui/use-rest-page-api';
 import DataTable from '@commons/DataTable';
 import Lawsuit from './types/Lawsuit';
 import transformListRequest from '../../utils/transformListRequest';
+import { PAGE_SIZE } from '../../config/AppConfig';
 /**
  * 纠纷管理列表
  */
@@ -15,6 +16,7 @@ function LawsuitList(props: {}) {
   const dataSource = useRestPageAPi<Lawsuit>('/biz/lawsuit', [], {
     keyName: 'id',
     transformListRequest,
+    pageSize: PAGE_SIZE,
   });
 
   /**
