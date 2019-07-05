@@ -2,6 +2,7 @@ import { createStore, applyMiddleware, compose, combineReducers } from 'redux';
 import { routerReducer, routerMiddleware } from 'react-router-redux';
 import history from '../history';
 import { Reducer as UserReducer } from '@auth/user';
+import { Reducer as messageReducer } from '@message/message';
 
 const composeEnhancers =
   typeof window === 'object' && window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__
@@ -19,6 +20,7 @@ const store = createStore(
   combineReducers({
     router: routerReducer,
     auth: UserReducer,
+    message: messageReducer,
   }),
   enhancer,
 );

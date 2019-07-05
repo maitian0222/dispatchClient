@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import { ActionCreators } from '@auth/user';
+import { ActionCreators as messageActionCreators } from '@message/message';
 import http from '@sinoui/http';
 import {
   Layout,
@@ -48,6 +49,8 @@ class AppHeader extends React.PureComponent {
    */
   private refreshNews = () => {
     getNewsQuery().then((result) => {
+      this.props.dispatch(messageActionCreators.messageinSuccess(result.data));
+      console.log(this.props);
       this.setState({
         newsData: result.data,
       });
@@ -168,12 +171,20 @@ class AppHeader extends React.PureComponent {
   }
 }
 
+const mapStateToProps = (state) => {
+  console.log(state);
+  return {
+    messageList: state.messageList && state.messageList,
+  };
+};
+
 const mapDispatchToProps = (dispatch) => ({
   onLogout: () => dispatch(ActionCreators.logoutSuccess()),
+  dispatch,
 });
 export default withRouter(
   connect(
-    null,
+    mapStateToProps,
     mapDispatchToProps,
   )(AppHeader),
 );
