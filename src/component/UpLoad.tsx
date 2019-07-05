@@ -114,6 +114,11 @@ class UpLoadModule extends React.Component {
     });
   };
 
+  // 文件预览
+  public onPreview = () => {
+    alert('onPreview');
+  };
+
   public render() {
     const uploadButton = (
       <Button>
@@ -139,6 +144,7 @@ class UpLoadModule extends React.Component {
         onChange={this.UploadOnchange}
         onRemove={this.onRemove}
         disabled={disabled || false}
+        onPreview={this.onPreview}
         style={style}
       >
         {fileList.length >= upLoadNumber

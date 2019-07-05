@@ -9,7 +9,6 @@ import MaterialReviewModal from './MaterialReviewModal';
 import Resource from './types/Resource';
 import DataTable from '@commons/DataTable';
 import transformListRequest from '../../utils/transformListRequest';
-import EllipsisText from '../../component/EllipsisText';
 
 function MaterialHasList() {
   let formRef = null;
@@ -22,7 +21,7 @@ function MaterialHasList() {
   useEffect(() => {
     http.get('/biz/court/list', {}).then((result) => {
       if (result) {
-        courtList = setCourtList(result.content);
+        setCourtList(result.content);
       }
     });
   }, [courtList.length]);
@@ -133,7 +132,7 @@ function MaterialHasList() {
             type: 'select',
             options: [
               { code: '', name: '请选择' },
-              { code: 0, name: '已提交' },
+              //{ code: 0, name: '已提交' },
               // { code: 1, name: '待审核' },
               { code: 2, name: '拒绝受理' },
               { code: 3, name: '审核通过' },
