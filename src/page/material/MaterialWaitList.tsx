@@ -9,7 +9,6 @@ import MaterialReviewModal from './MaterialReviewModal';
 import Resource from './types/Resource';
 import DataTable from '@commons/DataTable';
 import transformListRequest from '../../utils/transformListRequest';
-import EllipsisText from '../../component/EllipsisText';
 
 function MaterialWaitList() {
   let formRef = null;
@@ -24,7 +23,7 @@ function MaterialWaitList() {
   useEffect(() => {
     http.get('/biz/court/list', {}).then((result) => {
       if (result) {
-        courtList = setCourtList(result.content);
+        setCourtList(result.content);
       }
     });
   }, [courtList.length]);
