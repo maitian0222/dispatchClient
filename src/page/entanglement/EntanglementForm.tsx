@@ -128,12 +128,6 @@ class EntanglementForm extends React.Component<Props, State> {
             <Col span={8}>
               <Form.Item label="民族">
                 {getFieldDecorator('peopleNationality', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请填写民族',
-                    },
-                  ],
                   initialValue:
                     initialValues && initialValues.peopleNationality,
                 })(<Input />)}
@@ -799,7 +793,6 @@ class EntanglementForm extends React.Component<Props, State> {
                 labelCol={{ span: 3 }}
                 wrapperCol={{ span: 18 }}
                 label="证据"
-                extra="请上传合同文件"
               >
                 {getFieldDecorator('evidence', {
                   rules: [
@@ -814,12 +807,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     listType="picture"
                     upLoadNumber="1"
                     files={initialValues && initialValues.evidence}
-                  >
-                    <div>
-                      <Icon type="plus" />
-                      <div className="ant-upload-text">上传文件</div>
-                    </div>
-                  </UpLoadModule>,
+                  />,
                 )}
               </Form.Item>
             </Col>
