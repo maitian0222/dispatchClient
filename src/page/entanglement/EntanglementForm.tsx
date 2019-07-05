@@ -17,6 +17,7 @@ import UpLoadModule from '../../component/UpLoad';
 import DictionarySelect from '../../component/DictionarySelect';
 import CourtSelect from '../../component/CourtSelect';
 import moment from 'moment';
+import CaseTypeSelect from './CaseTypeSelect';
 
 const { Title, Paragraph } = Typography;
 
@@ -406,20 +407,14 @@ class EntanglementForm extends React.Component<Props, State> {
                     },
                   ],
                   initialValue: initialValues ? initialValues.caseType : '',
-                })(<DictionarySelect mode="false" fieldCode="CASE_TYPE" />)}
+                })(<CaseTypeSelect form={this.props.form} />)}
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item label="递交法院">
                 {getFieldDecorator('courtId', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请选择法院',
-                    },
-                  ],
                   initialValue: initialValues ? initialValues.courtId : '',
-                })(<CourtSelect />)}
+                })(<CourtSelect disabled={true} />)}
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -584,7 +579,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     defaultValue={0}
                     min={0}
                     max={100}
-                    precision={2}
+                    style={{ width: '100%' }}
                     formatter={(value) => `${value}%`}
                     parser={(value) => value.replace('%', '')}
                   />,
@@ -608,6 +603,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     defaultValue={0}
                     min={0}
                     precision={2}
+                    style={{ width: '100%' }}
                     formatter={(value) => `￥${value}`}
                     parser={(value) => value.replace('￥', '')}
                   />,
@@ -627,7 +623,9 @@ class EntanglementForm extends React.Component<Props, State> {
                     initialValues &&
                     initialValues.borrowDateBegin &&
                     moment(initialValues.borrowDateBegin, 'YYYY-MM-DD'),
-                })(<DatePicker format="YYYY-MM-DD" />)}
+                })(
+                  <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />,
+                )}
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -643,7 +641,9 @@ class EntanglementForm extends React.Component<Props, State> {
                     initialValues &&
                     initialValues.borrowDateEnd &&
                     moment(initialValues.borrowDateEnd, 'YYYY-MM-DD'),
-                })(<DatePicker format="YYYY-MM-DD" />)}
+                })(
+                  <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />,
+                )}
               </Form.Item>
             </Col>
           </Row>
@@ -661,7 +661,9 @@ class EntanglementForm extends React.Component<Props, State> {
                     initialValues &&
                     initialValues.overdueDate &&
                     moment(initialValues.overdueDate, 'YYYY-MM-DD'),
-                })(<DatePicker format="YYYY-MM-DD" />)}
+                })(
+                  <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />,
+                )}
               </Form.Item>
             </Col>
             <Col span={8}>
@@ -677,7 +679,9 @@ class EntanglementForm extends React.Component<Props, State> {
                     initialValues &&
                     initialValues.liquidationDate &&
                     moment(initialValues.liquidationDate, 'YYYY-MM-DD'),
-                })(<DatePicker format="YYYY-MM-DD" />)}
+                })(
+                  <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />,
+                )}
               </Form.Item>
             </Col>
             <Col span={8} />
@@ -698,6 +702,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     defaultValue={0}
                     min={0}
                     precision={2}
+                    style={{ width: '100%' }}
                     formatter={(value) => `￥${value}`}
                     parser={(value) => value.replace('￥', '')}
                     onChange={(value) => {
@@ -729,6 +734,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     defaultValue={0}
                     min={0}
                     precision={2}
+                    style={{ width: '100%' }}
                     formatter={(value) => `￥${value}`}
                     parser={(value) => value.replace('￥', '')}
                     onChange={(value) => {
@@ -761,6 +767,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     defaultValue={0}
                     min={0}
                     precision={2}
+                    style={{ width: '100%' }}
                     formatter={(value) => `￥${value}`}
                     parser={(value) => value.replace('￥', '')}
                   />,
@@ -776,12 +783,6 @@ class EntanglementForm extends React.Component<Props, State> {
                 label="事实与理由"
               >
                 {getFieldDecorator('reason', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请填写事实与理由',
-                    },
-                  ],
                   initialValue: initialValues && initialValues.reason,
                 })(<Input.TextArea />)}
               </Form.Item>

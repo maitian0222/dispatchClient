@@ -1,7 +1,7 @@
 .newsList {
   padding: 0;
   float: right;
-  margin-right: 40px;
+  margin-right: 50px;
 }
 .newsList :global(.ant-popover-inner-content) {
   padding: 0;
