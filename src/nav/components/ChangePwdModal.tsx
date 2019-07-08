@@ -2,6 +2,7 @@ import React from 'react';
 import { FormComponentProps } from 'antd/lib/form';
 import { Form, Input, Modal, Button, message } from 'antd';
 import http from '@sinoui/http';
+import ResponseResult from '../../types/ResponseResult';
 interface Props {
   form: FormComponentProps;
   // tslint:disable-next-line:no-any
@@ -49,16 +50,16 @@ class ChangePwdModal extends React.Component<Props, State> {
             username: this.props.currentUser.username,
             userId: this.props.currentUser.userId,
           })
-          .then((result) => {
-            if (result.status == 'success') {
-              message.success('修改密码成功！');
+          .then((result: ResponseResult) => {
+            if (result.code === 0) {
+              message.success(result.msg);
               this.props.onClose();
             } else {
-              message.success(result.message);
+              message.success(result.msg);
             }
           })
           .catch((e) => {
-            message.error('修改密码成功失败！');
+            message.error(e.response.data.msg);
           });
       }
     });

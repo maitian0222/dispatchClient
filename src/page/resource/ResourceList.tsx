@@ -8,6 +8,7 @@ import DataTable from '@commons/DataTable';
 import withErrorCatch from '@commons/with-error-catch';
 import transformListRequest from '../../utils/transformListRequest';
 import ResponseResult from 'src/types/ResponseResult';
+import http from '@commons/http/src';
 function ResourceManagement() {
   let formRef: Form;
   const [visible, setVisible] = useState(false);
@@ -60,8 +61,10 @@ function ResourceManagement() {
           setLoading(false);
           setVisible(false);
           dataSource.reload();
+          message.success(result.msg);
+        } else {
+          message.error(result.msg);
         }
-        message.success(result.msg);
       }).catch((e) => {
         setLoading(false);
         message.success(e.response.data.msg);
@@ -75,18 +78,21 @@ function ResourceManagement() {
       content: '确认删除？',
       onOk: () => {
         // tslint:disable-next-line:no-any
-        dataSource
-          .remove(`${item.menuId}`, false)
-          .then((result: any) => {
+        http
+          .delete(`/admin/menu/${item.menuId}`)
+          .then((result: ResponseResult) => {
             if (result.code === 0) {
               dataSource.reload();
+              message.success(result.msg);
+            } else {
+              message.error(result.msg);
             }
-            message.success(result.msg);
           })
           .catch((e) => message.error(e.response.data.msg));
       },
     });
   };
+
   const dataSource = useRestListApi<Resource>('/admin/menu', [], {
     keyName: 'menuId',
     transformListRequest,

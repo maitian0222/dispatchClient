@@ -9,7 +9,7 @@ import DisputeListCard from './component/DisputeListCard';
 import CourtInfoCard from './component/CourtInfoCard';
 import styles from './Lawsuit.css';
 import { Location, Match } from 'react-router-dom';
-
+import ResponseResult from '../../types/ResponseResult';
 interface Props {
   location: Location;
   match: Match;
@@ -28,9 +28,16 @@ class LawsuitCaseEditor extends React.Component<Props, {}> {
           id: this.props.match.params.id,
         },
       })
-      .then((result) => {
-        message.success('案件提交成功');
-        this.props.history.goBack();
+      .then((result: ResponseResult) => {
+        if (result.code === 0) {
+          message.success(result.msg);
+          this.props.history.goBack();
+        } else {
+          message.error(result.msg);
+        }
+      })
+      .catch((e) => {
+        message.error(e.response.data.msg);
       });
   };
 

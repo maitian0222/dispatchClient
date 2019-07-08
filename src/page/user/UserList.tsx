@@ -78,8 +78,10 @@ function UserList() {
           setLoading(false);
           setVisible(false);
           dataSource.reload();
+          message.success(result.msg);
+        } else {
+          message.error(result.msg);
         }
-        message.success(result.msg);
       }).catch((e) => {
         message.error(e.response.data.msg);
         setLoading(false);
@@ -96,7 +98,11 @@ function UserList() {
         http
           .put(`/admin/user/password/reset/${item.userId}`)
           .then((result: ResponseResult) => {
-            message.success(result.msg);
+            if (result.code === 0) {
+              message.success(result.msg);
+            } else {
+              message.error(result.msg);
+            }
           })
           .catch((e) => {
             message.error(e.response.data.msg);
@@ -111,14 +117,18 @@ function UserList() {
       title: '提示',
       content: '确认删除？',
       onOk: () => {
-        dataSource
-          .remove(selectedRowIds)
+        http
+          .delete(
+            `/admin/user/${selectedRowIds ? selectedRowIds.toString() : ''}`,
+          )
           .then((result: ResponseResult) => {
             if (result.code === 0) {
               dataSource.reload();
               setSelectedRowIds([]);
+              message.success(result.msg);
+            } else {
+              message.error(result.msg);
             }
-            message.success(result.msg);
           })
           .catch((e) => {
             message.error(e.response.data.msg);
@@ -133,13 +143,15 @@ function UserList() {
       title: '提示',
       content: '确认删除？',
       onOk: () => {
-        dataSource
-          .remove(`${item.userId}`, false)
+        http
+          .delete(`/admin/user/${item.userId}`)
           .then((result: ResponseResult) => {
             if (result.code === 0) {
               dataSource.reload();
+              message.success(result.msg);
+            } else {
+              message.error(result.msg);
             }
-            message.success(result.msg);
           })
           .catch((e) => {
             message.error(e.response.data.msg);
