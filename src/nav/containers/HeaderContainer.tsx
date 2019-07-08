@@ -49,7 +49,6 @@ class AppHeader extends React.PureComponent {
   private refreshNews = () => {
     getNewsQuery().then((result) => {
       this.props.dispatch(messageActionCreators.messageinSuccess(result.data));
-      console.log(this.props);
     });
   };
 

@@ -19,6 +19,7 @@ import transformListRequest from '../../utils/transformListRequest';
 import Notice from './types/Notice';
 import ResponseResult from '../../types/ResponseResult';
 import { getInformation } from './apis';
+import { PAGE_SIZE } from '../../config/AppConfig';
 /**
  * 消息管理列表
  */
@@ -76,6 +77,7 @@ function NoticeList() {
    */
   const dataSource = useRestPageAPi<Notice>('/biz/information', [], {
     transformListRequest,
+    pageSize: PAGE_SIZE,
   });
 
   // 多选配置
