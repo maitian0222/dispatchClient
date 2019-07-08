@@ -19,7 +19,13 @@ import PutOnRecordModel from './PutOnRecordModel';
 import ImportModel from './ImportModel';
 import Entanglement from './types/Entanglement';
 import ContactsModel from './ContactsModel';
-import { getSaveAndSubmit, getBatchSubmit, getImport } from './apis';
+import {
+  getSaveAndSubmit,
+  getBatchSubmit,
+  getImport,
+  deleteDispute,
+} from './apis';
+import { PAGE_SIZE } from '../../config/AppConfig';
 
 /**
  * 纠纷管理列表
@@ -81,6 +87,7 @@ function EntanglementList() {
    */
   const dataSource = useRestPageAPi<Entanglement>('/biz/dispute', [], {
     keyName: 'id',
+    pageSize: PAGE_SIZE,
   });
 
   /**
@@ -308,9 +315,26 @@ function EntanglementList() {
       title: '提示',
       content: '确认删除？',
       onOk: () => {
-        dataSource.remove(`${item.id}`, false).then(() => {
-          dataSource.reload();
-        });
+        deleteDispute(item.id)
+          .then((result) => {
+            if (result.code !== 0) {
+              Modal.error({
+                title: '提示',
+                content: result.msg,
+                okText: '确定',
+              });
+              return;
+            }
+            dataSource.reload();
+            Modal.success({
+              title: '提示',
+              content: result.msg,
+              okText: '确定',
+            });
+          })
+          .catch((e) => {
+            Message.error(e.response.data.msg);
+          });
       },
     });
   };
@@ -408,9 +432,7 @@ function EntanglementList() {
   const onCloseImportVisible = () => {
     const form = importForm.props.form;
     setImportVisible(false);
-    console.log(form);
     form.resetFields();
-    console.log(form);
   };
 
   /**

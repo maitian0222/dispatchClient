@@ -12,10 +12,10 @@ const ActionTypes = {
  * @param {object} message
  * @returns
  */
-function messageinSuccess(message: object) {
+function messageinSuccess(messageList: object) {
   return {
     type: MESSAGEIN_SUCCESS,
-    message,
+    messageList,
   };
 }
 

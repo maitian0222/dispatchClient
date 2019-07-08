@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Icon, Row, Col, Button, Divider } from 'antd';
+import { Modal, Icon, Row, Col, Button, Divider, Message } from 'antd';
 import SearchForm from '@commons/SearchForm';
 import RoleModel from './RoleModel';
 import UserTreeModel from './UserTreeModel';
@@ -7,15 +7,17 @@ import useRestPageAPi from '@sinoui/use-rest-page-api';
 import DataTable from '@commons/DataTable';
 import Role from './types/Role';
 import ResourcesTreeModel from './ResourcesTreeModel';
+import { deleteRole } from './apis';
+import { PAGE_SIZE } from '../../config/AppConfig';
 
 /**
  * 角色管理列表
  */
 function RoleList() {
-  let formRef = null;
+  let formRef: any = null;
   const [visible, setVisible] = useState(false);
   const [modelTitleType, setModelTitleType] = useState();
-  const [editItem, setEditItem] = useState({});
+  const [editItem, setEditItem] = useState();
   const [userTreeModelVisible, setUserTreeModelVisible] = useState(false);
   const [resourcesTreeModelVisible, setresourcesTreeModelVisible] = useState(
     false,
@@ -73,8 +75,9 @@ function RoleList() {
   /**
    * 数据管理api
    */
-  const dataSource = useRestPageAPi<Role>('/admin/role', [], {
+  const dataSource = useRestPageAPi<Role>('/upms/role', [], {
     keyName: 'roleId',
+    pageSize: PAGE_SIZE,
   });
 
   /**
@@ -106,7 +109,15 @@ function RoleList() {
             )
           : dataSource.save(values, false);
 
-      fn.then((result) => {
+      fn.then((result: result) => {
+        if (result.code !== 0) {
+          Modal.error({
+            title: '提示',
+            content: result.msg,
+            okText: '确定',
+          });
+          return;
+        }
         // 清空表单数据
         form.resetFields();
         setLoading(false);
@@ -117,13 +128,9 @@ function RoleList() {
           content: `${oprText}角色成功!`,
           okText: '确定',
         });
-      }).catch(() => {
+      }).catch((e) => {
+        Message.error(e.response.data.msg);
         setLoading(false);
-        Modal.error({
-          title: '提示',
-          content: `${oprText}角色失败!`,
-          okText: '确定',
-        });
       });
     });
   };
@@ -140,14 +147,31 @@ function RoleList() {
     });
   };
 
-  const onDelete = (item: Resource) => {
+  const onDelete = (item: Role) => {
     Modal.confirm({
       title: '提示',
       content: '确认删除？',
       onOk: () => {
-        dataSource.remove(`${item.roleId}`, false).then(() => {
-          dataSource.reload();
-        });
+        deleteRole(item.roleId)
+          .then((result) => {
+            if (result.code !== 0) {
+              Modal.error({
+                title: '提示',
+                content: result.msg,
+                okText: '确定',
+              });
+              return;
+            }
+            dataSource.reload();
+            Modal.success({
+              title: '提示',
+              content: result.msg,
+              okText: '确定',
+            });
+          })
+          .catch((e) => {
+            Message.error(e.response.data.msg);
+          });
       },
     });
   };

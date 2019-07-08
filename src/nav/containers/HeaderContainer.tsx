@@ -30,7 +30,6 @@ class AppHeader extends React.PureComponent {
     super(props);
     this.state = {
       visible: false,
-      newsData: [],
     };
   }
 
@@ -51,9 +50,6 @@ class AppHeader extends React.PureComponent {
     getNewsQuery().then((result) => {
       this.props.dispatch(messageActionCreators.messageinSuccess(result.data));
       console.log(this.props);
-      this.setState({
-        newsData: result.data,
-      });
     });
   };
 
@@ -98,7 +94,7 @@ class AppHeader extends React.PureComponent {
     );
     const content = (
       <div>
-        {(this.state.newsData || []).map((item, index) => {
+        {(this.props.messageList || []).map((item, index) => {
           return (
             index < 10 && (
               <NewsFast news={item} refreshNews={this.refreshNews} />
@@ -151,7 +147,9 @@ class AppHeader extends React.PureComponent {
               arrowPointAtCenter
               autoAdjustOverflow={false}
             >
-              <Badge count={this.state.newsData && this.state.newsData.length}>
+              <Badge
+                count={this.props.messageList && this.props.messageList.length}
+              >
                 <Icon type="bell" style={{ fontSize: '18px' }} />
               </Badge>
             </Popover>
@@ -174,7 +172,7 @@ class AppHeader extends React.PureComponent {
 const mapStateToProps = (state) => {
   console.log(state);
   return {
-    messageList: state.messageList && state.messageList,
+    messageList: state.message && state.message.messageList,
   };
 };
 

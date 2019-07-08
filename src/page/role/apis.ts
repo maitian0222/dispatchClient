@@ -18,5 +18,14 @@ function getMenuTree(params?: any) {
 function getRoleIdToResources(roleId?: string) {
   return http.get(`/admin/role/menu/${roleId}`);
 }
+function deleteRole(roleId?: string) {
+  return http.delete(`/upms/role/${roleId}`);
+}
 
-export { getUserTree, getResourcesTree, getMenuTree, getRoleIdToResources };
+export {
+  getUserTree,
+  getResourcesTree,
+  getMenuTree,
+  getRoleIdToResources,
+  deleteRole,
+};

@@ -15,5 +15,14 @@ function getBatchSubmit(params?: any) {
 function getImport(params?: any) {
   return http.post(`/biz/dispute/import`, params);
 }
+function deleteDispute(id: any) {
+  return http.delete(`/biz/dispute/${id}`);
+}
 
-export { getCourtList, getSaveAndSubmit, getBatchSubmit, getImport };
+export {
+  getCourtList,
+  getSaveAndSubmit,
+  getBatchSubmit,
+  getImport,
+  deleteDispute,
+};
