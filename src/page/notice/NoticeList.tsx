@@ -18,12 +18,14 @@ import withErrorCatch from '@commons/with-error-catch';
 import transformListRequest from '../../utils/transformListRequest';
 import Notice from './types/Notice';
 import ResponseResult from '../../types/ResponseResult';
-import { getInformation } from './apis';
+import { getInformation, getNewsQuery } from './apis';
 import { PAGE_SIZE } from '../../config/AppConfig';
+import { ActionCreators as messageActionCreators } from '@message/message';
+
 /**
  * 消息管理列表
  */
-function NoticeList() {
+function NoticeList(props) {
   const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
 
   /**
@@ -116,6 +118,9 @@ function NoticeList() {
         ),
         onOk: () => {
           dataSource.reload();
+          getNewsQuery().then((result) => {
+            props.dispatch(messageActionCreators.messageinSuccess(result.data));
+          });
         },
       });
     });
