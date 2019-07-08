@@ -6,7 +6,7 @@ class NewsFast extends React.Component {
     super(props);
     this.state = {
       IconStyle: { float: 'right', visibility: 'hidden' },
-      CardStyle: { width: 200 },
+      CardStyle: { width: 240 },
       visible: false,
     };
   }
@@ -52,13 +52,13 @@ class NewsFast extends React.Component {
   private handleMouseOver = () => {
     this.setState({
       IconStyle: { float: 'right' },
-      CardStyle: { width: 200, backgroundColor: '#ddd' },
+      CardStyle: { width: 240, backgroundColor: '#ddd' },
     });
   };
   private handleMouseOut = () => {
     this.setState({
       IconStyle: { float: 'right', visibility: 'hidden' },
-      CardStyle: { width: 200 },
+      CardStyle: { width: 240 },
     });
   };
 

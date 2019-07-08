@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Divider, Badge, Row, Col, Button, Icon, Modal, message } from 'antd';
+import { Divider, Badge } from 'antd';
 import SearchForm from '@commons/SearchForm';
 import withErrorCatch from '@commons/with-error-catch';
 import useRestPageAPi from '@sinoui/use-rest-page-api';
@@ -9,9 +9,10 @@ import MaterialReviewModal from './MaterialReviewModal';
 import Resource from './types/Resource';
 import DataTable from '@commons/DataTable';
 import transformListRequest from '../../utils/transformListRequest';
+import { PAGE_SIZE } from '../../config/AppConfig';
 
 function MaterialHasList() {
-  let formRef = null;
+  let formRef: any = null;
   const [visible, setVisible] = useState(false);
   const [reviewVisible, setReviewVisible] = useState(false);
   const [formOprType, setFormOprType] = useState('');
@@ -46,12 +47,11 @@ function MaterialHasList() {
   };
   const onOk = () => {
     const form = formRef.props.form;
-    form.validateFields((err, values) => {
+    form.validateFields((err: any, values: object) => {
       // 检验失败return
       if (err) {
         return;
       }
-      //console.log('Received values of form: ', values);
       setLoading(true);
       http
         .get('/biz/lawsuitVerify/pass', {
@@ -73,13 +73,12 @@ function MaterialHasList() {
   };
   const refuseAudit = () => {
     const form = formRef.props.form;
-    form.validateFields((err, values) => {
-      //console.log('values', values);
+    form.validateFields((err: any, values: object) => {
       setLoading(true);
       if (err) {
         return;
       }
-      let url =
+      const url =
         formOprType === 'refuse'
           ? '/biz/lawsuitVerify/kill'
           : '/biz/lawsuitVerify/back';
@@ -101,7 +100,7 @@ function MaterialHasList() {
         });
     });
   };
-  const handleSearch = (condition) => {
+  const handleSearch = (condition: object) => {
     dataSource.query({
       ...condition,
     });
@@ -109,6 +108,7 @@ function MaterialHasList() {
   const dataSource = useRestPageAPi<Resource>('/biz/lawsuitVerify?type=1', [], {
     keyName: 'id',
     transformListRequest,
+    pageSize: PAGE_SIZE,
   });
 
   return (
@@ -205,7 +205,7 @@ function MaterialHasList() {
             title: '状态',
             dataIndex: 'status',
             align: 'center',
-            render: (text, record) => {
+            render: (value: number, record: any) => {
               let status = '';
               let text = '';
               switch (record.status) {
@@ -260,7 +260,7 @@ function MaterialHasList() {
             title: '操作',
             key: 'action',
             align: 'center',
-            render: (text, record) => (
+            render: (text: null, record: any) => (
               <span>
                 {record.status === 1 ? (
                   <span>

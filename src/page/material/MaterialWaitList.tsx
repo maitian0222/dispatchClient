@@ -9,7 +9,7 @@ import MaterialReviewModal from './MaterialReviewModal';
 import Resource from './types/Resource';
 import DataTable from '@commons/DataTable';
 import transformListRequest from '../../utils/transformListRequest';
-
+import { PAGE_SIZE } from '../../config/AppConfig';
 function MaterialWaitList() {
   let formRef = null;
   const [visible, setVisible] = useState(false);
@@ -111,7 +111,7 @@ function MaterialWaitList() {
   const dataSource = useRestPageAPi<Resource>('/biz/lawsuitVerify?type=0', [], {
     keyName: 'id',
     transformListRequest,
-    //defaultSearchParams: { type: 0 },
+    pageSize: PAGE_SIZE,
   });
   // 多选配置
   const rowSelection = {

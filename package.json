@@ -4,7 +4,8 @@
   "private": true,
   "workspaces": [
     "src/commons/*",
-    "src/auth"
+    "src/auth",
+    "src/message"
   ],
   "dependencies": {
     "@babel/polyfill": "^7.4.4",
