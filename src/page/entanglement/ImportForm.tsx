@@ -52,7 +52,7 @@ class EntanglementForm extends React.Component<Props, State> {
         }}
       >
         <Form {...formItemLayout} style={{ width: '800px' }}>
-          <Form.Item label="法院名称">
+          {/* <Form.Item label="法院名称">
             {getFieldDecorator('courtId', {
               rules: [
                 {
@@ -61,7 +61,7 @@ class EntanglementForm extends React.Component<Props, State> {
                 },
               ],
             })(<CourtSelect />)}
-          </Form.Item>
+          </Form.Item> */}
           <Form.Item label="导入数据">
             {getFieldDecorator('attachment', {
               rules: [

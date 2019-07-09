@@ -34,7 +34,7 @@ class EntanglementModel extends React.PureComponent {
         maskClosable={false}
         width={1000}
         keyboard={false}
-        destoryOnClose={true}
+        destroyOnClose
         onCancel={onClose}
         footer={[
           <Button key="back" onClick={onClose}>

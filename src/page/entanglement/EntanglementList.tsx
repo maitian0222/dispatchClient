@@ -26,6 +26,7 @@ import {
   deleteDispute,
 } from './apis';
 import { PAGE_SIZE } from '../../config/AppConfig';
+import RadioOptions from './RadioOptions';
 
 /**
  * 纠纷管理列表
@@ -533,6 +534,14 @@ function EntanglementList() {
     );
   }
 
+  const optionsOnChange = (e) => {
+    console.log(e.target.value);
+
+    dataSource.query({
+      caseType: e.target.value,
+    });
+  };
+
   return (
     <React.Fragment>
       <SearchForm
@@ -563,6 +572,8 @@ function EntanglementList() {
             <Icon type="plus" />
             批量立案
           </Button>
+          <Divider type="vertical" />
+          <RadioOptions defaultValue="" onChange={optionsOnChange} />
         </Col>
       </Row>
 

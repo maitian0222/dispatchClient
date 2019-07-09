@@ -25,7 +25,7 @@ class ImportModel extends React.PureComponent {
         maskClosable={false}
         width={800}
         keyboard={false}
-        destoryOnClose={true}
+        destroyOnClose
         onCancel={onClose}
         footer={[
           <Button key="back" onClick={onClose}>

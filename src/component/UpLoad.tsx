@@ -147,8 +147,12 @@ class UpLoadModule extends React.Component {
         onPreview={this.onPreview}
         style={style}
       >
-        {fileList.length >= upLoadNumber
-          ? null
+        {upLoadNumber
+          ? fileList.length >= upLoadNumber
+            ? null
+            : this.props.children
+            ? this.props.children
+            : uploadButton
           : this.props.children
           ? this.props.children
           : uploadButton}

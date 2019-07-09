@@ -551,6 +551,19 @@ class EntanglementForm extends React.Component<Props, State> {
               </Form.Item>
             </Col>
             <Col span={8}>
+              <Form.Item label="合同名称">
+                {getFieldDecorator('contractName', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请填写合同名称',
+                    },
+                  ],
+                  initialValue: initialValues && initialValues.contractName,
+                })(<Input />)}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
               <Form.Item label="购买产品">
                 {getFieldDecorator('productName', {
                   rules: [
@@ -561,29 +574,6 @@ class EntanglementForm extends React.Component<Props, State> {
                   ],
                   initialValue: initialValues && initialValues.productName,
                 })(<Input />)}
-              </Form.Item>
-            </Col>
-            <Col span={8}>
-              <Form.Item label="日利率">
-                {getFieldDecorator('annualInterestRate', {
-                  rules: [
-                    {
-                      required: true,
-                      message: '请填写日利率',
-                    },
-                  ],
-                  initialValue:
-                    initialValues && initialValues.annualInterestRate,
-                })(
-                  <InputNumber
-                    defaultValue={0}
-                    min={0}
-                    max={100}
-                    style={{ width: '100%' }}
-                    formatter={(value) => `${value}%`}
-                    parser={(value) => value.replace('%', '')}
-                  />,
-                )}
               </Form.Item>
             </Col>
           </Row>
@@ -649,6 +639,29 @@ class EntanglementForm extends React.Component<Props, State> {
           </Row>
           <Row>
             <Col span={8}>
+              <Form.Item label="年利率">
+                {getFieldDecorator('annualInterestRate', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请填写日利率',
+                    },
+                  ],
+                  initialValue:
+                    initialValues && initialValues.annualInterestRate,
+                })(
+                  <InputNumber
+                    defaultValue={0}
+                    min={0}
+                    max={100}
+                    style={{ width: '100%' }}
+                    formatter={(value) => `${value}%`}
+                    parser={(value) => value.replace('%', '')}
+                  />,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
               <Form.Item label="逾期日期">
                 {getFieldDecorator('overdueDate', {
                   rules: [
@@ -684,7 +697,6 @@ class EntanglementForm extends React.Component<Props, State> {
                 )}
               </Form.Item>
             </Col>
-            <Col span={8} />
           </Row>
           <Row>
             <Col span={8}>
@@ -709,11 +721,20 @@ class EntanglementForm extends React.Component<Props, State> {
                       const owingInterests = this.props.form.getFieldValue(
                         'owingInterests',
                       );
-                      if (owingInterests) {
-                        this.props.form.setFieldsValue({
-                          total: owingInterests + value,
-                        });
-                      }
+                      const compoundInterest = this.props.form.getFieldValue(
+                        'compoundInterest',
+                      );
+                      const penaltyInterest = this.props.form.getFieldValue(
+                        'penaltyInterest',
+                      );
+
+                      this.props.form.setFieldsValue({
+                        total:
+                          (owingInterests || 0) +
+                          (compoundInterest || 0) +
+                          (penaltyInterest || 0) +
+                          value,
+                      });
                     }}
                   />,
                 )}
@@ -738,14 +759,109 @@ class EntanglementForm extends React.Component<Props, State> {
                     formatter={(value) => `￥${value}`}
                     parser={(value) => value.replace('￥', '')}
                     onChange={(value) => {
+                      const compoundInterest = this.props.form.getFieldValue(
+                        'compoundInterest',
+                      );
+                      const penaltyInterest = this.props.form.getFieldValue(
+                        'penaltyInterest',
+                      );
                       const overdueMoney = this.props.form.getFieldValue(
                         'overdueMoney',
                       );
-                      if (overdueMoney) {
-                        this.props.form.setFieldsValue({
-                          total: overdueMoney + value,
-                        });
-                      }
+
+                      this.props.form.setFieldsValue({
+                        total:
+                          (overdueMoney || 0) +
+                          (penaltyInterest || 0) +
+                          (compoundInterest || 0) +
+                          value,
+                      });
+                    }}
+                  />,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8} />
+          </Row>
+          <Row>
+            <Col span={8}>
+              <Form.Item label="复利">
+                {getFieldDecorator('compoundInterest', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请填写复利',
+                    },
+                  ],
+                  initialValue: initialValues && initialValues.compoundInterest,
+                })(
+                  <InputNumber
+                    defaultValue={0}
+                    min={0}
+                    precision={2}
+                    style={{ width: '100%' }}
+                    formatter={(value) => `￥${value}`}
+                    parser={(value) => value.replace('￥', '')}
+                    onChange={(value) => {
+                      const owingInterests = this.props.form.getFieldValue(
+                        'owingInterests',
+                      );
+                      const penaltyInterest = this.props.form.getFieldValue(
+                        'penaltyInterest',
+                      );
+                      const overdueMoney = this.props.form.getFieldValue(
+                        'overdueMoney',
+                      );
+
+                      this.props.form.setFieldsValue({
+                        total:
+                          (owingInterests || 0) +
+                          (penaltyInterest || 0) +
+                          (overdueMoney || 0) +
+                          value,
+                      });
+                    }}
+                  />,
+                )}
+              </Form.Item>
+            </Col>
+            <Col span={8}>
+              <Form.Item label="罚息">
+                {getFieldDecorator('penaltyInterest', {
+                  rules: [
+                    {
+                      required: true,
+                      message: '请填写罚息',
+                    },
+                  ],
+                  initialValue: initialValues && initialValues.penaltyInterest,
+                })(
+                  <InputNumber
+                    defaultValue={0}
+                    min={0}
+                    precision={2}
+                    style={{ width: '100%' }}
+                    formatter={(value) => `￥${value}`}
+                    parser={(value) => value.replace('￥', '')}
+                    onChange={(value) => {
+                      const compoundInterest = this.props.form.getFieldValue(
+                        'compoundInterest',
+                      );
+
+                      const owingInterests = this.props.form.getFieldValue(
+                        'owingInterests',
+                      );
+                      const overdueMoney = this.props.form.getFieldValue(
+                        'overdueMoney',
+                      );
+
+                      this.props.form.setFieldsValue({
+                        total:
+                          (overdueMoney || 0) +
+                          (compoundInterest || 0) +
+                          (owingInterests || 0) +
+                          value,
+                      });
                     }}
                   />,
                 )}
@@ -775,19 +891,7 @@ class EntanglementForm extends React.Component<Props, State> {
               </Form.Item>
             </Col>
           </Row>
-          <Row>
-            <Col>
-              <Form.Item
-                labelCol={{ span: 3 }}
-                wrapperCol={{ span: 18 }}
-                label="事实与理由"
-              >
-                {getFieldDecorator('reason', {
-                  initialValue: initialValues && initialValues.reason,
-                })(<Input.TextArea />)}
-              </Form.Item>
-            </Col>
-          </Row>
+
           <Row>
             <Col>
               <Form.Item
@@ -806,7 +910,6 @@ class EntanglementForm extends React.Component<Props, State> {
                   <UpLoadModule
                     action="/oss/attachment/fileupload"
                     listType="text"
-                    upLoadNumber="1"
                     files={initialValues && initialValues.evidence}
                   />,
                 )}
