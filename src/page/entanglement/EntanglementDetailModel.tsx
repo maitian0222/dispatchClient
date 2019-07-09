@@ -20,10 +20,11 @@ class EntanglementDetailModel extends React.PureComponent<Props, State> {
       editItem: {},
     };
   }
-  public componentDidMount() {
+
+  private getData = (id: string) => {
     // 根据纠纷id获取纠纷详情
     http
-      .get(`/biz/dispute/${this.props.id}`)
+      .get(`/biz/dispute/${id}`)
       .then((result) => {
         this.setState({
           editItem: result,
@@ -32,6 +33,15 @@ class EntanglementDetailModel extends React.PureComponent<Props, State> {
       .catch((e) => {
         message.error(e.response.data.message);
       });
+  };
+
+  public componentDidMount() {
+    this.getData(this.props.id);
+  }
+  public componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.id && nextProps.id !== this.props.id) {
+      this.getData(nextProps.id);
+    }
   }
 
   // 修改纠纷数据
