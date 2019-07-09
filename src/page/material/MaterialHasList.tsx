@@ -34,7 +34,7 @@ function MaterialHasList() {
    * 打开新建资源modal
    *
    */
-  const showModal = (type?: string, item: any) => {
+  const showModal = (type?: string, item?: any) => {
     if (type === 'refuse') {
       setVisible(true);
     } else {
@@ -74,7 +74,7 @@ function MaterialHasList() {
   };
   const refuseAudit = () => {
     const form = formRef.props.form;
-    form!.validateFields((err: any, values: object) => {
+    form!.validateFields((err: any, values: any) => {
       setLoading(true);
       if (err) {
         return;

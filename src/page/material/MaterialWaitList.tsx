@@ -35,7 +35,7 @@ function MaterialWaitList() {
    * 打开新建资源modal
    *
    */
-  const showModal = (type?: string, item: any) => {
+  const showModal = (type?: string, item?: any) => {
     if (type === 'refuse') {
       setVisible(true);
     } else {
@@ -238,8 +238,8 @@ function MaterialWaitList() {
             dataIndex: 'status',
             align: 'center',
             render: (value: number, record: any) => {
-              let status = '';
-              let text = '';
+              let status: string = '';
+              let text: string = '';
               switch (record.status) {
                 case 0:
                   status = 'red';
