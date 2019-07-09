@@ -555,6 +555,11 @@ function EntanglementList() {
         ]}
         handleSearch={handleSearch}
       />
+      <Row style={{ padding: '0 24px 30px' }}>
+        <Col>
+          <RadioOptions defaultValue="" onChange={optionsOnChange} />
+        </Col>
+      </Row>
 
       <Row style={{ padding: '0 24px 10px' }}>
         <Col span={24}>
@@ -573,7 +578,7 @@ function EntanglementList() {
             批量立案
           </Button>
           <Divider type="vertical" />
-          <RadioOptions defaultValue="" onChange={optionsOnChange} />
+          {/* <RadioOptions defaultValue="" onChange={optionsOnChange} /> */}
         </Col>
       </Row>
 

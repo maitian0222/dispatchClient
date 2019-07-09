@@ -28,12 +28,14 @@ class RadioOptions extends React.Component {
         defaultValue={this.props.defaultValue}
         buttonStyle="solid"
       >
+        {this.state.list.length > 0 && (
+          <Radio.Button value="">全部</Radio.Button>
+        )}
         {(this.state.list || []).map((item) => (
           <Radio.Button value={item.caseType}>
             {`${item.caseTypeName}(${item.num})`}
           </Radio.Button>
         ))}
-        <Radio.Button value="">全部</Radio.Button>
       </Radio.Group>
     );
   }

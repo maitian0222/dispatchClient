@@ -73,7 +73,7 @@ class EntanglementForm extends React.Component<Props, State> {
             })(
               <UpLoadModule
                 action="/oss/attachment/fileupload"
-                upLoadType={['zip']}
+                upLoadType={['zip', 'rar']}
                 listType="text"
                 upLoadNumber="1"
                 files={initialValues && initialValues.attachment}
