@@ -6,9 +6,8 @@ interface Props {
   // tslint:disable-next-line:no-any
   getFieldDecorator: any;
 }
-class RefuseForm extends React.Component<Props, State> {
+class RefuseForm extends React.Component<Props> {
   private props: any;
-  private state: any;
   constructor(props: Props) {
     super(props);
   }

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Divider, Badge } from 'antd';
+import { Form, Divider, Badge } from 'antd';
 import SearchForm from '@commons/SearchForm';
 import withErrorCatch from '@commons/with-error-catch';
 import useRestPageAPi from '@sinoui/use-rest-page-api';
@@ -10,23 +10,24 @@ import Resource from './types/Resource';
 import DataTable from '@commons/DataTable';
 import transformListRequest from '../../utils/transformListRequest';
 import { PAGE_SIZE } from '../../config/AppConfig';
+import MaterialItem from './types/MaterialItem';
 
 function MaterialHasList() {
-  let formRef: any = null;
+  let formRef: Form;
   const [visible, setVisible] = useState(false);
   const [reviewVisible, setReviewVisible] = useState(false);
   const [formOprType, setFormOprType] = useState('');
-  const [editItem, setEditItem] = useState({});
+  const [editItem, setEditItem] = useState<MaterialItem>({});
   const [courtList, setCourtList] = useState([]);
   const [loading, setLoading] = useState(false);
   useEffect(() => {
-    http.get('/biz/court/list', {}).then((result) => {
+    http.get('/biz/court/list', {}).then((result: any) => {
       if (result) {
         setCourtList(result.content);
       }
     });
   }, [courtList.length]);
-  const saveFormRef = (ref: any) => {
+  const saveFormRef = (ref: Form) => {
     formRef = ref;
   };
   /**
@@ -47,7 +48,7 @@ function MaterialHasList() {
   };
   const onOk = () => {
     const form = formRef.props.form;
-    form.validateFields((err: any, values: object) => {
+    form!.validateFields((err: any, values: any) => {
       // 检验失败return
       if (err) {
         return;
@@ -62,7 +63,7 @@ function MaterialHasList() {
         .then((res) => {
           setLoading(false);
           dataSource.reload();
-          form.resetFields();
+          form!.resetFields();
           setReviewVisible(false);
         });
     });
@@ -73,7 +74,7 @@ function MaterialHasList() {
   };
   const refuseAudit = () => {
     const form = formRef.props.form;
-    form.validateFields((err: any, values: object) => {
+    form!.validateFields((err: any, values: object) => {
       setLoading(true);
       if (err) {
         return;
@@ -92,7 +93,7 @@ function MaterialHasList() {
         .then((res) => {
           setLoading(false);
           dataSource.reload();
-          form.resetFields();
+          form!.resetFields();
           setVisible(false);
           if (formOprType === 'back') {
             setReviewVisible(false);
@@ -132,8 +133,6 @@ function MaterialHasList() {
             type: 'select',
             options: [
               { code: '', name: '请选择' },
-              //{ code: 0, name: '已提交' },
-              // { code: 1, name: '待审核' },
               { code: 2, name: '拒绝受理' },
               { code: 3, name: '审核通过' },
               { code: 4, name: '审核未通过' },
