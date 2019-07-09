@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Descriptions, Modal, Divider, Icon } from 'antd';
 import http from '@sinoui/http';
-
+import UpLoadModule from './UpLoad';
 interface Props {
   visible: boolean; // modal的显示或隐藏
   id: string; // 纠纷id
@@ -20,7 +20,7 @@ class DisputeInformation extends React.Component {
   public componentDidMount() {
     // 根据纠纷id获取纠纷详情${this.props.id}
     http
-      .get(`/biz/dispute/57`)
+      .get(`/biz/dispute/${this.props.id}`)
       .then((result) => {
         this.setState({
           editItem: result,
@@ -349,7 +349,13 @@ class DisputeInformation extends React.Component {
             {editItem.reason}
           </Descriptions.Item>
           <Descriptions.Item label="证据">
-            {/* {editItem.evidence.id} */}
+            {/* {editItem.v.id} */}
+            {/* <UpLoadModule
+              action="/oss/attachment/fileupload"
+              listType="picture"
+              upLoadNumber="1"
+              files={editItem.evidence}
+            /> */}
           </Descriptions.Item>
         </Descriptions>
       </Modal>
