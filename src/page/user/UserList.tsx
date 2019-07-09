@@ -19,7 +19,7 @@ import withErrorCatch from '@commons/with-error-catch';
 import transformListRequest from '../../utils/transformListRequest';
 import User from './types/User';
 import ResponseResult from '../../types/ResponseResult';
-
+import { PAGE_SIZE } from '../../config/AppConfig';
 /**
  * 用户管理列表
  */
@@ -190,6 +190,7 @@ function UserList() {
   const dataSource = useRestPageAPi<User>('/admin/user', [], {
     keyName: 'userId',
     transformListRequest,
+    pageSize: PAGE_SIZE,
   });
 
   // 多选配置

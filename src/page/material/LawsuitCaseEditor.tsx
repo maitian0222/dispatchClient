@@ -13,14 +13,15 @@ class LawsuitCaseEditor extends React.Component<Props, State> {
     this.state = {};
   }
   public render() {
-    // 联系人id
-    const contactsId = this.props.editItme.contactsId || '';
-    // 法院id
-    const courtId = this.props.editItme.courtId || '';
-    // 案件状态id
-    const status = this.props.editItme.status || '';
+    // 联系人id 法院id 案件状态 退回理由
+    const {
+      contactsId,
+      courtId,
+      status,
+      checkFailReason,
+      id,
+    } = this.props.editItme;
     // 诉讼案件id
-    const id = this.props.editItme.id;
     return (
       <div className={styles['lawsuit-layout']} style={{ margin: '20px' }}>
         <Row gutter={20}>

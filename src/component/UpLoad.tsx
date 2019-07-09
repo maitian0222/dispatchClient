@@ -54,7 +54,9 @@ class UpLoadModule extends React.Component {
       this.setState({
         fileList: files,
       });
-      this.props.onChange(files);
+      if (this.props.onChange) {
+        this.props.onChange(files);
+      }
     }
   }
 

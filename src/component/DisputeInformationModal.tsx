@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { Descriptions, Modal, Divider, Icon } from 'antd';
+import { Descriptions, Modal, Divider, Icon,message } from 'antd';
 import http from '@sinoui/http';
 import UpLoadModule from './UpLoad';
 interface Props {
   visible: boolean; // modal的显示或隐藏
   id: string; // 纠纷id
-  type: 'edit' | 'view'; // 修改或查看
   onClose: () => void;
 }
 class DisputeInformation extends React.Component {
@@ -17,10 +16,10 @@ class DisputeInformation extends React.Component {
       respondentType: 1,
     };
   }
-  public componentDidMount() {
-    // 根据纠纷id获取纠纷详情${this.props.id}
+  private getData = (id: string) => {
+    // 根据纠纷id获取纠纷详情
     http
-      .get(`/biz/dispute/${this.props.id}`)
+      .get(`/biz/dispute/${id}`)
       .then((result) => {
         this.setState({
           editItem: result,
@@ -30,9 +29,18 @@ class DisputeInformation extends React.Component {
       .catch((e) => {
         message.error(e.response.data.message);
       });
+  };
+
+  public componentDidMount() {
+    this.getData(this.props.id);
+  }
+  public componentWillReceiveProps(nextProps: Props) {
+    if (nextProps.id && nextProps.id !== this.props.id) {
+      this.getData(nextProps.id);
+    }
   }
   public render() {
-    const { visible, type, onClose } = this.props;
+    const { visible, onClose } = this.props;
     const { loading, editItem } = this.state;
     const naturalPerson = () => {
       return (
@@ -85,10 +93,10 @@ class DisputeInformation extends React.Component {
           column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}
         >
           <Descriptions.Item label="案件类型">
-            {editItem.caseType}
+            {editItem.caseTypeName}
           </Descriptions.Item>
           <Descriptions.Item label="递交法院">
-            {editItem.courtId}
+            {editItem.courtName}
           </Descriptions.Item>
           <Descriptions.Item label="被告主体人">{'法人'}</Descriptions.Item>
           <Descriptions.Item label="公司名称">
@@ -107,7 +115,7 @@ class DisputeInformation extends React.Component {
             {editItem.legalPeopleName}
           </Descriptions.Item>
           <Descriptions.Item label="证件类型">
-            {editItem.certificateType}
+            {editItem.certificateTypeName}
           </Descriptions.Item>
           <Descriptions.Item label="证件号">
             {editItem.certificateId}
@@ -118,175 +126,46 @@ class DisputeInformation extends React.Component {
             {editItem.fixedPhone}
           </Descriptions.Item>
           <Descriptions.Item label="身份证正面">
-            {/* {editItem.idFront} */}
-            {editItem.idFront ? (
-              <div class="ant-upload-list ant-upload-list-picture-card">
-                <div class="ant-upload-list-item ant-upload-list-item-done">
-                  <div class="ant-upload-list-item-info">
-                    <span>
-                      <a
-                        class="ant-upload-list-item-thumbnail"
-                        href={
-                          'http://192.168.80.144:8082/oss/attachment/download?id=' +
-                          editItem.idFront[0].id
-                        }
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <img
-                          src={
-                            'http://192.168.80.144:8082/oss/attachment/download?id=' +
-                            editItem.idFront[0].id
-                          }
-                          alt="身份证正面.jpg"
-                        />
-                      </a>
-                      <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="ant-upload-list-item-name"
-                        title="身份证正面.jpg"
-                        href={
-                          'http://192.168.80.144:8082/oss/attachment/download?id=' +
-                          editItem.idFront[0].id
-                        }
-                      >
-                        身份证正面.jpg
-                      </a>
-                    </span>
-                    <span class="ant-upload-list-item-actions">
-                      <a
-                        href={
-                          'http://192.168.80.144:8082/oss/attachment/download?id=' +
-                          editItem.idFront[0].id
-                        }
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title="预览文件"
-                      >
-                        <Icon type="eye" />
-                      </a>
-                    </span>
-                  </div>
-                </div>
+            <UpLoadModule
+              action="/oss/attachment/fileupload"
+              listType="picture-card"
+              upLoadNumber="1"
+              files={editItem && editItem.idFront}
+              disabled
+            >
+              <div>
+                <Icon type="plus" />
+                <div className="ant-upload-text">上传文件</div>
               </div>
-            ) : (
-              ''
-            )}
+            </UpLoadModule>
           </Descriptions.Item>
           <Descriptions.Item label="身份证反面">
-            {/* {editItem.idReverse} */}
-            {editItem.idReverse ? (
-              <div class="ant-upload-list ant-upload-list-picture-card">
-                <div class="ant-upload-list-item ant-upload-list-item-done">
-                  <div class="ant-upload-list-item-info">
-                    <span>
-                      <a
-                        class="ant-upload-list-item-thumbnail"
-                        href={
-                          'http://192.168.80.144:8082/oss/attachment/download?id=' +
-                          editItem.idReverse[0].id
-                        }
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <img
-                          src={
-                            'http://192.168.80.144:8082/oss/attachment/download?id=' +
-                            editItem.idReverse[0].id
-                          }
-                          alt="身份证反面.jpg"
-                        />
-                      </a>
-                      <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="ant-upload-list-item-name"
-                        title="身份证反面.jpg"
-                        href={
-                          'http://192.168.80.144:8082/oss/attachment/download?id=' +
-                          editItem.idReverse[0].id
-                        }
-                      >
-                        身份证反面.jpg
-                      </a>
-                    </span>
-                    <span class="ant-upload-list-item-actions">
-                      <a
-                        href={
-                          'http://192.168.80.144:8082/oss/attachment/download?id=' +
-                          editItem.idReverse[0].id
-                        }
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title="预览文件"
-                      >
-                        <Icon type="eye" />
-                      </a>
-                    </span>
-                  </div>
-                </div>
+            <UpLoadModule
+              action="/oss/attachment/fileupload"
+              listType="picture-card"
+              upLoadNumber="1"
+              files={editItem && editItem.idReverse}
+              disabled
+            >
+              <div>
+                <Icon type="plus" />
+                <div className="ant-upload-text">上传文件</div>
               </div>
-            ) : (
-              ''
-            )}
+            </UpLoadModule>
           </Descriptions.Item>
           <Descriptions.Item label="营业执照">
-            {/* {editItem.businessLicense} */}
-            {editItem.businessLicense ? (
-              <div class="ant-upload-list ant-upload-list-picture-card">
-                <div class="ant-upload-list-item ant-upload-list-item-done">
-                  <div class="ant-upload-list-item-info">
-                    <span>
-                      <a
-                        class="ant-upload-list-item-thumbnail"
-                        href={
-                          'http://192.168.80.144:8082/oss/attachment/download?id=' +
-                          editItem.businessLicense[0].id
-                        }
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        <img
-                          src={
-                            'http://192.168.80.144:8082/oss/attachment/download?id=' +
-                            editItem.businessLicense[0].id
-                          }
-                          alt="营业执照.jpg"
-                        />
-                      </a>
-                      <a
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        class="ant-upload-list-item-name"
-                        title="营业执照.jpg"
-                        href={
-                          'http://192.168.80.144:8082/oss/attachment/download?id=' +
-                          editItem.businessLicense[0].id
-                        }
-                      >
-                        营业执照.jpg
-                      </a>
-                    </span>
-                    <span class="ant-upload-list-item-actions">
-                      <a
-                        href={
-                          'http://192.168.80.144:8082/oss/attachment/download?id=' +
-                          editItem.businessLicense[0].id
-                        }
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        title="预览文件"
-                      >
-                        <Icon type="eye" />
-                      </a>
-                    </span>
-                  </div>
-                </div>
+            <UpLoadModule
+              action="/oss/attachment/fileupload"
+              listType="picture-card"
+              upLoadNumber="1"
+              files={editItem && editItem.businessLicense}
+              disabled
+            >
+              <div>
+                <Icon type="plus" />
+                <div className="ant-upload-text">上传文件</div>
               </div>
-            ) : (
-              ''
-            )}
+            </UpLoadModule>
           </Descriptions.Item>
         </Descriptions>
       );
@@ -350,12 +229,13 @@ class DisputeInformation extends React.Component {
           </Descriptions.Item>
           <Descriptions.Item label="证据">
             {/* {editItem.v.id} */}
-            {/* <UpLoadModule
+            <UpLoadModule
               action="/oss/attachment/fileupload"
               listType="picture"
               upLoadNumber="1"
               files={editItem.evidence}
-            /> */}
+              disabled
+            />
           </Descriptions.Item>
         </Descriptions>
       </Modal>
