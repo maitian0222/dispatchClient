@@ -805,7 +805,7 @@ class EntanglementForm extends React.Component<Props, State> {
                 })(
                   <UpLoadModule
                     action="/oss/attachment/fileupload"
-                    listType="picture"
+                    listType="text"
                     upLoadNumber="1"
                     files={initialValues && initialValues.evidence}
                   />,

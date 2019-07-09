@@ -31,12 +31,12 @@ import { PAGE_SIZE } from '../../config/AppConfig';
  * 纠纷管理列表
  */
 function EntanglementList() {
-  let formRef;
+  let formRef: { props: { form: any } };
   const disputeFormRef = (ref: any) => {
     formRef = ref;
   };
 
-  let importForm;
+  let importForm: { props: { form: any } };
   const importFormRef = (ref: any) => {
     importForm = ref;
   };
@@ -78,6 +78,7 @@ function EntanglementList() {
    */
   const onClose = () => {
     const form = formRef.props.form;
+    setEditItem({});
     form.resetFields();
     setVisible(false);
   };

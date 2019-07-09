@@ -169,7 +169,6 @@ class AppHeader extends React.PureComponent {
 }
 
 const mapStateToProps = (state) => {
-  console.log(state);
   return {
     messageList: state.message && state.message.messageList,
   };

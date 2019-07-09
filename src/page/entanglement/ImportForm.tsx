@@ -60,7 +60,6 @@ class EntanglementForm extends React.Component<Props, State> {
                   message: '请选择法院',
                 },
               ],
-              initialValue: initialValues ? initialValues.courtId : '',
             })(<CourtSelect />)}
           </Form.Item>
           <Form.Item label="导入数据">
@@ -75,7 +74,7 @@ class EntanglementForm extends React.Component<Props, State> {
               <UpLoadModule
                 action="/oss/attachment/fileupload"
                 upLoadType={['zip']}
-                listType="picture"
+                listType="text"
                 upLoadNumber="1"
                 files={initialValues && initialValues.attachment}
               />,

@@ -21,6 +21,8 @@ import ResponseResult from '../../types/ResponseResult';
 import { getInformation, getNewsQuery } from './apis';
 import { PAGE_SIZE } from '../../config/AppConfig';
 import { ActionCreators as messageActionCreators } from '@message/message';
+import { connect } from 'react-redux';
+import { withRouter } from 'react-router-dom';
 
 /**
  * 消息管理列表
@@ -214,6 +216,13 @@ function NoticeList(props) {
   );
 }
 
-export default withErrorCatch({ errorTitle: '很抱歉，数据加载失败...' })(
-  NoticeList,
+const mapDispatchToProps = (dispatch) => ({
+  dispatch,
+});
+
+export default withRouter(
+  connect(
+    null,
+    mapDispatchToProps,
+  )(NoticeList),
 );

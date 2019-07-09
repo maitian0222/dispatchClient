@@ -91,14 +91,14 @@ function ContactList() {
         dataSource.reload();
         Modal.success({
           title: '提示',
-          content: `${oprText}纠纷模板成功!`,
+          content: `${oprText}联系人成功!`,
           okText: '确定',
         });
       }).catch(() => {
         setLoading(false);
         Modal.error({
           title: '提示',
-          content: `${oprText}纠纷模板失败!`,
+          content: `${oprText}联系人失败!`,
           okText: '确定',
         });
       });
