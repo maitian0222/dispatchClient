@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Descriptions, Modal, Divider, Icon } from 'antd';
+import { Descriptions, Modal, Divider, Icon,message } from 'antd';
 import http from '@sinoui/http';
 import UpLoadModule from './UpLoad';
 interface Props {
@@ -93,10 +93,10 @@ class DisputeInformation extends React.Component {
           column={{ xxl: 4, xl: 3, lg: 3, md: 3, sm: 2, xs: 1 }}
         >
           <Descriptions.Item label="案件类型">
-            {editItem.caseType}
+            {editItem.caseTypeName}
           </Descriptions.Item>
           <Descriptions.Item label="递交法院">
-            {editItem.courtId}
+            {editItem.courtName}
           </Descriptions.Item>
           <Descriptions.Item label="被告主体人">{'法人'}</Descriptions.Item>
           <Descriptions.Item label="公司名称">
@@ -115,7 +115,7 @@ class DisputeInformation extends React.Component {
             {editItem.legalPeopleName}
           </Descriptions.Item>
           <Descriptions.Item label="证件类型">
-            {editItem.certificateType}
+            {editItem.certificateTypeName}
           </Descriptions.Item>
           <Descriptions.Item label="证件号">
             {editItem.certificateId}
