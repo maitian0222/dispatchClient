@@ -4,6 +4,7 @@ import http from '@sinoui/http';
 import EntanglementDetailModel from '../../entanglement/EntanglementDetailModel';
 import styles from '../Lawsuit.css';
 import CardLayout from './CardLayout';
+import DisputeInformationModal from '../../../component/DisputeInformationModal';
 interface Props {
   id: string; // id
   status: string; // 案件状态
@@ -109,14 +110,21 @@ export default function DisputeListCard(props: Props) {
         ]}
         dataSource={dispute}
       />
-      {editItem.id && (
-        <EntanglementDetailModel
-          id={editItem.id}
-          visible={visible}
-          onClose={() => setVisible(false)}
-          type={props.status === 4 ? 'edit' : 'view'}
-        />
-      )}
+      {editItem.id &&
+        (props.status === 4 ? (
+          <EntanglementDetailModel
+            id={editItem.id}
+            visible={visible}
+            onClose={() => setVisible(false)}
+            type={props.status === 4 ? 'edit' : 'view'}
+          />
+        ) : (
+          <DisputeInformationModal
+            id={editItem.id}
+            visible={visible}
+            onClose={() => setVisible(false)}
+          />
+        ))}
     </CardLayout>
   );
 }
