@@ -28,6 +28,26 @@ export default function CaseInfoCard(props: Props) {
       });
   }, []);
 
+  const viewFile = () => {
+    http
+      .get(`/biz/lawsuit/findurl`, {
+        params: {
+          id: props.id,
+        },
+      })
+      .then((result: { id: string; name: string }) => {
+        window.open(
+          `http://192.168.80.139:8012/onlinePreview?url=${escape(
+            `http://192.168.80.144:8082/oss/attachment/download?id=${
+              result.id
+            }&fullfilename=${result.name}`,
+          )}`,
+          'newwindow',
+          'toolbar =no, menubar=no, scrollbars=no, resizable=no, location=no, status=no',
+        );
+      });
+  };
+
   return (
     <CardLayout title="案件概况" loading={loading}>
       <Descriptions>
@@ -50,7 +70,9 @@ export default function CaseInfoCard(props: Props) {
         </Descriptions.Item>
       </Descriptions>
       <div style={{ textAlign: 'right' }}>
-        <Button type="primary">诉状书预览</Button>
+        <Button type="primary" onClick={() => viewFile()}>
+          诉状书预览
+        </Button>
       </div>
     </CardLayout>
   );

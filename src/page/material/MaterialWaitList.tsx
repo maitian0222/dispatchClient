@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Divider, Badge, Row, Col, Button, Icon, Modal, message } from 'antd';
+import { Divider, Badge, Row, Col, Button, Form, Modal, message } from 'antd';
 import SearchForm from '@commons/SearchForm';
 import withErrorCatch from '@commons/with-error-catch';
 import useRestPageAPi from '@sinoui/use-rest-page-api';
@@ -10,31 +10,32 @@ import Resource from './types/Resource';
 import DataTable from '@commons/DataTable';
 import transformListRequest from '../../utils/transformListRequest';
 import { PAGE_SIZE } from '../../config/AppConfig';
+import MaterialItem from './types/MaterialItem';
 function MaterialWaitList() {
-  let formRef = null;
+  let formRef: Form;
   const [visible, setVisible] = useState(false);
   const [reviewVisible, setReviewVisible] = useState(false);
   const [formOprType, setFormOprType] = useState('');
-  const [editItem, setEditItem] = useState({});
+  const [editItem, setEditItem] = useState<MaterialItem>({});
   const [courtList, setCourtList] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedRowIds, setSelectedRowIds] = useState<string[]>([]);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   useEffect(() => {
-    http.get('/biz/court/list', {}).then((result) => {
+    http.get('/biz/court/list', {}).then((result: any) => {
       if (result) {
         setCourtList(result.content);
       }
     });
   }, [courtList.length]);
-  const saveFormRef = (ref: any) => {
+  const saveFormRef = (ref: Form) => {
     formRef = ref;
   };
   /**
    * 打开新建资源modal
    *
    */
-  const showModal = (type?: string, item: any) => {
+  const showModal = (type?: string, item?: any) => {
     if (type === 'refuse') {
       setVisible(true);
     } else {
@@ -48,12 +49,11 @@ function MaterialWaitList() {
   };
   const onOk = () => {
     const form = formRef.props.form;
-    form.validateFields((err, values) => {
+    form!.validateFields((err: any, values: any) => {
       // 检验失败return
       if (err) {
         return;
       }
-      //console.log('Received values of form: ', values);
       setLoading(true);
       http
         .get('/biz/lawsuitVerify/pass', {
@@ -64,7 +64,7 @@ function MaterialWaitList() {
         .then((res) => {
           setLoading(false);
           dataSource.reload();
-          form.resetFields();
+          form!.resetFields();
           setReviewVisible(false);
         });
     });
@@ -75,8 +75,7 @@ function MaterialWaitList() {
   };
   const refuseAudit = () => {
     const form = formRef.props.form;
-    form.validateFields((err, values) => {
-      //console.log('values', values);
+    form!.validateFields((err, values) => {
       setLoading(true);
       if (err) {
         return;
@@ -95,7 +94,7 @@ function MaterialWaitList() {
         .then((res) => {
           setLoading(false);
           dataSource.reload();
-          form.resetFields();
+          form!.resetFields();
           setVisible(false);
           if (formOprType === 'back') {
             setReviewVisible(false);
@@ -103,7 +102,7 @@ function MaterialWaitList() {
         });
     });
   };
-  const handleSearch = (condition) => {
+  const handleSearch = (condition: any) => {
     dataSource.query({
       ...condition,
     });
@@ -123,9 +122,8 @@ function MaterialWaitList() {
   };
   // 批量通过
   const batchPass = () => {
-    // console.log('selectedRowIds', selectedRowIds);
     let flag = false;
-    selectedRows.map((item) => {
+    selectedRows.map((item: any) => {
       if (item.status !== 1) {
         flag = true;
         message.warn(`${item.caseNumber}数据非待审核状态！`);
@@ -239,9 +237,9 @@ function MaterialWaitList() {
             title: '状态',
             dataIndex: 'status',
             align: 'center',
-            render: (text, record) => {
-              let status = '';
-              let text = '';
+            render: (value: number, record: any) => {
+              let status: string = '';
+              let text: string = '';
               switch (record.status) {
                 case 0:
                   status = 'red';
@@ -294,7 +292,7 @@ function MaterialWaitList() {
             title: '操作',
             key: 'action',
             align: 'center',
-            render: (text, record) => (
+            render: (text: null, record: any) => (
               <span>
                 {record.status === 1 ? (
                   <span>
