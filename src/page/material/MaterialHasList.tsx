@@ -117,7 +117,7 @@ function MaterialHasList() {
       <SearchForm
         condition={[
           {
-            fieldName: '放款主体',
+            fieldName: '诉讼主体',
             placeholder: '请输入',
             name: 'sName',
           },
@@ -146,7 +146,7 @@ function MaterialHasList() {
             textName: 'name',
           },
           {
-            fieldName: '提交时间',
+            fieldName: '更新时间',
             placeholder: ['开始时间', '结束时间'],
             type: 'rangePicker',
             startTimeName: 'stime',
