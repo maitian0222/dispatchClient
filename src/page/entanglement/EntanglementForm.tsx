@@ -595,7 +595,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     precision={2}
                     style={{ width: '100%' }}
                     formatter={(value) => `￥${value}`}
-                    parser={(value) => value.replace('￥', '')}
+                    parser={(value) => value!.replace('￥', '')}
                   />,
                 )}
               </Form.Item>
@@ -656,7 +656,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     max={100}
                     style={{ width: '100%' }}
                     formatter={(value) => `${value}%`}
-                    parser={(value) => value.replace('%', '')}
+                    parser={(value) => value!.replace('%', '')}
                   />,
                 )}
               </Form.Item>
@@ -716,7 +716,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     precision={2}
                     style={{ width: '100%' }}
                     formatter={(value) => `￥${value}`}
-                    parser={(value) => value.replace('￥', '')}
+                    parser={(value) => value!.replace('￥', '')}
                     onChange={(value) => {
                       const owingInterests = this.props.form.getFieldValue(
                         'owingInterests',
@@ -757,7 +757,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     precision={2}
                     style={{ width: '100%' }}
                     formatter={(value) => `￥${value}`}
-                    parser={(value) => value.replace('￥', '')}
+                    parser={(value) => value!.replace('￥', '')}
                     onChange={(value) => {
                       const compoundInterest = this.props.form.getFieldValue(
                         'compoundInterest',
@@ -801,7 +801,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     precision={2}
                     style={{ width: '100%' }}
                     formatter={(value) => `￥${value}`}
-                    parser={(value) => value.replace('￥', '')}
+                    parser={(value) => value!.replace('￥', '')}
                     onChange={(value) => {
                       const owingInterests = this.props.form.getFieldValue(
                         'owingInterests',
@@ -842,7 +842,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     precision={2}
                     style={{ width: '100%' }}
                     formatter={(value) => `￥${value}`}
-                    parser={(value) => value.replace('￥', '')}
+                    parser={(value) => value!.replace('￥', '')}
                     onChange={(value) => {
                       const compoundInterest = this.props.form.getFieldValue(
                         'compoundInterest',
@@ -885,7 +885,7 @@ class EntanglementForm extends React.Component<Props, State> {
                     precision={2}
                     style={{ width: '100%' }}
                     formatter={(value) => `￥${value}`}
-                    parser={(value) => value.replace('￥', '')}
+                    parser={(value) => value!.replace('￥', '')}
                   />,
                 )}
               </Form.Item>

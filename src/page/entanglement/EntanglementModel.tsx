@@ -9,6 +9,8 @@ interface Props {
   onClose: () => void;
   onOk: () => void;
   editItem: any;
+  form: any;
+  saveSubmit: () => void;
 }
 /**
  * 纠纷管理model

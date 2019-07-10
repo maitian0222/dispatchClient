@@ -30,7 +30,7 @@ function ContactList(props) {
   const rowRadioSelection = {
     type: 'radio',
     columnTitle: '选择',
-    onSelect: (selectedRowKeys, selectedRows) => {
+    onSelect: (selectedRowKeys: any[], selectedRows: any) => {
       props.onSelectContact(selectedRowKeys);
     },
   };
@@ -63,7 +63,7 @@ function ContactList(props) {
             dataIndex: 'sex',
             key: 'sex',
             align: 'center',
-            render: (value) => {
+            render: (value: string) => {
               return <span>{value === '1' ? '女' : '男'}</span>;
             },
           },

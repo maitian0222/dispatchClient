@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Icon, Row, Col, Button, Divider, Message } from 'antd';
+import { Modal, Icon, Row, Col, Button, Divider, message } from 'antd';
 import SearchForm from '@commons/SearchForm';
 import RoleModel from './RoleModel';
 import UserTreeModel from './UserTreeModel';
@@ -86,7 +86,7 @@ function RoleList() {
   const onOk = () => {
     const form = formRef.props.form;
 
-    return form.validateFields((err, values) => {
+    return form.validateFields((err: any, values: any) => {
       // 检验失败return
       if (err) {
         return;
@@ -129,7 +129,7 @@ function RoleList() {
           okText: '确定',
         });
       }).catch((e) => {
-        Message.error(e.response.data.msg);
+        message.error(e.response.data.msg);
         setLoading(false);
       });
     });
@@ -153,7 +153,7 @@ function RoleList() {
       content: '确认删除？',
       onOk: () => {
         deleteRole(item.roleId)
-          .then((result) => {
+          .then((result: { code: number; msg: string }) => {
             if (result.code !== 0) {
               Modal.error({
                 title: '提示',
@@ -170,7 +170,7 @@ function RoleList() {
             });
           })
           .catch((e) => {
-            Message.error(e.response.data.msg);
+            message.error(e.response.data.msg);
           });
       },
     });
@@ -198,7 +198,7 @@ function RoleList() {
             title: '编号',
             key: 'index',
             align: 'center',
-            render: (value, item, index) => {
+            render: (value: string, item: Role, index: number) => {
               return index + 1;
             },
           },
@@ -219,7 +219,7 @@ function RoleList() {
             dataIndex: 'opt',
             key: 'opt',
             align: 'center',
-            render: (value, item, index) => {
+            render: (value: string, item: Role, index: number) => {
               return (
                 <div>
                   <a href="javascript:;" onClick={(event) => onDelete(item)}>

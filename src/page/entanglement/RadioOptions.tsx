@@ -7,7 +7,11 @@ interface Props {
   defaultValue: string;
 }
 
-class RadioOptions extends React.Component {
+interface State {
+  list: [];
+}
+
+class RadioOptions extends React.Component<Props, State> {
   constructor(props) {
     super(props);
     this.state = {

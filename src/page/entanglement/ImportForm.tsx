@@ -1,22 +1,8 @@
 import React from 'react';
 import { FormComponentProps } from 'antd/lib/form';
-import {
-  Form,
-  Input,
-  Select,
-  Typography,
-  Row,
-  Col,
-  Radio,
-  Divider,
-  DatePicker,
-  Icon,
-  InputNumber,
-} from 'antd';
+import { Form } from 'antd';
 import UpLoadModule from '../../component/UpLoad';
 import CourtSelect from '../../component/CourtSelect';
-
-const { Title, Paragraph } = Typography;
 
 interface Props {
   form: FormComponentProps;

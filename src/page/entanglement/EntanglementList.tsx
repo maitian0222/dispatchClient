@@ -6,7 +6,7 @@ import {
   Col,
   Button,
   Divider,
-  Message,
+  message,
   Table,
   Descriptions,
 } from 'antd';
@@ -19,6 +19,7 @@ import PutOnRecordModel from './PutOnRecordModel';
 import ImportModel from './ImportModel';
 import Entanglement from './types/Entanglement';
 import ContactsModel from './ContactsModel';
+import DisputeList from './DisputeList';
 import {
   getSaveAndSubmit,
   getBatchSubmit,
@@ -27,6 +28,7 @@ import {
 } from './apis';
 import { PAGE_SIZE } from '../../config/AppConfig';
 import RadioOptions from './RadioOptions';
+import { string } from 'prop-types';
 
 /**
  * 纠纷管理列表
@@ -58,6 +60,7 @@ function EntanglementList() {
   const [selectedRowIds, setSelectedRowIds] = useState([]);
   // 导入数据
   const [importVisible, setImportVisible] = useState(false);
+
   /**
    * 打开纠纷Model
    * @param item 数据对象
@@ -68,7 +71,7 @@ function EntanglementList() {
     setModelTitleType(type);
     setEditItem({});
     if (type === 'edit' && item) {
-      http.get(`/biz/dispute/${item.id}`).then((result) => {
+      http.get(`/biz/dispute/${item.id}`).then((result: {}) => {
         setEditItem(result);
       });
     }
@@ -106,7 +109,7 @@ function EntanglementList() {
 
   const onOk = () => {
     const form = formRef.props.form;
-    return form.validateFields((err, values) => {
+    return form.validateFields((err: any, values: Entanglement) => {
       // 检验失败return
       if (err) {
         return;
@@ -200,7 +203,7 @@ function EntanglementList() {
    */
   const saveSelectContacts = () => {
     const form = formRef.props.form;
-    return form.validateFields((err, values) => {
+    return form.validateFields((err: any, values: Entanglement) => {
       // 检验失败return
       if (err) {
         return;
@@ -252,7 +255,7 @@ function EntanglementList() {
    * 获取选中联系人
    * @param item
    */
-  const onSelectContact = (item) => {
+  const onSelectContact = (item: {}) => {
     setContact(item);
   };
 
@@ -264,48 +267,50 @@ function EntanglementList() {
     const form = formRef.props.form;
 
     if (!contact.id) {
-      Message.error('请选择联系人');
+      message.error('请选择联系人');
       return;
     }
 
-    form.validateFields((err, values) => {
-      values.contactsId = contact.id;
-      if (editItem) {
-        values.id = editItem.id;
-      }
-      getSaveAndSubmit(values)
-        .then((result) => {
-          if (result.code !== 0) {
-            Modal.error({
+    form.validateFields(
+      (err: any, values: { contactsId: string; id: string }) => {
+        values.contactsId = contact.id;
+        if (editItem) {
+          values.id = editItem.id;
+        }
+        getSaveAndSubmit(values)
+          .then((result: { code: number; msg: string }) => {
+            if (result.code !== 0) {
+              Modal.error({
+                title: '提示',
+                content: result.msg,
+                okText: '确定',
+              });
+              setLoading(false);
+              return;
+            }
+
+            // 清空表单数据
+            form.resetFields();
+            setSelectedRowIds([]);
+            setVisible(false);
+            setContactVisible(false);
+            setContact({});
+            dataSource.reload();
+            Modal.success({
               title: '提示',
-              content: result.msg,
+              content: `提交成功!`,
               okText: '确定',
             });
-            setLoading(false);
-            return;
-          }
-
-          // 清空表单数据
-          form.resetFields();
-          setSelectedRowIds([]);
-          setVisible(false);
-          setContactVisible(false);
-          setContact({});
-          dataSource.reload();
-          Modal.success({
-            title: '提示',
-            content: `提交成功!`,
-            okText: '确定',
+          })
+          .catch(() => {
+            Modal.error({
+              title: '提示',
+              content: `提交失败!`,
+              okText: '确定',
+            });
           });
-        })
-        .catch(() => {
-          Modal.error({
-            title: '提示',
-            content: `提交失败!`,
-            okText: '确定',
-          });
-        });
-    });
+      },
+    );
   };
 
   /**
@@ -318,7 +323,7 @@ function EntanglementList() {
       content: '确认删除？',
       onOk: () => {
         deleteDispute(item.id)
-          .then((result) => {
+          .then((result: { code: number; msg: string }) => {
             if (result.code !== 0) {
               Modal.error({
                 title: '提示',
@@ -335,7 +340,7 @@ function EntanglementList() {
             });
           })
           .catch((e) => {
-            Message.error(e.response.data.msg);
+            message.error(e.response.data.msg);
           });
       },
     });
@@ -353,16 +358,16 @@ function EntanglementList() {
    */
   const openRegisterModel = () => {
     if (selectedRows.length === 0) {
-      Message.error('请选择纠纷案件');
+      message.error('请选择纠纷案件');
       return;
     }
     let items = new Map();
-    selectedRows.map((item) => {
+    selectedRows.map((item: { caseType: string }) => {
       items.set(item.caseType, '');
     });
 
     if (items.size !== 1) {
-      Message.error('请选择相同的案件类型');
+      message.error('请选择相同的案件类型');
       return;
     }
 
@@ -380,10 +385,10 @@ function EntanglementList() {
    */
   const batchSubmit = () => {
     if (!contact.id) {
-      Message.error('请选择联系人');
+      message.error('请选择联系人');
       return;
     }
-    const items = selectedRows.map((item) => {
+    const items = selectedRows.map((item: { id: string }) => {
       return item.id;
     });
 
@@ -442,19 +447,17 @@ function EntanglementList() {
    */
   const onImport = () => {
     const form = importForm.props.form;
-    return form.validateFields((err, values) => {
+    return form.validateFields((err: any, values: any) => {
       // 检验失败return
       if (err) {
         return;
       }
 
-      const data = { ...values };
-
       // 数据导入
-      data.attachment = data.attachment[0].response.content[0];
+      const data = values.attachment[0].response.content[0];
 
       getImport(data)
-        .then((result) => {
+        .then((result: { code: number; mag: string; data: {} }) => {
           if (result.code !== 0) {
             Modal.error({
               title: '提示',
@@ -534,11 +537,19 @@ function EntanglementList() {
     );
   }
 
-  const optionsOnChange = (e) => {
-    console.log(e.target.value);
-
+  const optionsOnChange = (e: { target: { value: string } }) => {
     dataSource.query({
       caseType: e.target.value,
+    });
+  };
+
+  const confirm = () => {
+    Modal.info({
+      title: '下载模板',
+      content: <DisputeList />,
+      okText: '关闭',
+      width: 900,
+      icon: <Icon type="download" />,
     });
   };
 
@@ -562,14 +573,14 @@ function EntanglementList() {
       </Row>
 
       <Row style={{ padding: '0 24px 10px' }}>
-        <Col span={24}>
+        <Col span={22}>
           <Button type="primary" onClick={openModel}>
             <Icon type="plus" />
             新建
           </Button>
           <Divider type="vertical" />
           <Button type="primary" onClick={openImportVisible}>
-            <Icon type="plus" />
+            <Icon type="import" />
             导入
           </Button>
           <Divider type="vertical" />
@@ -577,8 +588,12 @@ function EntanglementList() {
             <Icon type="plus" />
             批量立案
           </Button>
-          <Divider type="vertical" />
-          {/* <RadioOptions defaultValue="" onChange={optionsOnChange} /> */}
+        </Col>
+        <Col span={2}>
+          <Button type="primary" onClick={() => confirm()}>
+            <Icon type="download" />
+            下载模板
+          </Button>
         </Col>
       </Row>
 

@@ -1,4 +1,12 @@
-export default interface Dispute {
+import { ReactNode } from 'react';
+
+export default interface Entanglement {
+  [x: string]: ReactNode;
+  businessLicense: any;
+  respondentType: number;
+  idReverse: any;
+  evidence: any;
+  idFront: any;
   id: string;
   name: string;
   courtId: string;
