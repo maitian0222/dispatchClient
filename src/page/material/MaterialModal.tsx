@@ -6,11 +6,13 @@ interface Props {
   visible: boolean;
   onClose: () => void;
   onOk: () => void;
+  loading: boolean;
   // tslint:disable-next-line:no-any
   wrappedComponentRef: (formRef: any) => any;
   formOprType: string;
   // tslint:disable-next-line:no-any
   editItem: any;
+  form: Form;
 }
 interface State {
   loading: boolean;
@@ -20,7 +22,7 @@ class MaterialModal extends React.Component<Props, State> {
     super(props);
   }
   public render() {
-    const { visible, onClose, form, formOprType, loading, onOk } = this.props;
+    const { visible, onClose, form, loading, onOk } = this.props;
     const { getFieldDecorator } = form;
     return (
       <Modal

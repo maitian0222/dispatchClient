@@ -205,7 +205,7 @@ function MaterialHasList() {
             dataIndex: 'status',
             align: 'center',
             render: (value: number, record: any) => {
-              let status = '';
+              let status: any = '';
               let text = '';
               switch (record.status) {
                 case 0:
