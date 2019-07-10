@@ -150,7 +150,7 @@ class UpLoadModule extends React.Component {
         style={style}
       >
         {upLoadNumber
-          ? fileList.length >= upLoadNumber
+          ? fileList.length >= upLoadNumber || disabled
             ? null
             : this.props.children
             ? this.props.children
