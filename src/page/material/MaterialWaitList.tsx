@@ -80,7 +80,7 @@ function MaterialWaitList() {
       if (err) {
         return;
       }
-      let url =
+      const url =
         formOprType === 'refuse'
           ? '/biz/lawsuitVerify/kill'
           : '/biz/lawsuitVerify/back';
@@ -113,7 +113,7 @@ function MaterialWaitList() {
     pageSize: PAGE_SIZE,
   });
   // 多选配置
-  const rowSelection = {
+  const rowSelection: any = {
     selectedRowKeys: selectedRowIds,
     onChange: (selectedRowKeys: string[], selectedRows: any) => {
       setSelectedRowIds(selectedRowKeys);
@@ -156,7 +156,7 @@ function MaterialWaitList() {
       <SearchForm
         condition={[
           {
-            fieldName: '放款主体',
+            fieldName: '诉讼主体名称',
             placeholder: '请输入',
             name: 'sName',
           },
@@ -166,7 +166,7 @@ function MaterialWaitList() {
             name: 'caseNumber',
           },
           {
-            fieldName: '提交时间',
+            fieldName: '更新时间',
             placeholder: ['开始时间', '结束时间'],
             type: 'rangePicker',
             startTimeName: 'stime',
@@ -238,7 +238,7 @@ function MaterialWaitList() {
             dataIndex: 'status',
             align: 'center',
             render: (value: number, record: any) => {
-              let status: string = '';
+              let status: any = '';
               let text: string = '';
               switch (record.status) {
                 case 0:
