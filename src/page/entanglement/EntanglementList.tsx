@@ -102,6 +102,7 @@ function EntanglementList() {
   // tslint:disable-next-line:no-any
   const handleSearch = (condition: any) => {
     dataSource.query({
+      ...dataSource.searchParams,
       ...condition,
     });
     setSelectedRowIds([]);
@@ -539,6 +540,7 @@ function EntanglementList() {
 
   const optionsOnChange = (e: { target: { value: string } }) => {
     dataSource.query({
+      ...dataSource.searchParams,
       caseType: e.target.value,
     });
   };

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Button, Upload, Icon, message } from 'antd';
 import http from '@sinoui/http';
-import uuid from 'uuid/v4';
+import { FILE_PREVIEW, FILE_DOWNLOAD } from '../config/AppConfig';
 
 interface Props {
   /**
@@ -45,9 +45,7 @@ class UpLoadModule extends React.Component {
         uid: f.id,
         name: f.title,
         status: 'done',
-        url:
-          f.url ||
-          `http://192.168.80.144:8082/oss/attachment/download?id=${f.id}`,
+        url: f.url || `${FILE_DOWNLOAD}/oss/attachment/download?id=${f.id}`,
         // thumbUrl:
         //   'https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png',
       }));
@@ -117,8 +115,15 @@ class UpLoadModule extends React.Component {
   };
 
   // 文件预览
-  public onPreview = () => {
-    alert('onPreview');
+  public onPreview = (file) => {
+    if (file.id) {
+      const previewUrl = encodeURIComponent(
+        `${FILE_DOWNLOAD}/oss/attachment/download?id=${file.id}&fullfilename=${
+          file.title
+        }`,
+      );
+      window.open(`${FILE_PREVIEW}/onlinePreview?url=${previewUrl}`);
+    }
   };
 
   public render() {
