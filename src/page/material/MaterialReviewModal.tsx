@@ -3,13 +3,16 @@ import { Modal, Button, Form } from 'antd';
 import LawsuitCaseEditor from './LawsuitCaseEditor';
 interface Props {
   visible: boolean;
+  loading: boolean;
   onClose: () => void;
   onOk: () => void;
+  goBack: () => void;
   // tslint:disable-next-line:no-any
   wrappedComponentRef: (formRef: any) => any;
   formOprType: string;
   // tslint:disable-next-line:no-any
   editItem: any;
+  form: Form;
 }
 interface State {
   loading: boolean;
