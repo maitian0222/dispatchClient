@@ -5,6 +5,7 @@ import EntanglementDetailModel from '../../entanglement/EntanglementDetailModel'
 import styles from '../Lawsuit.css';
 import CardLayout from './CardLayout';
 import DisputeInformationModal from '../../../component/DisputeInformationModal';
+import { min } from 'moment';
 interface Props {
   id: string; // id
   status: string; // 案件状态
@@ -110,8 +111,8 @@ export default function DisputeListCard(props: Props) {
         ]}
         dataSource={dispute}
       />
-      {editItem.id &&
-        (props.status === 4 ? (
+      {editItem.id ? (
+        props.status === 4 ? (
           <EntanglementDetailModel
             id={editItem.id}
             visible={visible}
@@ -121,10 +122,12 @@ export default function DisputeListCard(props: Props) {
         ) : (
           <DisputeInformationModal
             id={editItem.id}
+            respondentType={editItem.respondentType}
             visible={visible}
             onClose={() => setVisible(false)}
           />
-        ))}
+        )
+      ) : null}
     </CardLayout>
   );
 }
