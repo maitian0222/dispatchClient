@@ -13,7 +13,7 @@
     "connect-multiparty": "^2.1.0",
     "dayjs": "^1.8.14",
     "express": "^4.15.4",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.13",
     "multiparty": "^4.1.4",
     "uuid": "^3.2.1"
   },
