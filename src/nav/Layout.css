@@ -1,0 +1,37 @@
+.appContent {
+  flex: 1;
+  padding: 20px;
+  height: calc(100% - 105px);
+}
+
+:global(.ant-layout-content) {
+  overflow: hidden !important;
+}
+
+:global(.nav-header) {
+  display: flex;
+  height: 64px;
+  justify-content: center;
+  align-items: center;
+  border-right: 1px solid #f0f2f5;
+  border-bottom: 1px solid #f0f2f5;
+}
+
+:global(.logo-title) {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-left: 10px;
+  margin-bottom: 0;
+}
+:global(.logo-title p) {
+  margin-bottom: 0;
+}
+
+:global(.ant-layout-sider-collapsed .nav-header) {
+  width: 80px;
+}
+
+:global(.ant-layout-sider-collapsed .nav-header .logo-title) {
+  display: none;
+}
